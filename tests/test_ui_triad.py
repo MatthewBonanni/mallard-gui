@@ -88,6 +88,18 @@ def drag(pg: Any, view: str, dx: float, dy: float) -> None:
     pg.mouse.up()
 
 
+def orbit(pg: Any, ref: str, azimuth: float, elevation: float) -> None:
+    """An orbit of a browser-drawn view, as its interactor turns the camera. Not a synthetic drag: vtk.js takes a
+    move more than 200 ms after the last for the start of a new one, and headless Chrome's software GL draws a
+    frame of these views in about that, so a drag of a few moves was sometimes no orbit at all."""
+    pg.evaluate(
+        """([ref, a, e]) => { const v = window.mallardZoom.internals(ref), c = v.renderer.getActiveCamera();
+        c.azimuth(a); c.elevation(e); c.orthogonalizeViewUp(); v.renderer.resetCameraClippingRange();
+        v.renderWindow.render(); }""",
+        [ref, azimuth, elevation],
+    )
+
+
 def axis_pixels(pg: Any, view: str) -> dict[str, int]:
     """How many of the triad's pixels are drawn in each axis's color (as the page styles it), for the axes that
     do not point away from the viewer (those are drawn faint, under the others)."""
@@ -122,7 +134,7 @@ def test_the_case_views_triad_shows_the_axes_as_the_camera_sees_them(pg: Any, th
     pg.locator(".toolbar button:visible", has_text="Iso").first.click()
     pg.wait_for_function(f"(({AXES})('{CASE}').x || [0, 0, 0])[2] > 0.5")
     before = pg.evaluate(AXES, CASE)
-    drag(pg, CASE, 120, 50)  # an orbit: the triad turns with the view, as it moves
+    orbit(pg, "caseview", 40, 15)  # the triad turns with the view, as it moves
     matches(pg, CASE, pg.evaluate(CAMERA, "caseview"))
     assert pg.evaluate(AXES, CASE) != before
     # Legible: each axis drawn in its color, which stands out from the view's background.
@@ -181,7 +193,10 @@ def test_the_results_views_triad_follows_its_camera(pg: Any, mode: str) -> None:
     assert axes["x"] == pytest.approx([1, 0, 0], abs=2e-3) and axes["y"] == pytest.approx([0, 1, 0], abs=2e-3)
     if pg.evaluate("trame.state.get('v_lock2d')"):
         pg.locator(".toolbar button:visible", has_text="2D lock").click()
-    drag(pg, view, 110, -60)
+    if mode == "geometry":
+        orbit(pg, "geoview", 35, -20)
+    else:
+        drag(pg, view, 110, -60)  # this process's interactor, which turns on every move
     pg.wait_for_function(f"Math.abs((({AXES})('{view}').z || [0, 0, 1])[2]) < 0.99", timeout=10_000)
     matches(pg, view, camera())
     assert all(n > 60 for n in axis_pixels(pg, view).values())
