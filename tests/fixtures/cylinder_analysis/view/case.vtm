@@ -4,9 +4,9 @@
 <DataSet index="0" name="domain" file="case_blocks/domain.vtu"/>
 <DataSet index="1" name="cylinder" file="case_blocks/cylinder.vtu"/>
 <DataSet index="2" name="farfield" file="case_blocks/farfield.vtu"/>
-<DataSet index="3" name="write_data[prefix = &quot;._solut_near_wake&quot;].region" file="case_blocks/write_data[prefix = &quot;._solut_near_wake&quot;].region.vtu"/>
-<DataSet index="4" name="probes[name = &quot;wake_point&quot;]" file="case_blocks/probes[name = &quot;wake_point&quot;].vtu"/>
-<DataSet index="5" name="probes[name = &quot;wake_arc&quot;]" file="case_blocks/probes[name = &quot;wake_arc&quot;].vtu"/>
-<DataSet index="6" name="probes[name = &quot;wall&quot;]" file="case_blocks/probes[name = &quot;wall&quot;].vtu"/>
+<DataSet index="3" name="write_data[prefix = &quot;._solut_near_wake&quot;].region" file="case_blocks/write_data[prefix = _._solut_near_wake_].region.vtu"/>
+<DataSet index="4" name="probes[name = &quot;wake_point&quot;]" file="case_blocks/probes[name = _wake_point_].vtu"/>
+<DataSet index="5" name="probes[name = &quot;wake_arc&quot;]" file="case_blocks/probes[name = _wake_arc_].vtu"/>
+<DataSet index="6" name="probes[name = &quot;wall&quot;]" file="case_blocks/probes[name = _wall_].vtu"/>
 </vtkMultiBlockDataSet>
 </VTKFile>

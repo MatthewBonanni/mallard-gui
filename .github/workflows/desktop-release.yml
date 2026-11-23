@@ -24,6 +24,7 @@ env:
 jobs:
   bundle:
     strategy:
+      fail-fast: false
       matrix:
         os: [macos-latest, ubuntu-22.04, windows-latest]
     runs-on: ${{ matrix.os }}
