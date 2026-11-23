@@ -1,6 +1,6 @@
 [project]
 name = "mallard-gui"
-version = "0.1.0.dev0"
+version = "0.1.0"
 description = "A graphical front end for the Mallard compressible-flow solver: case setup, runs and monitoring"
 readme = "README.md"
 license = "Apache-2.0"

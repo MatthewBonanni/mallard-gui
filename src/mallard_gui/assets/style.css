@@ -1064,6 +1064,8 @@ html.pane-drag :is(canvas, iframe, .viewport) { pointer-events: none; }
 /* A key naming a file; a composition's editor */
 .prow .pfile { flex: none; width: 22px; height: 22px; margin-right: 2px; }
 .prow .pfile svg { width: 16px; height: 16px; }
+.prow .pinfo { flex: none; width: 22px; height: 22px; min-width: 22px; margin-left: -2px; }
+.prow .pinfo svg { width: 16px; height: 16px; }
 .comp-head { display: flex; align-items: center; gap: 10px; min-height: 26px; flex-wrap: wrap; }
 .prow .comp-summary.dim { color: var(--m-text-muted); font-style: italic; }
 .comp-basis .seg { height: 18px; padding: 0 6px; font-size: 11px; white-space: nowrap; }

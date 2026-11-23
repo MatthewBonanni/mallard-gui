@@ -7,7 +7,7 @@ import tomllib
 from pathlib import Path
 from typing import Any
 
-from mallard_gui.mallard import KeyInfo, Mallard, parse_catalog
+from mallard_gui.mallard import KeyInfo, Mallard, parse_catalog, site_url
 from mallard_gui.presets import SetupError, compute, parse_preset_line
 from mallard_gui.session import Session, catalog_path
 
@@ -489,3 +489,37 @@ def test_an_edit_sets_the_case_up_once_and_a_value_edit_reuses_the_preset_row(cy
     view = s.refresh_presets()["numerics.preset"]
     assert m.setups == ["check", "preset line"]
     assert view.overrides == {"numerics.riemann_solver": "HLL", "numerics.time_integrator": "RK4"}
+
+
+# Values naming models from the literature, with the theory section of each (Mallard's catalog `models`)
+RIEMANN_MODELS = {
+    "numerics.riemann_solver": {
+        "type": "string",
+        "default": '"HLLC"',
+        "values": ["HLL", "HLLC", "RHLL", "Roe", "Rusanov"],
+        "models": {
+            "HLLC": {"docs": "docs/theory/fluxes.md#hllc", "cite": "Toro, Spruce & Speares 1994"},
+            "Roe": {"docs": "docs/theory/fluxes.md#roe"},
+            "Rusanov": {"docs": "https://elsewhere.example/#rusanov"},
+        },
+    }
+}
+
+
+def test_a_choice_of_models_links_each_to_its_theory_section_on_the_website(cylinder_project: Path) -> None:
+    fake = FakeMallard()
+    fake.key_entries = RIEMANN_MODELS
+    row = every_row(session(cylinder_project, fake), "section:numerics")["riemann_solver"]
+    assert row["models"]["HLLC"]["url"] == "https://matthewbonanni.github.io/mallard/docs/theory/fluxes/#hllc"
+    assert row["models"]["HLLC"]["tip"].startswith("HLLC: Toro, Spruce & Speares 1994\n")
+    assert row["models"]["Roe"] == {
+        "url": "https://matthewbonanni.github.io/mallard/docs/theory/fluxes/#roe",
+        "tip": "Roe\nIts formulation in the theory manual (theory/fluxes), on the Mallard website",
+        "cite": "",
+    }
+    assert "Rusanov" not in row["models"]  # only docs paths of the repository
+
+
+def test_site_urls_follow_mkdocs_directory_urls() -> None:
+    assert site_url("docs/theory/index.md#notation") == "https://matthewbonanni.github.io/mallard/docs/theory/#notation"
+    assert site_url("docs/guide/les.md") == "https://matthewbonanni.github.io/mallard/docs/guide/les/"

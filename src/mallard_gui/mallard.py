@@ -72,6 +72,7 @@ class KeyInfo:
     defaults_by_dim: dict[str, str] = field(default_factory=dict)
     description: str = ""  # one line, from catalogs that give one (#1256)
     when: str = ""  # when it applies, from catalogs that say (#1256)
+    models: dict[str, ModelDoc] = field(default_factory=dict)  # values naming models from the literature
 
     @property
     def section(self) -> str:
@@ -117,6 +118,47 @@ class KeyInfo:
 
         TODO(#1256): typed defaults in the catalog."""
         return bare_literal(self.default)
+
+
+SITE = "https://matthewbonanni.github.io/mallard/"
+
+
+def site_url(docs: str) -> str:
+    """The website's page for a docs path of the repository, as MkDocs builds it:
+    `docs/theory/particles.md#singh-drag` -> `<site>docs/theory/particles/#singh-drag`."""
+    page, _, anchor = docs.partition("#")
+    page = page.removesuffix(".md")
+    page = page.removesuffix("index") if page.endswith("/index") else page + "/"
+    return SITE + page + (f"#{anchor}" if anchor else "")
+
+
+@dataclass(frozen=True)
+class ModelDoc:
+    """A value of a key that names a model from the literature: the theory section with its formulation (a docs
+    path with its anchor) and its source."""
+
+    docs: str
+    cite: str = ""
+
+    @property
+    def url(self) -> str:
+        return site_url(self.docs)
+
+    def tip(self, value: str) -> str:
+        page = self.docs.partition("#")[0].removeprefix("docs/").removesuffix(".md").replace("_", " ")
+        source = f": {self.cite}" if self.cite else ""
+        return f"{value}{source}\nIts formulation in the theory manual ({page}), on the Mallard website"
+
+
+def parse_models(entry: Any) -> dict[str, ModelDoc]:
+    """A catalog entry's `models` (Mallard PR adding them; absent from older catalogs): value -> docs, cite."""
+    if not isinstance(entry, dict):
+        return {}
+    return {
+        str(v): ModelDoc(str(m["docs"]), str(m.get("cite") or ""))
+        for v, m in entry.items()
+        if isinstance(m, dict) and isinstance(m.get("docs"), str) and m["docs"].startswith("docs/")
+    }
 
 
 @dataclass
@@ -182,6 +224,7 @@ def parse_catalog(data: dict[str, Any]) -> dict[str, KeyInfo]:
             defaults_by_dim={str(k): str(v) for k, v in (entry.get("defaults_by_dim") or {}).items()},
             description=str(entry.get("description") or entry.get("summary") or ""),
             when=str(entry.get("when") or entry.get("applies") or ""),
+            models=parse_models(entry.get("models")),
         )
     return out
 

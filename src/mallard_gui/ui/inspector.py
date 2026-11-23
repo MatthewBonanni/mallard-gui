@@ -15,7 +15,7 @@ from trame.widgets import html
 
 from ..fields import FieldCatalog
 from ..input_doc import format_path, parse_path
-from ..mallard import MallardError
+from ..mallard import SITE, MallardError
 from ..session import SECTIONS, catalog_path
 from .copy import message
 from .disclosure import disclosure
@@ -784,6 +784,23 @@ class Inspector:
             "perr",
             v_if="r.widget === 'vector' && (vec_err[r.path] || []).some(Boolean)",
         )
+
+    def model_button(self) -> None:
+        """A choice of models from the literature: (i) opens the theory section of the one chosen (else the default)
+        on the website."""
+        model = "r.models[r.value || r.placeholder]"
+        html.Button(
+            v_html="icons.info",
+            v_if=f"!r.readonly && r.widget === 'select' && {model}",
+            classes="icon-btn pinfo",
+            title=(f"{model}.tip",),
+            aria_label=("'Theory of ' + r.path + ' = ' + (r.value || r.placeholder)",),
+            click=(self.open_theory, f"[{model}.url]"),
+        )
+
+    def open_theory(self, url: str) -> None:
+        if url.startswith(SITE):
+            self.app.document._shell("openUrl", [url])
 
     def file_button(self) -> None:
         """A key naming a file: the file dialog, after its field."""

@@ -1,5 +1,4 @@
-# PyInstaller spec for the desktop app's server sidecar: `uv run --group bundle pyinstaller
-# desktop/sidecar/mallard-gui-server.spec` (desktop/package.sh does this).
+# PyInstaller spec for the desktop app's server sidecar, run by desktop/package.py.
 from PyInstaller.utils.hooks import collect_all, collect_data_files, collect_submodules, copy_metadata
 
 datas, binaries, hiddenimports = [], [], collect_submodules("mallard_gui")

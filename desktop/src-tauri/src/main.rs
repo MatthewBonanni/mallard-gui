@@ -10,6 +10,7 @@
 
 mod menu;
 
+use std::ffi::{OsStr, OsString};
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::{Child, Command, Stdio};
@@ -173,7 +174,7 @@ fn legacy_recent_file(app: &AppHandle) -> Option<PathBuf> {
 
 /// mallard-gui's settings.toml: in $MALLARD_DESKTOP_DATA when tests set it, else where mallard-gui keeps it
 /// (config.py's config_dir): $MALLARD_GUI_SETTINGS, $MALLARD_GUI_CONFIG_DIR, $XDG_CONFIG_HOME/mallard-gui, or
-/// ~/.config/mallard-gui.
+/// ~/.config/mallard-gui (platformdirs' %LOCALAPPDATA%\mallard-gui\mallard-gui on Windows).
 fn settings_path(var: impl Fn(&str) -> Option<String>, home: Option<PathBuf>) -> Option<PathBuf> {
     let set = |k: &str| var(k).filter(|v| !v.is_empty());
     if let Some(d) = set("MALLARD_DESKTOP_DATA") {
@@ -184,16 +185,17 @@ fn settings_path(var: impl Fn(&str) -> Option<String>, home: Option<PathBuf>) ->
     }
     let dir = set("MALLARD_GUI_CONFIG_DIR")
         .map(PathBuf::from)
-        .or_else(|| set("XDG_CONFIG_HOME").map(|x| PathBuf::from(x).join("mallard-gui")))
-        .or_else(|| home.map(|h| h.join(".config").join("mallard-gui")))?;
+        .or_else(|| set("XDG_CONFIG_HOME").map(|x| PathBuf::from(x).join("mallard-gui")));
+    #[cfg(windows)]
+    let dir = dir.or_else(|| {
+        set("LOCALAPPDATA").map(|d| PathBuf::from(d).join("mallard-gui").join("mallard-gui"))
+    });
+    let dir = dir.or_else(|| home.map(|h| h.join(".config").join("mallard-gui")))?;
     Some(dir.join("settings.toml"))
 }
 
 fn settings_file() -> Option<PathBuf> {
-    settings_path(
-        |k| std::env::var(k).ok(),
-        std::env::var_os("HOME").map(PathBuf::from),
-    )
+    settings_path(|k| std::env::var(k).ok(), home_dir())
 }
 
 fn load_recent(app: &AppHandle) -> Vec<PathBuf> {
@@ -787,11 +789,18 @@ fn watch(
     ))
 }
 
+fn home_dir() -> Option<PathBuf> {
+    std::env::var_os("HOME")
+        .or_else(|| std::env::var_os("USERPROFILE"))
+        .filter(|h| !h.is_empty())
+        .map(PathBuf::from)
+}
+
 /// The user's login PATH: an app opened from the Finder gets launchd's bare PATH, without uv's tool
-/// directory, Homebrew or a mallard the shell's profile puts on PATH.
-fn login_path() -> String {
-    let shell = std::env::var("SHELL").unwrap_or_else(|_| "/bin/zsh".into());
-    let from_shell = Command::new(shell)
+/// directory, Homebrew or a mallard the shell's profile puts on PATH. Windows apps get the user's PATH.
+fn login_path() -> OsString {
+    #[cfg(unix)]
+    let from_shell = Command::new(std::env::var("SHELL").unwrap_or_else(|_| "/bin/zsh".into()))
         .args(["-l", "-c", "printf %s \"$PATH\""])
         .stdin(Stdio::null())
         .stderr(Stdio::null())
@@ -800,43 +809,49 @@ fn login_path() -> String {
         .filter(|o| o.status.success())
         .and_then(|o| String::from_utf8(o.stdout).ok())
         .unwrap_or_default();
-    let home = std::env::var("HOME").unwrap_or_default();
-    let mut dirs: Vec<String> = from_shell
-        .split(':')
-        .filter(|d| !d.is_empty())
-        .map(String::from)
+    #[cfg(not(unix))]
+    let from_shell = String::new();
+    let mut extra: Vec<PathBuf> = home_dir()
+        .map(|h| h.join(".local").join("bin"))
+        .into_iter()
         .collect();
-    for d in [
-        format!("{home}/.local/bin"),
-        "/opt/homebrew/bin".into(),
-        "/usr/local/bin".into(),
-    ] {
-        if !dirs.contains(&d) {
+    if cfg!(unix) {
+        extra.extend(["/opt/homebrew/bin", "/usr/local/bin"].map(PathBuf::from));
+    }
+    let env = std::env::var_os("PATH").unwrap_or_default();
+    let mut dirs: Vec<PathBuf> = Vec::new();
+    for d in std::env::split_paths(&from_shell)
+        .chain(extra)
+        .chain(std::env::split_paths(&env))
+    {
+        if !d.as_os_str().is_empty() && !dirs.contains(&d) {
             dirs.push(d);
         }
     }
-    for d in std::env::var("PATH").unwrap_or_default().split(':') {
-        if !d.is_empty() && !dirs.iter().any(|x| x == d) {
-            dirs.push(d.into());
-        }
-    }
-    dirs.join(":")
+    std::env::join_paths(dirs).unwrap_or(env)
 }
 
-/// $MALLARD_GUI_SERVER, else the frozen server bundled in the app's resources (desktop/package.sh), else
+fn executable(name: &str) -> String {
+    format!("{name}{}", std::env::consts::EXE_SUFFIX)
+}
+
+/// $MALLARD_GUI_SERVER, else the frozen server bundled in the app's resources (desktop/package.py), else
 /// mallard-gui on PATH.
-fn server_program(path: &str, resources: Option<PathBuf>) -> Option<PathBuf> {
+fn server_program(path: &OsStr, resources: Option<PathBuf>) -> Option<PathBuf> {
     if let Ok(p) = std::env::var("MALLARD_GUI_SERVER") {
         return Some(PathBuf::from(p));
     }
     if let Some(bundled) = resources
-        .map(|d| d.join("mallard-gui-server").join("mallard-gui-server"))
+        .map(|d| {
+            d.join("mallard-gui-server")
+                .join(executable("mallard-gui-server"))
+        })
         .filter(|p| p.is_file())
     {
         return Some(bundled);
     }
-    path.split(':')
-        .map(|d| Path::new(d).join("mallard-gui"))
+    std::env::split_paths(path)
+        .map(|d| d.join(executable("mallard-gui")))
         .find(|p| p.is_file())
 }
 
@@ -911,8 +926,8 @@ fn start(app: AppHandle, window: WebviewWindow, project: Option<PathBuf>, new: b
     let Some(program) = server_program(&path, app.path().resource_dir().ok()) else {
         return fail(
             progress.splash,
-            "mallard-gui was not found on your login PATH or in ~/.local/bin. Install it with mallard-gui's \
-             install.sh (uv tool install), or set MALLARD_GUI_SERVER to its path.",
+            "mallard-gui was not found on your login PATH or in ~/.local/bin. Install it with \
+             `uv tool install` (mallard-gui's README), or set MALLARD_GUI_SERVER to its path.",
             None,
         );
     };
@@ -934,6 +949,12 @@ fn start(app: AppHandle, window: WebviewWindow, project: Option<PathBuf>, new: b
         .env("PATH", &path);
     if new {
         command.arg("--new");
+    }
+    #[cfg(windows)]
+    {
+        use std::os::windows::process::CommandExt;
+        const CREATE_NO_WINDOW: u32 = 0x0800_0000;
+        command.creation_flags(CREATE_NO_WINDOW);
     }
     if let Some(f) = settings_file() {
         command.env("MALLARD_GUI_SETTINGS", f);
@@ -1195,15 +1216,15 @@ mod tests {
         let (resources, bin) = (dir.join("Resources"), dir.join("bin"));
         fs::create_dir_all(resources.join("mallard-gui-server")).unwrap();
         fs::create_dir_all(&bin).unwrap();
-        fs::write(bin.join("mallard-gui"), "").unwrap();
-        let path = bin.to_str().unwrap();
+        fs::write(bin.join(executable("mallard-gui")), "").unwrap();
+        let path = bin.as_os_str();
         assert_eq!(
             server_program(path, Some(resources.clone())),
-            Some(bin.join("mallard-gui"))
+            Some(bin.join(executable("mallard-gui")))
         );
         let frozen = resources
             .join("mallard-gui-server")
-            .join("mallard-gui-server");
+            .join(executable("mallard-gui-server"));
         fs::write(&frozen, "").unwrap();
         assert_eq!(server_program(path, Some(resources)), Some(frozen));
         let _ = fs::remove_dir_all(&dir);

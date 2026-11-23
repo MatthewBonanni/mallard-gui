@@ -1,0 +1,94 @@
+# Builds the self-contained desktop app on macOS, Linux and Windows (desktop/package.py) and attaches the
+# bundles and SHA256SUMS to the GitHub release of the tag. Runs only for a pushed v* tag or by hand.
+name: Desktop release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing tag to build and release, e.g. v0.1.0"
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: desktop-release-${{ inputs.tag || github.ref_name }}
+
+env:
+  TAG: ${{ inputs.tag || github.ref_name }}
+  TAURI_CLI_VERSION: "2.12.6"
+
+jobs:
+  bundle:
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-22.04, windows-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: refs/tags/${{ env.TAG }}
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+      - name: The tag names the app's version
+        run: |
+          version=$(uv run --no-project python -c \
+            'import json; print(json.load(open("desktop/src-tauri/tauri.conf.json"))["version"])')
+          [ "$TAG" = "v$version" ] || { echo "::error::tag $TAG but tauri.conf.json has $version"; exit 1; }
+      - name: Tauri's Linux packages
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential file patchelf libssl-dev libxdo-dev \
+            libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev
+      - name: Rust and the Tauri CLI
+        run: |
+          rustup toolchain install stable --profile minimal
+          rustup default stable
+          cargo install tauri-cli --version "$TAURI_CLI_VERSION" --locked
+      - name: Package
+        run: uv run --group bundle desktop/package.py
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: bundle-${{ runner.os }}
+          path: desktop/dist/Mallard-*
+          if-no-files-found: error
+
+  release:
+    needs: bundle
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: bundle-*
+          path: dist
+          merge-multiple: true
+      - name: Every bundle is there
+        working-directory: dist
+        run: |
+          v=${TAG#v}
+          for f in "Mallard-$v-macos-arm64.zip" "Mallard-$v-macos-arm64.dmg" \
+                   "Mallard-$v-linux-x86_64.AppImage" "Mallard-$v-linux-x86_64.deb" \
+                   "Mallard-$v-windows-x86_64-setup.exe"; do
+            [ -s "$f" ] || { echo "::error::missing $f"; ls -l; exit 1; }
+          done
+          set -- *; [ $# -eq 5 ] || { echo "::error::unexpected files: $*"; exit 1; }
+          sha256sum Mallard-* > SHA256SUMS
+          cat SHA256SUMS
+      - name: Attach to the release
+        working-directory: dist
+        run: |
+          gh release view "$TAG" > /dev/null 2>&1 \
+            || gh release create "$TAG" --verify-tag --title "mallard-gui $TAG" \
+                 --notes "Desktop app for macOS (Apple Silicon), Linux and Windows; see the README's Install and run."
+          gh release upload "$TAG" Mallard-* SHA256SUMS --clobber

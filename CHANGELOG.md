@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased (0.1.0)
+## 0.1.0 - 2026-11-23
 
 Design system:
 
@@ -18,10 +18,18 @@ Design system:
 
 Packaging:
 
-- `desktop/package.sh` builds a self-contained macOS app (`Mallard-<version>-macos-<arch>.zip` and `.dmg`, with
-  `SHA256SUMS`): the server frozen with PyInstaller inside it, so it runs without uv or mallard-gui, and the
-  bundle ad-hoc signed. There is no Developer ID signature or notarization: the README says how to open it
-  past macOS's warning, or how to build it yourself.
+- `desktop/package.py` (`uv run --group bundle desktop/package.py`) builds the self-contained desktop app on
+  each system, with `SHA256SUMS`: macOS `Mallard-<version>-macos-<arch>.zip` and `.dmg` (ad-hoc signed), Linux
+  `.AppImage` and `.deb`, Windows an NSIS `-setup.exe`. Each carries the server frozen with PyInstaller, so it runs
+  without uv, Python or mallard-gui. There is no Developer ID signature, notarization or Windows code signing:
+  the README says how to open it past macOS's and Windows' warnings, or how to build it yourself.
+- The desktop shell finds `mallard-gui` and the frozen server on Windows too (`.exe`, `;`-separated `PATH`,
+  `%USERPROFILE%`, settings under `%LOCALAPPDATA%`) and starts the server without a console window.
+- `.github/workflows/desktop-release.yml` builds the bundles on macOS, Linux and Windows runners and attaches them
+  to the release of a pushed `v*` tag (or of a tag given by hand); it never runs for branch pushes or PRs.
+- `install.sh` is gone: install the desktop app from Releases, or the browser-mode server with
+  `uv tool install git+https://github.com/MatthewBonanni/mallard-gui` (`--with mallard-python` for what
+  `--solver` added), and Mallard by its own installation docs.
 
 Layout:
 
@@ -44,6 +52,11 @@ Layout:
 
 Inspector:
 
+- A choice of models from the literature (drag laws, SGS models, wall models, Riemann solvers, time integrators,
+  transport, chemistry, radiation, thickened-flame efficiencies, ...) has an (i) button after its dropdown: its
+  tooltip names the model chosen (else the default) and its source, and it opens the theory manual's section with
+  the model's formulation on the Mallard website in the system browser. The dropdown lists each model's source
+  beside it. Both come from the key catalog's `models`, which builds before it do not give.
 - Every key with a unit has a unit selector: the keys and their dimensions come from the Units table of Mallard's
   input reference (`tools/unit_keys.py` regenerates `unit_keys.py`) where the key catalog says none, so 140 keys
   have one instead of 77. The input holds SI numbers, the solver's units: `2.5 min` or 2.5 with min selected

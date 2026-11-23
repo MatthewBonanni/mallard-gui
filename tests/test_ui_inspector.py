@@ -13,7 +13,7 @@ from typing import Any
 import pytest
 
 from .test_choices import mixture
-from .test_inspector import UNSET_KEYS
+from .test_inspector import RIEMANN_MODELS, UNSET_KEYS
 from .test_ui import PAGES, open_app, pw  # noqa: F401  (fixtures)
 from .test_vectors import PARTICLE_KEYS
 from .ui.world import eventually, make_world, serve
@@ -631,3 +631,33 @@ def test_a_unit_typed_or_picked_shows_while_the_input_holds_si(si_page: Any) -> 
     first.fill("72")
     first.press("Enter")
     eventually(lambda: toml(pg), lambda t: "u = [20, 0]" in t)
+
+
+@pytest.fixture(scope="module")
+def models_page(pw: Any, tmp_path_factory: pytest.TempPathFactory) -> Iterator[Any]:  # noqa: F811
+    project, env = make_world(tmp_path_factory.mktemp("models"), runs=False)
+    with serve(project, {**env, "MALLARD_GUI_TEST_KEYS": json.dumps(RIEMANN_MODELS)}) as url:
+        browser, pg = open_app(pw, "chromium", url)
+        yield pg
+        browser.close()
+
+
+def test_a_model_from_the_literature_has_an_info_button_opening_its_theory(models_page: Any) -> None:
+    pg = models_page
+    select(pg, "Numerics")
+    pg.evaluate("() => { window.__opened = []; window.open = (u) => { window.__opened.push(u); return null; }; }")
+    row = pg.locator(".prow", has=pg.locator(".dd[aria-label='numerics.riemann_solver']"))
+    info = row.locator("button.pinfo")
+    assert info.get_attribute("aria-label") == "Theory of numerics.riemann_solver = HLLC"
+    assert (info.get_attribute("title") or "").startswith("HLLC: Toro, Spruce & Speares 1994")
+    info.click()
+    eventually(
+        lambda: pg.evaluate("() => window.__opened"),
+        lambda o: o == ["https://matthewbonanni.github.io/mallard/docs/theory/fluxes/#hllc"],
+    )
+    row.locator(".dd").click()
+    item = pg.locator(".dd-pop .dd-item", has_text="HLLC")
+    assert item.locator(".dd-note").inner_text() == "Toro, Spruce & Speares 1994"
+    pg.locator(".dd-pop .dd-item", has_text="HLL").first.click()  # a solver the catalog gives no section
+    eventually(lambda: toml(pg), lambda t: 'riemann_solver = "HLL"' in t)
+    eventually(lambda: row.locator("button.pinfo").count(), lambda n: n == 0)

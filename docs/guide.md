@@ -11,22 +11,19 @@ The design is Mallard's `docs/design/gui.md`; this package implements its milest
 
 ## Install
 
-```bash
-sh install.sh            # uv tool install mallard-gui, installing uv first where it is missing
-sh install.sh --solver   # and Mallard itself (CPU), for cases run on this machine
-```
-
-Or by hand: `uv tool install --compile-bytecode git+https://github.com/MatthewBonanni/mallard-gui` (from a checkout: `uv tool install
---compile-bytecode .`; without the flag the first launch compiles the GUI and its dependencies). The GUI uses
-`--mallard PATH`, else `$MALLARD`, else a `mallard` in its own environment (what `--solver` installs), else
-`mallard` on `PATH` (the `mallard` front end with `mallard2d` and `mallard3d` beside it). `--solver` adds
-the `mallard-python` wheel's executables
-([#1321](https://github.com/MatthewBonanni/mallard/issues/1321)); until that wheel and mallard-gui are on
-PyPI, point the script at wheels you built: `MALLARD_GUI_FIND_LINKS=DIR` (a directory of wheels) and
-`MALLARD_GUI_SPEC` (what to install, default `mallard-gui`).
-
-The desktop app is the other way in: a packaged, unsigned macOS app, or one you build; see
-[Install the desktop app](#install-the-desktop-app).
+- **Desktop app**: a download for macOS, Linux or Windows that carries its own server; see
+  [Install the desktop app](#install-the-desktop-app).
+- **Browser mode**: the server alone, which opens the GUI in a browser (no desktop shell), with
+  [uv](https://docs.astral.sh/uv/getting-started/installation/) and Python ≥ 3.12:
+  `uv tool install --compile-bytecode git+https://github.com/MatthewBonanni/mallard-gui` (from a checkout:
+  `uv tool install --compile-bytecode .`; without the flag the first launch compiles the GUI and its
+  dependencies). `uv tool update-shell` puts uv's tool directory on `PATH` if it is not already.
+- **Mallard**: install it by Mallard's [installation docs](https://matthewbonanni.github.io/mallard/docs/installation/)
+  (container, Spack or from source). The GUI uses `--mallard PATH`, else `$MALLARD`, else a `mallard` in its
+  own environment, else `mallard` on `PATH` (the `mallard` front end with `mallard2d` and `mallard3d` beside
+  it). `--with mallard-python` on the `uv tool install` puts the `mallard-python` wheel's executables (CPU) in
+  the GUI's environment ([#1321](https://github.com/MatthewBonanni/mallard/issues/1321)); until that wheel is
+  on PyPI, add `--find-links DIR` for a directory of wheels you built.
 
 ### Desktop app
 
@@ -85,46 +82,59 @@ app has no console, so this file is the evidence to attach to a report of a view
 
 #### Install the desktop app
 
-The app is not signed with an Apple Developer ID or notarized: that takes a paid Apple developer account,
-which Mallard does not have. It is ad-hoc signed (Apple Silicon runs no unsigned code at all), so macOS
-runs it once you have said you trust it. Either way you need Mallard itself too (`sh install.sh --solver`, or
-a `mallard` on `PATH`); Settings > Mallard can point at it.
+**Download it** from [Releases](https://github.com/MatthewBonanni/mallard-gui/releases). Each bundle carries
+its own Python and server, so it needs neither uv nor mallard-gui; you need Mallard itself too (see
+[Install](#install)), and Settings > Mallard can point at it. Check a download with `sha256sum -c SHA256SUMS`
+(`shasum -a 256 -c SHA256SUMS` on macOS).
 
-**Download the packaged app** (`Mallard-<version>-macos-<arch>.zip` or `.dmg`, with `SHA256SUMS`: check with
-`shasum -a 256 -c SHA256SUMS`). It carries its own Python and server, so it needs neither uv nor
-mallard-gui. Move `Mallard.app` to Applications. The first open says Apple could not verify it is free of
-malware (an unidentified developer); open it once by any of:
+| System | File | Install |
+|---|---|---|
+| macOS (Apple Silicon) | `Mallard-<version>-macos-arm64.dmg` or `.zip` | Move `Mallard.app` to Applications |
+| Linux (x86-64) | `Mallard-<version>-linux-x86_64.AppImage` | `chmod +x` it and run it |
+| Linux (x86-64), Debian or Ubuntu | `Mallard-<version>-linux-x86_64.deb` | `sudo apt install ./Mallard-<version>-linux-x86_64.deb` |
+| Windows (x86-64) | `Mallard-<version>-windows-x86_64-setup.exe` | Run the installer |
 
-- right-click (Control-click) `Mallard.app` > Open, then Open (macOS 14 and older);
+None is signed by a paid certificate (an Apple Developer ID with notarization, or a Windows code-signing
+certificate), which Mallard does not have. The macOS app is ad-hoc signed (Apple Silicon runs no unsigned
+code at all), so its first open says Apple could not verify it is free of malware; open it once by any of:
+
 - System Settings > Privacy & Security, Open Anyway beside the message about Mallard, then Open;
+- right-click (Control-click) `Mallard.app` > Open, then Open (macOS 14 and older);
 - `xattr -dr com.apple.quarantine /Applications/Mallard.app` in Terminal.
 
-Later opens need nothing.
+On Windows, SmartScreen says it protected your PC: More info, then Run anyway. Later opens need nothing.
+Mallard itself runs on Linux and macOS only.
 
-**Build it from source** (macOS; Rust, [uv](https://docs.astral.sh/uv/) and the Tauri CLI):
+**Build it from source** ([uv](https://docs.astral.sh/uv/getting-started/installation/), Rust and the Tauri CLI;
+on Linux also [Tauri's system packages](https://v2.tauri.app/start/prerequisites/)):
 
 ```bash
 cargo install tauri-cli --version "^2"
 git clone https://github.com/MatthewBonanni/mallard-gui && cd mallard-gui
-sh desktop/package.sh     # desktop/dist/Mallard.app, Mallard-<version>-macos-<arch>.zip and .dmg, SHA256SUMS
+uv run --group bundle desktop/package.py   # desktop/dist: this system's bundles and SHA256SUMS
 ```
 
-`package.sh` freezes the server with PyInstaller (`desktop/sidecar/mallard-gui-server.spec`: a `--onedir`
-build of `mallard_gui` with `trame*`, the VTK modules it imports and `mallard_gui/assets`) into
-`Mallard.app/Contents/Resources/mallard-gui-server/`, builds the shell, ad-hoc signs the bundle
-(`codesign --force --deep -s -`) and packages it. A build on your own machine is not quarantined, so it
-opens without the warning. For a shell that uses the `mallard-gui` you installed (no frozen server), build
-only the shell:
+`package.py` freezes the server with PyInstaller (`desktop/sidecar/mallard-gui-server.spec`: a `--onedir`
+build of `mallard_gui` with `trame*`, the VTK modules it imports and `mallard_gui/assets`), builds the shell
+and puts the server in the app's resources as `mallard-gui-server/`, where the shell looks for it. On macOS
+it copies the server into `Mallard.app/Contents/Resources/` by `ditto` rather than Tauri's `bundle.resources`,
+which copies its symlinks as files (twice the size, and a `Python.framework` codesign rejects), then ad-hoc
+signs the bundle (`codesign --force --deep -s -`) and makes the zip and dmg. On Linux and Windows it passes
+the server to Tauri's `bundle.resources` (`--config`), which builds the AppImage and deb, or the NSIS
+installer. A build on your own machine is not quarantined, so it opens without the warning.
+
+The release workflow (`.github/workflows/desktop-release.yml`) runs `package.py` on macOS (arm64), Linux
+(Ubuntu 22.04, x86-64) and Windows runners for a pushed `v*` tag, or by hand for an existing tag, and
+attaches the five bundles and `SHA256SUMS` to that tag's release; it fails if the tag is not
+`v<version>` of `tauri.conf.json` or a bundle is missing.
+
+For a shell that uses the `mallard-gui` you installed (no frozen server), build only the shell:
 
 ```bash
 cd desktop/src-tauri && cargo tauri build --bundles app   # target/release/bundle/macos/Mallard.app
 ```
 
-and `cargo tauri dev` runs it from the checkout. The frozen server is copied in by `ditto` rather than
-Tauri's `bundle.externalBin` or `bundle.resources`: `externalBin` takes one file while a `--onedir` server is a
-directory, and `resources` copies its symlinks as files (twice the size, and a `Python.framework` codesign
-rejects).
-The packaged app is macOS only for now; Linux (AppImage, deb) needs the same copy step for its bundles.
+(`--bundles deb` or `nsis` elsewhere), and `cargo tauri dev` runs it from the checkout.
 
 If you have a Developer ID: sign with `codesign --force --options runtime -s "Developer ID Application: …"`
 in place of `-s -` (the server's libraries first, then the app; the frozen Python needs the
@@ -493,6 +503,7 @@ without a request, gets the GUI's older way:
 | check `unassigned`, `periodic` | rows of the report's boundaries; zones without a condition as case-tree nodes to assign one, also when the setup stops on them; periodic node offsets, or "not measured" on a mesh read in parallel | no such rows |
 | `file.info` | Continue is enabled by a restart's `continuable`, and the run page shows its `incompatibilities` | Continue for any stopped run with a restart |
 | `case.files` | the case page's Files tab: the input and every file its setup read, missing ones flagged | the tab says the build does not list them |
+| key-catalog `models` | the (i) button after a choice of models from the literature, opening the theory section of the one chosen on the website, and each model's source in the dropdown | no button |
 | key-catalog `form` | arrays of tables, named entries and tables in the case tree and the key editor (the general catalog's form for tables the input does not set) | arrays guessed from types and `name`/`region` keys |
  Where Mallard does not yet provide something, the GUI works around it and a `TODO(#issue)` marks the
 spot:
@@ -512,4 +523,4 @@ spot:
 | #1360, #1361 | a wall is extracted through a copy of the run's input with a boundary `[[probes]]` entry added (`extract/<name>.toml`) |
 | #1362 | spectra, autocorrelation, window statistics and coefficients computed in the GUI (`signals.py`, Mallard's methods) |
 | #1363 | a nondimensional run's CSV units lines say SI; the GUI shows them as written |
-| #1321 | `install.sh --solver` adds `mallard-python` with `--with`; no `[solver]` extra until the wheels are published |
+| #1321 | `uv tool install --with mallard-python` adds Mallard's executables; no `[solver]` extra until the wheels are published |

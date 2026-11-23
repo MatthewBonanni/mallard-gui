@@ -1659,7 +1659,7 @@ class App:
                 )
                 dropdown(
                     "r.value",
-                    "r.options",
+                    "r.options.map(o => r.models[o] ? {value: o, label: o, note: r.models[o].cite} : o)",
                     (self.set_key, "[r.path, $event.detail]"),
                     ("r.path",),
                     placeholder=(
@@ -1669,6 +1669,7 @@ class App:
                     free="r.free",
                     v_if="!r.readonly && r.widget === 'select'",
                 )
+                self.inspector.model_button()
                 dropdown(
                     "''",
                     "r.options",

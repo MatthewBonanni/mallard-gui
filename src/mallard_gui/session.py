@@ -151,6 +151,7 @@ class Row:
     vector: dict[str, Any] = field(default_factory=dict)  # one box per component: labels, values, placeholders
     unit_unknown: str = ""  # why the key's unit is not known from the key alone (`unit_keys.UNKNOWN`)
     points: dict[str, Any] = field(default_factory=dict)  # a list of points: labels, and rows of components
+    models: dict[str, dict[str, str]] = field(default_factory=dict)  # value -> its theory page: url, tip, cite
 
     def to_dict(self) -> dict[str, Any]:
         return dict(vars(self))
@@ -1235,6 +1236,7 @@ class Session:
         effective = preset.effective.get(catalog_path(path)) if preset and "[" not in path else None
         if info:
             row.type, row.widget, row.unit, row.options = info.type, info.widget, info.unit, info.values
+            row.models = {v: {"url": m.url, "tip": m.tip(v), "cite": m.cite} for v, m in info.models.items()}
             row.required = self.required(path)
             default = bare_literal(info.default_for(dim))
             if not set_ and not row.required:
