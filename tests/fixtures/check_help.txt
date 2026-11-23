@@ -1,0 +1,115 @@
+Usage: mallard check input.toml [options]
+       mallard check [--format text|json]
+
+Runs the whole setup of a case (mesh, partition, boundaries, numerics, initial
+solution) without time stepping and without writing any file, then reports:
+unknown or unused keys, boundary zones without a condition, mesh quality with
+the worst cells, the stable time step and the cell that sets it, memory per rank
+and, with --throughput or --steps, the cost. Each row has a status, each error
+or warning a stable code (E-REGION-OUTSIDE, W-CFL-LIMIT) and the docs that
+explain it. It lists every region the case uses and the mesh's own (domain,
+boundary zones, cell zones) with its dimension, measure and cells, and whether a
+surface or curve is exact or extracted; a region that covers no cell is an
+error. Under mpirun -n N it checks the run on N ranks.
+
+Without an input, checks the environment only; with one, the report ends with
+the same Environment section: the build (dimension, precision, the solvers
+installed), Kokkos and its execution spaces, every rank's host, device and
+memory, CPUs and threads, MPI (library, ranks per host), GPU-aware MPI and NCCL
+(built, and whether the run uses them), HDF5 (serial or parallel), CGNS, zlib
+and KaMinPar. Each problem is a diagnostic with its fix: ranks sharing a GPU or
+cores, OpenMP threads free to migrate, a GPU-aware build on an MPI that cannot
+read device memory (an error), device halos staged through host memory. Run it
+under the job's launcher (srun, mpirun) to check its nodes.
+
+Options:
+  -i FILE                   The input file, instead of the argument.
+  --format text|json        text: a section per part of the check, each row with
+                            its status (ok, WARN, ERROR) and units, then the
+                            diagnostics with their codes; json: the same report
+                            as one JSON object, for scripts. Default: text.
+  --restart FILE|latest     Check the run as started from this restart file, or
+                            as --restart latest would.
+  --ranks N                 Memory and cost per rank for a run on N ranks; from
+                            a serial check, memory is scaled to the largest part
+                            the run's partitioner would make. Default: the ranks
+                            of this check.
+  --throughput CELLS_PER_S  Cost (wall time and GPU-hours per unit simulated
+                            time, per flow-through and to t_stop) at this many
+                            cell updates per second per rank: the Throughput of
+                            a run's summary over its ranks. Default: no cost.
+  --steps N                 Cost at the throughput measured over N steps, after
+                            one untimed step; the memory then includes the
+                            steps' peak. Default: no cost.
+  --memory SIZE|GPU         Size the run for this memory per rank: a size (40GB,
+                            512MiB; host memory per rank in CPU builds) or a GPU
+                            (a100-40, a100-80, h100-80, h200, mi250x, mi300x):
+                            the most cells per rank (within the memory and the
+                            entries a multi-dimensional View addresses), the
+                            fewest ranks the mesh fits on and up to how many the
+                            halo stays below 10%. Default: the GPU's memory in
+                            GPU builds, else none.
+  --mesh-fields PREFIX      Write the mesh and stencil fields of every cell to
+                            PREFIX_000000.vtkhdf (PREFIX_000000.vtu in builds
+                            without HDF5), the default snapshot format: the mesh
+                            quality (NON_ORTHOGONALITY, SKEWNESS, ASPECT_RATIO,
+                            VOLUME_RATIO), the stencils as built for the run
+                            (STENCIL_SIZE, STENCIL_SECTORS, STENCIL_DEGREE,
+                            STENCIL_CONDITION, STENCIL_WALL, STENCIL_SEAM,
+                            STENCIL_PARTITION) and the resolution estimates
+                            (Y_PLUS, DELTA_OVER_ETA, CELLS_PER_DELTA_L).
+                            Default: none.
+  --stencils all            With --mesh-fields: also write every cell's
+                            stencils, member by member with their roles, to
+                            PREFIX_stencils.h5 (HDF5 builds); about 0.6 KB per
+                            cell in 3D with TENO order 5. Default: none.
+  --cells IDS               With --mesh-fields: write the stencils of these
+                            cells (global ids, comma separated) to
+                            PREFIX_stencils.h5, and each as a field STENCIL_<id>
+                            (1 central, 2 sector, 3 both, 4 the cell itself).
+                            Default: none.
+  --region NAME|{TABLE}     With --mesh-fields: as --cells, for the cells of a
+                            region: a name of [regions] or of the mesh, or an
+                            inline table ({type = "rectangle", center = [0, 0],
+                            size = [0.1, 0.1]}); STENCIL_<id> fields for the
+                            first 64 cells. Default: none.
+  --weights                 With --stencils, --cells or --region: add each
+                            member's weights to PREFIX_stencils.h5: TENO's
+                            pseudo-inverse rows, MUSCL's gradient weights.
+                            Default: none.
+  --quality PREFIX          Deprecated: --mesh-fields PREFIX.
+  --catalog KEYS.json       Write every key the setup looked up, with its type,
+                            unit, default and accepted values, as JSON. Default:
+                            none.
+  --view DIR                Write the case view, without running the case:
+                            DIR/case.vtkhdf for ParaView (builds without HDF5:
+                            DIR/case.vtm), one block each for the mesh, every
+                            boundary zone, region the case uses (filled regions
+                            as their cells with their fractions, surfaces and
+                            curves with their normals or tangents and measures),
+                            probe and periodic pair; and DIR/case-light.svg and
+                            DIR/case-dark.svg, the annotated image (3D: an
+                            isometric view over three orthographic ones) with
+                            every boundary labeled by its name and condition and
+                            every region and probe by its name, a legend, axes,
+                            a scale bar and the domain's extent in its units.
+                            Default: none.
+  --kokkos-*                Kokkos options, e.g. --kokkos-num-threads=8 (threads
+                            per rank) or --kokkos-device-id=1 (the GPU; by
+                            default each rank gets its own).
+  -h, --help                Show this page.
+
+Examples:
+  $ mallard check input.toml
+  $ srun -N 2 --ntasks-per-node 4 mallard check   # the environment of a job
+  $ mallard check input.toml --ranks 64 --throughput 5e7
+  $ mpirun -n 4 mallard check input.toml --mesh-fields mesh
+  $ mallard check input.toml --mesh-fields mesh --cells 120,4031   # their stencils
+  $ mallard check input.toml --view view   # view/case-light.svg; view/case.vtkhdf in ParaView
+
+Exit status:
+  0  no errors (there may be warnings)
+  1  errors: in the input, the mesh, the setup or the environment
+  2  usage error
+
+Documentation: https://matthewbonanni.github.io/mallard/docs/guide/cli/#mallard-check

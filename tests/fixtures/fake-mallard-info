@@ -1,0 +1,10 @@
+#!/bin/sh
+# A stand-in for `mallard info FILE --format json` on a location: prints the JSON beside this script
+# (`$0.json`, a copy of restart_info.json, edited by a test to play another build), or fails as Mallard
+# does when FILE is missing.
+[ "$1" = "info" ] || { echo "fake-mallard-info: only info" >&2; exit 2; }
+if [ ! -f "$2" ]; then
+  echo "error E-INFO: mallard info: cannot open the file $2: no such file." >&2
+  exit 1
+fi
+cat "$0.json"

@@ -1,0 +1,71 @@
+#!/bin/sh
+# A stand-in for kubectl that never reaches a cluster: `fake-kubectl --context C -n NS VERB ...`.
+#   exec [-i] POD -c C -- CMD...   runs CMD with this machine's shell, as the pod would (paths are local ones)
+#   apply -f -                     keeps the manifest as $FAKE_KUBE_STATE/applied-N.json
+#   get pod NAME -o json           a running, ready pod, unless $FAKE_KUBE_STATE/gone-NAME exists
+#   get pods|jobs ... -o json      $FAKE_KUBE_STATE/pods.json, jobs.json (default: no items)
+#   get job NAME -o json           $FAKE_KUBE_STATE/job-NAME.json, else NotFound
+#   delete pod NAME ...            marks the pod gone
+#   auth can-i ...                 yes
+#   port-forward POD :PORT ...     says it forwards from 127.0.0.1:$FAKE_KUBE_FORWARD (a listener the test runs)
+#   FAKE_KUBE_LOG                  a line per invocation
+state=${FAKE_KUBE_STATE:-/tmp/fake-kube}
+mkdir -p "$state"
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --context | -n) shift 2 ;;
+    *) break ;;
+  esac
+done
+if [ -n "$FAKE_KUBE_LOG" ]; then printf '%s\n' "$*" >> "$FAKE_KUBE_LOG"; fi
+verb=$1
+shift
+case "$verb" in
+  exec)
+    [ "$1" = "-i" ] && shift
+    pod=$1
+    shift
+    if [ -e "$state/gone-$pod" ]; then echo "Error from server (NotFound): pods \"$pod\" not found" >&2; exit 1; fi
+    while [ $# -gt 0 ] && [ "$1" != "--" ]; do shift; done
+    shift
+    exec "$@"
+    ;;
+  apply)
+    n=$(ls "$state" | grep -c '^applied-')
+    cat > "$state/applied-$n.json"
+    name=$(sed -n 's/.*"metadata": {"name": "\([^"]*\)".*/\1/p' "$state/applied-$n.json" | head -n 1)
+    [ -n "$name" ] && rm -f "$state/gone-$name"
+    echo "applied"
+    ;;
+  get)
+    kind=$1
+    name=$2
+    case "$kind" in
+      pod)
+        if [ -e "$state/gone-$name" ]; then echo "Error from server (NotFound): pods \"$name\" not found" >&2; exit 1; fi
+        printf '{"metadata": {"name": "%s"}, "status": {"phase": "Running", "conditions": [{"type": "Ready", "status": "True"}]}}\n' "$name"
+        ;;
+      job)
+        if [ -f "$state/job-$name.json" ]; then cat "$state/job-$name.json"; else
+          echo "Error from server (NotFound): jobs.batch \"$name\" not found" >&2; exit 1; fi
+        ;;
+      pods | jobs)
+        if [ -f "$state/$kind.json" ]; then cat "$state/$kind.json"; else echo '{"items": []}'; fi
+        ;;
+      pvc) echo "persistentvolumeclaim/$name" ;;
+      nodes) echo '{"items": [{"metadata": {"labels": {"nvidia.com/gpu.product": "NVIDIA-A100-SXM4-80GB"}}}]}' ;;
+      *) echo "fake-kubectl: get $kind" >&2; exit 1 ;;
+    esac
+    ;;
+  delete)
+    [ "$1" = "pod" ] && touch "$state/gone-$2"
+    exit 0
+    ;;
+  auth) echo yes ;;
+  port-forward)
+    echo "Forwarding from 127.0.0.1:${FAKE_KUBE_FORWARD:-0} -> 8765"
+    exec sleep 600
+    ;;
+  logs) echo "fake log of $1" ;;
+  *) echo "fake-kubectl: $verb is not faked" >&2; exit 1 ;;
+esac

@@ -1,0 +1,137 @@
+{
+ "path": "solut/restart_000180.restart",
+ "kind": "restart",
+ "format": "restart",
+ "version": 7,
+ "dim": 2,
+ "precision": "double",
+ "compressed": false,
+ "global_order": true,
+ "mesh": {
+  "cells": 1536,
+  "points": 0,
+  "faces": 0,
+  "boundary_faces": 0,
+  "cell_types": {},
+  "bounds": null,
+  "boundary_zones": {},
+  "cell_zones": {},
+  "file": null
+ },
+ "snapshots": [
+  {
+   "t": 3,
+   "step": 180,
+   "file": "solut/restart_000180.restart",
+   "index": 0,
+   "run_id": "f4758d25-e285-47c4-bd40-eaa8280536c3",
+   "snapshot": {
+    "schema": "mallard-snapshot",
+    "version": 1,
+    "run_id": "f4758d25-e285-47c4-bd40-eaa8280536c3",
+    "restart_of": null,
+    "step": 180,
+    "time": 3,
+    "written_at": "2026-11-20T22:43:47Z",
+    "reason": "interval",
+    "format": "restart",
+    "format_version": 7,
+    "solver_precision": "double",
+    "statistics": {
+     "average_start": null,
+     "average_end": null,
+     "samples": 0
+    },
+    "fields": [
+     {
+      "name": "RHO",
+      "units": "kg m-3",
+      "long_name": "density",
+      "stored": "float64",
+      "value": "cell_average"
+     },
+     {
+      "name": "RHOU_X",
+      "units": "kg m-2 s-1",
+      "long_name": "x component of momentum density",
+      "stored": "float64",
+      "value": "cell_average"
+     },
+     {
+      "name": "RHOU_Y",
+      "units": "kg m-2 s-1",
+      "long_name": "y component of momentum density",
+      "stored": "float64",
+      "value": "cell_average"
+     },
+     {
+      "name": "RHOE",
+      "units": "kg m-1 s-2",
+      "long_name": "total energy density",
+      "stored": "float64",
+      "value": "cell_average"
+     }
+    ],
+    "units": {
+     "time": "s",
+     "statistics.average_start": "s",
+     "statistics.average_end": "s",
+     "fields.average.start": "s",
+     "fields.average.end": "s",
+     "fields.average.bin_weight": "s",
+     "fields.average.period": "s"
+    }
+   }
+  }
+ ],
+ "fields": [
+  {
+   "name": "RHO",
+   "components": 1,
+   "units": "kg m-3",
+   "long_name": "density",
+   "location": "cell",
+   "min": 0.9327029914193756,
+   "max": 1.0438993924781141
+  },
+  {
+   "name": "RHOU_X",
+   "components": 1,
+   "units": "kg m-2 s-1",
+   "long_name": "x component of momentum density",
+   "location": "cell",
+   "min": -0.018490570011440034,
+   "max": 0.29972188705405883
+  },
+  {
+   "name": "RHOU_Y",
+   "components": 1,
+   "units": "kg m-2 s-1",
+   "long_name": "y component of momentum density",
+   "location": "cell",
+   "min": -0.14989942528908706,
+   "max": 0.12228621570392299
+  },
+  {
+   "name": "RHOE",
+   "components": 1,
+   "units": "kg m-1 s-2",
+   "long_name": "total energy density",
+   "location": "cell",
+   "min": 1.6638714157070487,
+   "max": 1.908041186724778
+  }
+ ],
+ "species": [],
+ "restart": {
+  "attributes": {},
+  "arrays": [],
+  "boundary_faces": 0
+ },
+ "run": {
+  "schema": "mallard-run",
+  "version": 3
+ },
+ "sampling": null,
+ "notes": []
+}

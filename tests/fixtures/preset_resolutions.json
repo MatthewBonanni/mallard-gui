@@ -1,0 +1,124 @@
+{
+ "first_order": {
+  "numerics": {
+   "check_nan": false,
+   "convective_flux": "riemann",
+   "double_flux": false,
+   "face_reconstruction": {
+    "type": "FO"
+   },
+   "low_mach_cutoff": 0.1,
+   "preset": "first_order",
+   "riemann_solver": "HLL",
+   "time_integrator": "SSPRK3"
+  },
+  "run": {
+   "cfl": 0.5
+  }
+ },
+ "high_order": {
+  "numerics": {
+   "check_nan": false,
+   "convective_flux": "riemann",
+   "double_flux": false,
+   "face_reconstruction": {
+    "C_T": -1.0,
+    "bound_preserving": false,
+    "cache_file": "",
+    "cache_single_precision": false,
+    "characteristic": true,
+    "curved_mirrors": false,
+    "curved_wall_degree": 3,
+    "max_condition": 100000000.0,
+    "order": 5,
+    "single_precision_tables": false,
+    "small_stencil_size": 10,
+    "stencil_factor": 2.0,
+    "troubled_capacity": 1.0,
+    "troubled_threshold": 0.001,
+    "troubled_upper": 0.01,
+    "type": "TENO"
+   },
+   "low_mach_cutoff": 0.1,
+   "preset": "high_order",
+   "riemann_solver": "HLLC",
+   "time_integrator": "SSPRK3"
+  },
+  "run": {
+   "cfl": 1.0
+  }
+ },
+ "les": {
+  "numerics": {
+   "check_nan": false,
+   "convective_flux": "hybrid",
+   "double_flux": false,
+   "face_reconstruction": {
+    "limiter": "none",
+    "type": "MUSCL",
+    "venkatakrishnan_K": 5.0
+   },
+   "low_mach_cutoff": 0.1,
+   "preset": "les",
+   "riemann_solver": "HLLC",
+   "time_integrator": "SSPRK54"
+  },
+  "run": {
+   "cfl": 2.0
+  }
+ },
+ "none": {
+  "numerics": {
+   "check_nan": false,
+   "convective_flux": "riemann",
+   "double_flux": false,
+   "face_reconstruction": {
+    "type": "FO"
+   },
+   "low_mach_cutoff": 0.1,
+   "riemann_solver": "HLLC",
+   "time_integrator": "SSPRK3"
+  },
+  "run": {
+   "cfl": 0.5
+  }
+ },
+ "reacting": {
+  "numerics": {
+   "check_nan": false,
+   "convective_flux": "riemann",
+   "double_flux": false,
+   "face_reconstruction": {
+    "limiter": "venkatakrishnan",
+    "type": "MUSCL",
+    "venkatakrishnan_K": 5.0
+   },
+   "low_mach_cutoff": 0.1,
+   "preset": "reacting",
+   "riemann_solver": "HLLC",
+   "time_integrator": "SSPRK3"
+  },
+  "run": {
+   "cfl": 0.35
+  }
+ },
+ "second_order": {
+  "numerics": {
+   "check_nan": false,
+   "convective_flux": "riemann",
+   "double_flux": false,
+   "face_reconstruction": {
+    "limiter": "venkatakrishnan",
+    "type": "MUSCL",
+    "venkatakrishnan_K": 5.0
+   },
+   "low_mach_cutoff": 0.1,
+   "preset": "second_order",
+   "riemann_solver": "RHLL",
+   "time_integrator": "SSPRK3"
+  },
+  "run": {
+   "cfl": 0.5
+  }
+ }
+}

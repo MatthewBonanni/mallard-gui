@@ -1,0 +1,2 @@
+warning W-FORMAT-VTU: [[write_data]] writes VTU files: the default format, "vtkhdf", needs a build with HDF5 (Mallard_ENABLE_HDF5=ON); set format = "vtu" to silence this.
+  docs/guide/running.md#w-format-vtu

@@ -1,0 +1,45 @@
+[run]
+t_stop = 0.005
+
+[mesh]
+type = "cartesian"
+Nx = 40
+Ny = 20
+Lx = 0.2
+Ly = 0.1
+
+[initialize]
+type = "constant"
+T = 300.0
+u = [50.0, 0.0]
+p = 1.0e5
+
+[[boundaries]]
+name = "left"
+type = "inlet_state"
+u = ["100 * 4 * y * (0.1 - y) / 0.01", "0.0"]
+p = 1.0e5
+T = 300.0
+
+[[boundaries]]
+name = "bottom"
+type = "inlet_mass_flow"
+mass_flux = 20.0
+T = 300.0
+
+[[boundaries]]
+name = "right"
+type = "outlet_pressure"
+p = 0.99e5
+
+[[boundaries]]
+name = "top"
+type = "inlet_stagnation"
+p0 = 1.05e5
+T0 = 300.0
+
+[physics]
+gamma = 1.4
+p_ref = 1.0e5
+T_ref = 300.0
+rho_ref = 1.16

@@ -1,0 +1,135 @@
+{
+ "schema": "mallard-case-view",
+ "version": 1,
+ "files": [
+  "view/case.vtm",
+  "view/case-light.svg",
+  "view/case-dark.svg"
+ ],
+ "blocks": [
+  {
+   "name": "domain",
+   "kind": "mesh",
+   "condition": null,
+   "label": "domain"
+  },
+  {
+   "name": "bottom",
+   "kind": "boundary",
+   "condition": "inlet_mass_flow",
+   "label": "bottom: inlet_mass_flow, T = 300.0 K, mass_flux = 20.0 kg/(m^2 s)"
+  },
+  {
+   "name": "left",
+   "kind": "boundary",
+   "condition": "inlet_state",
+   "label": "left: inlet_state, T = 300.0 K, p = 100000.0 Pa, u = [\"100 * 4 * y * (0.1 - y) / 0.01\", \"0.0\"]"
+  },
+  {
+   "name": "right",
+   "kind": "boundary",
+   "condition": "outlet_pressure",
+   "label": "right: outlet_pressure, p = 99000.0 Pa"
+  },
+  {
+   "name": "top",
+   "kind": "boundary",
+   "condition": "inlet_stagnation",
+   "label": "top: inlet_stagnation, T0 = 300.0 K, p0 = 105000.0 Pa"
+  }
+ ],
+ "frames": [
+  {
+   "entry": "boundaries[name = \"left\"]",
+   "zone": "left",
+   "shape": "curve",
+   "origin": [
+    0,
+    0,
+    0
+   ],
+   "u_direction": [
+    0,
+    1,
+    0
+   ],
+   "normal": [
+    1,
+    0,
+    0
+   ],
+   "length": 0.1,
+   "width": null,
+   "error": null
+  },
+  {
+   "entry": "boundaries[name = \"bottom\"]",
+   "zone": "bottom",
+   "shape": "curve",
+   "origin": [
+    0,
+    0,
+    0
+   ],
+   "u_direction": [
+    1,
+    0,
+    0
+   ],
+   "normal": [
+    0,
+    1,
+    0
+   ],
+   "length": 0.2,
+   "width": null,
+   "error": null
+  },
+  {
+   "entry": "boundaries[name = \"right\"]",
+   "zone": "right",
+   "shape": "curve",
+   "origin": [
+    0.2,
+    0,
+    0
+   ],
+   "u_direction": [
+    0,
+    1,
+    0
+   ],
+   "normal": [
+    -1,
+    0,
+    0
+   ],
+   "length": 0.1,
+   "width": null,
+   "error": null
+  },
+  {
+   "entry": "boundaries[name = \"top\"]",
+   "zone": "top",
+   "shape": "curve",
+   "origin": [
+    0,
+    0.1,
+    0
+   ],
+   "u_direction": [
+    1,
+    0,
+    0
+   ],
+   "normal": [
+    0,
+    -1,
+    0
+   ],
+   "length": 0.2,
+   "width": null,
+   "error": null
+  }
+ ]
+}

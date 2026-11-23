@@ -1,0 +1,59 @@
+/* The Analysis page and its interactive plots (chart.js). */
+.a-pane { flex: 1; min-height: 0; display: flex; flex-direction: column; padding: 4px 8px 6px; }
+.a-pane > .plot-head { flex: none; height: 26px; }
+.a-pane > .plot-head > select { margin-left: 0; height: 20px; }
+.a-pane > .plot-head > .chip { height: 20px; }
+.a-grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 55% 45%; gap: var(--m-space-4);
+  background: var(--m-canvas); padding: var(--m-space-4); }
+.a-cell { background: var(--m-bg); border: 1px solid var(--m-border); border-radius: var(--m-radius-lg); padding: 0 var(--m-space-4) var(--m-space-2); }
+.a-cell { min-width: 0; min-height: 0; display: flex; flex-direction: column; }
+.a-cell.wide { grid-column: 1 / 3; }
+.a-cell > .plot-head { flex: none; height: 24px; }
+.a-note { padding: 4px var(--m-pad); font-size: 12px; flex: none; }
+.a-signals { flex: 1; }
+.a-signals .group-head { font-size: 11px; }
+.a-sig { display: grid; grid-template-columns: 22px 1fr auto; align-items: center; height: var(--m-row);
+  padding: 0 var(--m-pad) 0 6px; cursor: pointer; font-size: 12px; }
+.a-sig:hover { background: var(--m-hover); }
+.a-sig.on { background: var(--m-selected); }
+.a-sig input { margin: 0; width: 13px; height: 13px; accent-color: var(--m-accent); }
+.a-sig .tlabel { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.a-sig .rv { color: var(--m-text-muted); font-size: 10px; margin-left: 6px; }
+.a-table { border-collapse: collapse; margin: 6px 0; font-size: 12px; width: 100%; }
+.a-table th { text-align: right; color: var(--m-text-muted); font-weight: 500; font-size: 11px; padding: 3px 8px;
+  border-bottom: 1px solid var(--m-border); }
+.a-table td { text-align: right; padding: 3px 8px; border-bottom: 1px solid var(--m-border); white-space: nowrap; }
+.a-table td.k, .a-table th:first-child { text-align: left; font-family: var(--m-font-mono); }
+.a-table .okc, .prow .okc { color: var(--m-success); }
+.a-table .warn, .prow .warn { color: var(--m-warning); }
+.prow input.bad { border-color: var(--m-danger); }
+.field-error { color: var(--m-danger); font-size: 11px; padding: 2px var(--m-pad) 4px; }
+
+.m-chart { position: relative; min-height: 120px; flex: 1; user-select: none; }
+.m-chart-svg { display: block; position: absolute; inset: 0; cursor: crosshair; }
+.m-chart .m-grid { stroke: var(--m-divider); stroke-width: 1; }
+.m-chart .m-frame { fill: none; stroke: var(--m-divider); stroke-width: 1; }
+.m-chart .m-axisline { fill: none; stroke: var(--m-border-strong); stroke-width: 1; }
+.m-chart .m-mark { stroke: var(--m-accent); stroke-width: 1; }
+.m-chart .m-tick { fill: var(--m-text-muted); font-family: var(--m-font-sans); font-size: 10px; font-variant-numeric: tabular-nums; }
+.m-chart .m-axis { fill: var(--m-text-muted); font-family: var(--m-font-sans); font-size: 11px; }
+.m-chart .m-legend { fill: var(--m-text); font-family: var(--m-font-sans); font-size: 10.5px; }
+.m-chart .m-plot-empty { fill: var(--m-text-muted); font-size: 12px; }
+.m-chart .m-chart-mark { fill: var(--m-accent); font-family: var(--m-font-mono); font-size: 10px; }
+.m-chart .m-chart-span { fill: var(--m-accent); fill-opacity: .08; }
+.m-chart .m-chart-box { fill: var(--m-accent); fill-opacity: .12; stroke: var(--m-accent); stroke-width: 1; }
+.m-chart .m-chart-hair { stroke: var(--m-text-muted); stroke-width: 1; stroke-dasharray: 2 2; }
+.m-chart .m-chart-readout { fill: var(--m-surface); stroke: var(--m-border-strong); fill-opacity: .94; }
+.m-chart .m-chart-readtext { fill: var(--m-text); font-family: var(--m-font-mono); font-size: 10px; }
+.m-chart .m-chart-readout { fill: var(--m-raised); }
+.m-chart-tools { position: absolute; top: 0; right: 12px; display: flex; gap: 3px; z-index: 1; }
+.m-chart-tools .tb { height: 20px; font-size: var(--m-micro); padding: 0 6px; display: inline-flex; align-items: center;
+  border-color: var(--m-border); background: var(--m-raised); }
+.a-pane > .plot-head .export, .a-cell > .plot-head .export { margin-left: auto; }
+.a-pane > .plot-head > span.muted { flex: none; }
+
+/* The Run monitor's plots: the tools show on hover, except a paused follow. */
+.plot > .m-chart { height: 190px; flex: none; }
+.plot > .m-chart .m-chart-tools { opacity: 0; transition: opacity .12s; }
+.plot > .m-chart:hover .m-chart-tools, .plot > .m-chart .m-chart-tools:focus-within { opacity: 1; }
+.plot > .m-chart[data-follow="paused"] .m-chart-tools { opacity: 1; }

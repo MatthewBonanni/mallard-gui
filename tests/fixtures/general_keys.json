@@ -1,0 +1,3834 @@
+{
+"input": null,
+"keys": {
+"boundaries": {
+"dims": [
+2,
+3
+],
+"type": "array"
+},
+"boundaries.T": {
+"dimension": "temperature (K)",
+"dims": [
+2,
+3
+],
+"required": true,
+"type": "number"
+},
+"boundaries.X": {
+"dims": [
+2,
+3
+]
+},
+"boundaries.X.AR": {
+"dims": [
+2
+],
+"required": true,
+"type": "number"
+},
+"boundaries.X.CH4": {
+"dims": [
+2
+],
+"required": true,
+"type": "number"
+},
+"boundaries.X.H2": {
+"dims": [
+2
+],
+"required": true,
+"type": "number"
+},
+"boundaries.X.N2": {
+"dims": [
+2
+],
+"required": true,
+"type": "number"
+},
+"boundaries.X.O2": {
+"dims": [
+2
+],
+"required": true,
+"type": "number"
+},
+"boundaries.Y": {
+"dims": [
+2,
+3
+]
+},
+"boundaries.Y.N2": {
+"dims": [
+3
+],
+"required": true,
+"type": "number"
+},
+"boundaries.Y.O2": {
+"dims": [
+3
+],
+"required": true,
+"type": "number"
+},
+"boundaries.average": {
+"default": "false",
+"dims": [
+2,
+3
+],
+"type": "bool"
+},
+"boundaries.balance": {
+"dims": [
+2,
+3
+]
+},
+"boundaries.corners": {
+"dims": [
+2,
+3
+]
+},
+"boundaries.data": {
+"dims": [
+2,
+3
+]
+},
+"boundaries.data.at": {
+"dims": [
+2
+],
+"type": "array"
+},
+"boundaries.data.coordinates": {
+"dims": [
+2
+],
+"required": true,
+"type": "array"
+},
+"boundaries.data.file": {
+"dims": [
+2
+],
+"required": true,
+"type": "string"
+},
+"boundaries.data.interpolation": {
+"default": "\"linear\"",
+"dims": [
+2
+],
+"type": "string",
+"values": [
+"cubic",
+"linear"
+]
+},
+"boundaries.data.name": {
+"dims": [
+2
+],
+"required": true,
+"type": "string"
+},
+"boundaries.data.neighbors": {
+"default": "1",
+"dims": [
+2
+],
+"type": "integer"
+},
+"boundaries.data.type": {
+"default": "\"table\"",
+"dims": [
+2
+],
+"type": "string",
+"values": [
+"points",
+"table"
+]
+},
+"boundaries.data.units": {
+"dims": [
+2
+]
+},
+"boundaries.data.units.n_m": {
+"dims": [
+2
+],
+"required": true,
+"type": "string"
+},
+"boundaries.direction": {
+"dims": [
+2,
+3
+]
+},
+"boundaries.mass_flux": {
+"dimension": "mass flux (kg m^-2 s^-1)",
+"dims": [
+2
+],
+"type": "number"
+},
+"boundaries.mdot": {
+"dimension": "mass flow (kg s^-1)",
+"dims": [
+2
+],
+"type": "number"
+},
+"boundaries.name": {
+"dims": [
+2,
+3
+],
+"required": true,
+"type": "string"
+},
+"boundaries.nscbc": {
+"dims": [
+2,
+3
+]
+},
+"boundaries.nscbc.L": {
+"dimension": "length (m)",
+"dims": [
+2,
+3
+],
+"required": true,
+"type": "number"
+},
+"boundaries.nscbc.beta": {
+"dims": [
+2,
+3
+],
+"type": "number"
+},
+"boundaries.nscbc.sigma": {
+"dims": [
+2,
+3
+],
+"type": "number"
+},
+"boundaries.nscbc.sigma_T": {
+"dims": [
+2,
+3
+]
+},
+"boundaries.nscbc.sigma_t": {
+"dims": [
+2,
+3
+]
+},
+"boundaries.origin": {
+"dims": [
+2,
+3
+]
+},
+"boundaries.p": {
+"dimension": "pressure (kg m^-1 s^-2)",
+"dims": [
+2,
+3
+],
+"required": true,
+"type": "number"
+},
+"boundaries.profile": {
+"dims": [
+2
+]
+},
+"boundaries.q": {
+"dimension": "heat flux (kg s^-3)",
+"dims": [
+2
+],
+"required": true,
+"type": "number"
+},
+"boundaries.rho": {
+"dims": [
+2
+]
+},
+"boundaries.toward": {
+"dims": [
+2,
+3
+]
+},
+"boundaries.turbulence": {
+"dims": [
+2,
+3
+]
+},
+"boundaries.turbulence.convection_velocity": {
+"dims": [
+3
+]
+},
+"boundaries.turbulence.length_scale": {
+"dims": [
+3
+]
+},
+"boundaries.turbulence.points_per_length": {
+"default": "6.0",
+"dims": [
+3
+],
+"type": "number"
+},
+"boundaries.turbulence.profile": {
+"dims": [
+3
+],
+"type": "string"
+},
+"boundaries.turbulence.reynolds_stress": {
+"dims": [
+3
+]
+},
+"boundaries.turbulence.seed": {
+"dims": [
+3
+]
+},
+"boundaries.turbulence.zero_net_flux": {
+"default": "true",
+"dims": [
+3
+],
+"type": "bool"
+},
+"boundaries.type": {
+"dims": [
+2,
+3
+],
+"required": true,
+"type": "string",
+"values": [
+"dirichlet",
+"farfield",
+"inlet_mass_flow",
+"inlet_stagnation",
+"inlet_state",
+"outlet_extrapolation",
+"outlet_pressure",
+"symmetry",
+"wall_adiabatic",
+"wall_heat_flux",
+"wall_isothermal"
+]
+},
+"boundaries.u": {
+"dims": [
+2,
+3
+]
+},
+"boundaries.wall_model": {
+"dims": [
+2,
+3
+]
+},
+"boundaries.wall_model.A_plus": {
+"default": "17.0",
+"dims": [
+3
+],
+"type": "number"
+},
+"boundaries.wall_model.Pr_t": {
+"default": "0.9",
+"dims": [
+3
+],
+"type": "number"
+},
+"boundaries.wall_model.edge_distance": {
+"dimension": "length (m)",
+"dims": [
+3
+],
+"required": true,
+"type": "number"
+},
+"boundaries.wall_model.exchange_cells": {
+"dims": [
+3
+]
+},
+"boundaries.wall_model.exchange_distance": {
+"dimension": "length (m)",
+"dims": [
+3
+],
+"type": "number"
+},
+"boundaries.wall_model.kappa": {
+"default": "0.41",
+"dims": [
+3
+],
+"type": "number"
+},
+"boundaries.wall_model.model": {
+"default": "\"gfm\"",
+"dims": [
+3
+],
+"type": "string",
+"values": [
+"equilibrium",
+"gfm"
+]
+},
+"boundaries.wall_model.s": {
+"default": "1.14",
+"dims": [
+3
+],
+"type": "number"
+},
+"boundaries.walls": {
+"dims": [
+2,
+3
+]
+},
+"boundaries.where": {
+"dims": [
+2,
+3
+],
+"type": "string"
+},
+"check": {
+"dims": [
+2,
+3
+]
+},
+"check.regions": {
+"dims": [
+2
+]
+},
+"check.statistics": {
+"dims": [
+2
+],
+"required": true,
+"type": "string"
+},
+"chemistry": {
+"dims": [
+2,
+3
+]
+},
+"chemistry.C_reg": {
+"default": "1e-12",
+"dimension": "concentration (m^-3 mol)",
+"dims": [
+2,
+3
+],
+"type": "number",
+"unit": "kmol/m^3"
+},
+"chemistry.T_frozen": {
+"default": "0.0",
+"dimension": "temperature (K)",
+"dims": [
+2,
+3
+],
+"type": "number"
+},
+"chemistry.atol": {
+"default": "1e-10",
+"dims": [
+2,
+3
+],
+"type": "number"
+},
+"chemistry.coupling": {
+"default": "\"strang\"",
+"dims": [
+2,
+3
+],
+"type": "string"
+},
+"chemistry.enabled": {
+"default": "true",
+"dims": [
+2,
+3
+],
+"type": "bool"
+},
+"chemistry.explicit_step": {
+"default": "false",
+"dims": [
+2,
+3
+],
+"type": "bool"
+},
+"chemistry.fuse_half_steps": {
+"default": "true",
+"dims": [
+2,
+3
+],
+"type": "bool"
+},
+"chemistry.integrator": {
+"default": "\"rosenbrock\"",
+"dims": [
+2,
+3
+],
+"type": "string"
+},
+"chemistry.lanes": {
+"dims": [
+2,
+3
+]
+},
+"chemistry.load_balance": {
+"default": "false",
+"dims": [
+2,
+3
+],
+"type": "bool"
+},
+"chemistry.max_steps": {
+"dims": [
+2,
+3
+]
+},
+"chemistry.rtol": {
+"default": "1e-06",
+"dims": [
+2,
+3
+],
+"type": "number"
+},
+"chemistry.sparse": {
+"dims": [
+2,
+3
+]
+},
+"forces": {
+"dims": [
+2,
+3
+],
+"type": "array"
+},
+"forces.file": {
+"default": "\"forces_top.csv\"",
+"dims": [
+3
+],
+"type": "string"
+},
+"forces.interval": {
+"default": "1",
+"dims": [
+3
+],
+"type": "integer"
+},
+"forces.zone": {
+"dims": [
+3
+],
+"required": true,
+"type": "string"
+},
+"initialize": {
+"dims": [
+2,
+3
+]
+},
+"initialize.T": {
+"dimension": "temperature (K)",
+"dims": [
+2,
+3
+],
+"required": true,
+"type": "number"
+},
+"initialize.X": {
+"dims": [
+2,
+3
+]
+},
+"initialize.X.N2": {
+"dims": [
+2
+],
+"required": true,
+"type": "number"
+},
+"initialize.X.O2": {
+"dims": [
+2
+],
+"required": true,
+"type": "number"
+},
+"initialize.Y": {
+"dims": [
+2,
+3
+]
+},
+"initialize.balance": {
+"dims": [
+2,
+3
+],
+"type": "string"
+},
+"initialize.data": {
+"dims": [
+2,
+3
+]
+},
+"initialize.data.at": {
+"dims": [
+2
+],
+"type": "array"
+},
+"initialize.data.coordinates": {
+"dims": [
+2
+]
+},
+"initialize.data.file": {
+"dims": [
+2,
+3
+],
+"required": true,
+"type": "string"
+},
+"initialize.data.interpolation": {
+"default": "\"linear\"",
+"dims": [
+2
+],
+"type": "string",
+"values": [
+"cubic",
+"linear"
+]
+},
+"initialize.data.name": {
+"dims": [
+2,
+3
+],
+"required": true,
+"type": "string"
+},
+"initialize.data.neighbors": {
+"dims": [
+2
+]
+},
+"initialize.data.region": {
+"dims": [
+2
+]
+},
+"initialize.data.type": {
+"default": "\"table\"",
+"dims": [
+2,
+3
+],
+"type": "string",
+"values": [
+"points",
+"table"
+]
+},
+"initialize.data.units": {
+"dims": [
+2
+]
+},
+"initialize.degree": {
+"default": "2",
+"dims": [
+2,
+3
+],
+"type": "integer"
+},
+"initialize.file": {
+"dims": [
+2,
+3
+],
+"required": true,
+"type": "string"
+},
+"initialize.limiter": {
+"default": "\"bounds\"",
+"dims": [
+2,
+3
+],
+"type": "string"
+},
+"initialize.mesh": {
+"dims": [
+2,
+3
+]
+},
+"initialize.mesh.Lx": {
+"default": "1.0",
+"dimension": "length (m)",
+"dims": [
+2,
+3
+],
+"type": "number"
+},
+"initialize.mesh.Ly": {
+"default": "1.0",
+"dimension": "length (m)",
+"dims": [
+2,
+3
+],
+"type": "number"
+},
+"initialize.mesh.Lz": {
+"default": "1.0",
+"dimension": "length (m)",
+"dims": [
+3
+],
+"type": "number"
+},
+"initialize.mesh.Nx": {
+"default": "100",
+"dims": [
+2,
+3
+],
+"type": "integer"
+},
+"initialize.mesh.Ny": {
+"default": "100",
+"dims": [
+2,
+3
+],
+"type": "integer"
+},
+"initialize.mesh.Nz": {
+"default": "100",
+"dims": [
+3
+],
+"type": "integer"
+},
+"initialize.mesh.stretching": {
+"dims": [
+2,
+3
+]
+},
+"initialize.mesh.transform": {
+"dims": [
+2,
+3
+]
+},
+"initialize.mesh.type": {
+"default": "\"file\"",
+"dims": [
+2,
+3
+],
+"type": "string"
+},
+"initialize.n_subdivisions": {
+"default": "4",
+"defaults_by_dim": {
+"3": "1"
+},
+"dims": [
+2,
+3
+],
+"type": "integer"
+},
+"initialize.p": {
+"dimension": "pressure (kg m^-1 s^-2)",
+"dims": [
+2,
+3
+],
+"required": true,
+"type": "number"
+},
+"initialize.periodic": {
+"dims": [
+2,
+3
+]
+},
+"initialize.regions": {
+"dims": [
+2,
+3
+]
+},
+"initialize.regions.T": {
+"dims": [
+2
+]
+},
+"initialize.regions.X": {
+"dims": [
+2
+]
+},
+"initialize.regions.Y": {
+"dims": [
+2
+]
+},
+"initialize.regions.balance": {
+"dims": [
+2
+]
+},
+"initialize.regions.cells": {
+"default": "\"volume_fraction\"",
+"dims": [
+2
+],
+"type": "string",
+"values": [
+"center",
+"volume_fraction"
+]
+},
+"initialize.regions.name": {
+"default": "\"initialize.regions[1]\"",
+"defaults_by_dim": {
+"2": "\"initialize.regions[0]\""
+},
+"dims": [
+2
+],
+"type": "string"
+},
+"initialize.regions.p": {
+"dims": [
+2
+]
+},
+"initialize.regions.priority": {
+"default": "0",
+"dims": [
+2
+],
+"type": "integer"
+},
+"initialize.regions.region": {
+"dims": [
+2
+]
+},
+"initialize.regions.region.center": {
+"dims": [
+2
+]
+},
+"initialize.regions.region.edge": {
+"dims": [
+2
+]
+},
+"initialize.regions.region.filled": {
+"dims": [
+2
+]
+},
+"initialize.regions.region.flip": {
+"default": "false",
+"dims": [
+2
+],
+"type": "bool"
+},
+"initialize.regions.region.normal": {
+"dims": [
+2
+]
+},
+"initialize.regions.region.pivot": {
+"dims": [
+2
+]
+},
+"initialize.regions.region.point": {
+"dims": [
+2
+]
+},
+"initialize.regions.region.radius": {
+"dims": [
+2
+]
+},
+"initialize.regions.region.repeat": {
+"dims": [
+2
+]
+},
+"initialize.regions.region.resolution": {
+"dims": [
+2
+]
+},
+"initialize.regions.region.rotate": {
+"dims": [
+2
+]
+},
+"initialize.regions.region.scale": {
+"dims": [
+2
+]
+},
+"initialize.regions.region.size": {
+"dims": [
+2
+]
+},
+"initialize.regions.region.translate": {
+"dims": [
+2
+]
+},
+"initialize.regions.region.type": {
+"dims": [
+2
+],
+"required": true,
+"type": "string",
+"values": [
+"annulus",
+"boundary",
+"circle",
+"cone",
+"cylinder",
+"difference",
+"disk",
+"ellipse",
+"ellipsoid",
+"frustum",
+"half_space",
+"implicit",
+"interior",
+"intersection",
+"isosurface",
+"obj",
+"polygon",
+"rectangle",
+"sphere",
+"stl",
+"torus",
+"union",
+"where"
+]
+},
+"initialize.regions.rho": {
+"dims": [
+2
+]
+},
+"initialize.regions.turbulence": {
+"dims": [
+2
+]
+},
+"initialize.regions.turbulence.intensity": {
+"dimension": "velocity (m s^-1)",
+"dims": [
+2
+],
+"required": true,
+"type": "number"
+},
+"initialize.regions.turbulence.k_max": {
+"dimension": "m^-1",
+"dims": [
+2
+],
+"type": "number"
+},
+"initialize.regions.turbulence.kolmogorov_scale": {
+"default": "0.0",
+"dimension": "length (m)",
+"dims": [
+2
+],
+"type": "number"
+},
+"initialize.regions.turbulence.length_scale": {
+"dimension": "length (m)",
+"dims": [
+2
+],
+"required": true,
+"type": "number"
+},
+"initialize.regions.turbulence.modes_per_shell": {
+"default": "32",
+"dims": [
+2
+],
+"type": "integer"
+},
+"initialize.regions.turbulence.period": {
+"dimension": "length (m)",
+"dims": [
+2
+],
+"type": "array"
+},
+"initialize.regions.turbulence.seed": {
+"default": "1",
+"dims": [
+2
+],
+"type": "integer"
+},
+"initialize.regions.turbulence.spectrum": {
+"default": "\"von_karman_pao\"",
+"dims": [
+2
+],
+"type": "string",
+"values": [
+"passot_pouquet",
+"table",
+"von_karman_pao"
+]
+},
+"initialize.regions.u": {
+"dims": [
+2
+]
+},
+"initialize.rho": {
+"dims": [
+2,
+3
+]
+},
+"initialize.turbulence": {
+"dims": [
+2,
+3
+]
+},
+"initialize.turbulence.file": {
+"dims": [
+2
+],
+"required": true,
+"type": "string"
+},
+"initialize.turbulence.intensity": {
+"default": "0.0",
+"dimension": "velocity (m s^-1)",
+"dims": [
+2
+],
+"required": true,
+"type": "number"
+},
+"initialize.turbulence.k_max": {
+"dimension": "m^-1",
+"dims": [
+2
+],
+"type": "number"
+},
+"initialize.turbulence.kolmogorov_scale": {
+"dims": [
+2
+]
+},
+"initialize.turbulence.length_scale": {
+"dimension": "length (m)",
+"dims": [
+2
+],
+"required": true,
+"type": "number"
+},
+"initialize.turbulence.modes_per_shell": {
+"default": "32",
+"dims": [
+2
+],
+"type": "integer"
+},
+"initialize.turbulence.period": {
+"dimension": "length (m)",
+"dims": [
+2
+],
+"type": "array"
+},
+"initialize.turbulence.seed": {
+"default": "1",
+"dims": [
+2
+],
+"type": "integer"
+},
+"initialize.turbulence.spectrum": {
+"default": "\"von_karman_pao\"",
+"dims": [
+2
+],
+"type": "string",
+"values": [
+"passot_pouquet",
+"table",
+"von_karman_pao"
+]
+},
+"initialize.type": {
+"default": "\"constant\"",
+"dims": [
+2,
+3
+],
+"type": "string",
+"values": [
+"analytical",
+"constant",
+"remap",
+"restart"
+]
+},
+"initialize.u": {
+"dimension": "velocity (m s^-1)",
+"dims": [
+2,
+3
+],
+"required": true,
+"type": "array"
+},
+"integrals": {
+"dims": [
+2,
+3
+]
+},
+"integrals.budget": {
+"default": "false",
+"dims": [
+2,
+3
+],
+"type": "bool"
+},
+"integrals.file": {
+"default": "\"integrals.csv\"",
+"dims": [
+2,
+3
+],
+"type": "string"
+},
+"integrals.interval": {
+"default": "1",
+"dims": [
+2,
+3
+],
+"type": "integer"
+},
+"les": {
+"dims": [
+2,
+3
+]
+},
+"les.C": {
+"default": "1.35",
+"defaults_by_dim": {
+"2": "0.07"
+},
+"dims": [
+2,
+3
+],
+"type": "number"
+},
+"les.Pr_t": {
+"default": "0.9",
+"dims": [
+2,
+3
+],
+"type": "number"
+},
+"les.Sc_t": {
+"default": "0.9",
+"dims": [
+2,
+3
+],
+"type": "number"
+},
+"les.combustion": {
+"dims": [
+2,
+3
+]
+},
+"les.combustion.C_u": {
+"default": "28.0",
+"dims": [
+2,
+3
+],
+"type": "number"
+},
+"les.combustion.T_burnt": {
+"dimension": "temperature (K)",
+"dims": [
+2,
+3
+],
+"required": true,
+"type": "number"
+},
+"les.combustion.T_unburnt": {
+"dimension": "temperature (K)",
+"dims": [
+2,
+3
+],
+"required": true,
+"type": "number"
+},
+"les.combustion.beta": {
+"default": "0.5",
+"dims": [
+2,
+3
+],
+"type": "number"
+},
+"les.combustion.delta_L": {
+"dimension": "length (m)",
+"dims": [
+2,
+3
+],
+"required": true,
+"type": "number"
+},
+"les.combustion.efficiency": {
+"default": "\"dynamic\"",
+"defaults_by_dim": {
+"2": "\"charlette\""
+},
+"dims": [
+2,
+3
+],
+"type": "string"
+},
+"les.combustion.efficiency_max": {
+"dims": [
+2,
+3
+]
+},
+"les.combustion.flame_table": {
+"dims": [
+2
+],
+"required": true,
+"type": "string"
+},
+"les.combustion.fuel": {
+"dims": [
+2
+]
+},
+"les.combustion.fuel.X": {
+"dims": [
+2
+]
+},
+"les.combustion.fuel.X.H2": {
+"dims": [
+2
+],
+"required": true,
+"type": "number"
+},
+"les.combustion.fuel.X.N2": {
+"dims": [
+2
+],
+"required": true,
+"type": "number"
+},
+"les.combustion.fuel.Y": {
+"dims": [
+2
+]
+},
+"les.combustion.fuel.balance": {
+"dims": [
+2
+]
+},
+"les.combustion.model": {
+"default": "\"\"",
+"dims": [
+2,
+3
+],
+"type": "string"
+},
+"les.combustion.n_res": {
+"default": "5.0",
+"dims": [
+2,
+3
+],
+"type": "number"
+},
+"les.combustion.oxidizer": {
+"dims": [
+2
+]
+},
+"les.combustion.oxidizer.X": {
+"dims": [
+2
+]
+},
+"les.combustion.oxidizer.X.N2": {
+"dims": [
+2
+],
+"required": true,
+"type": "number"
+},
+"les.combustion.oxidizer.X.O2": {
+"dims": [
+2
+],
+"required": true,
+"type": "number"
+},
+"les.combustion.oxidizer.Y": {
+"dims": [
+2
+]
+},
+"les.combustion.oxidizer.balance": {
+"dims": [
+2
+]
+},
+"les.combustion.s_L": {
+"dimension": "velocity (m s^-1)",
+"dims": [
+2,
+3
+],
+"required": true,
+"type": "number"
+},
+"les.combustion.sensor": {
+"default": "\"temperature\"",
+"dims": [
+2,
+3
+],
+"type": "string"
+},
+"les.combustion.sensor_species": {
+"default": "\"H2\"",
+"dims": [
+2
+],
+"type": "string"
+},
+"les.combustion.subgrid_velocity": {
+"default": "\"colin\"",
+"dims": [
+2,
+3
+],
+"type": "string"
+},
+"les.dynamic": {
+"default": "false",
+"dims": [
+2,
+3
+],
+"type": "bool"
+},
+"les.filter_width": {
+"default": "\"scotti\"",
+"defaults_by_dim": {
+"2": "\"volume\""
+},
+"dims": [
+2,
+3
+],
+"type": "string"
+},
+"les.gradients": {
+"default": "\"least_squares\"",
+"dims": [
+2,
+3
+],
+"type": "string"
+},
+"les.model": {
+"default": "\"sigma\"",
+"defaults_by_dim": {
+"2": "\"wale\""
+},
+"dims": [
+2,
+3
+],
+"type": "string",
+"values": [
+"sigma",
+"smagorinsky",
+"vreman",
+"wale"
+]
+},
+"mesh": {
+"dims": [
+2,
+3
+]
+},
+"mesh.Lx": {
+"default": "1.0",
+"dimension": "length (m)",
+"dims": [
+2,
+3
+],
+"type": "number"
+},
+"mesh.Ly": {
+"default": "1.0",
+"dimension": "length (m)",
+"dims": [
+2,
+3
+],
+"type": "number"
+},
+"mesh.Lz": {
+"default": "1.0",
+"dimension": "length (m)",
+"dims": [
+2,
+3
+],
+"type": "number"
+},
+"mesh.Nr": {
+"default": "16",
+"dims": [
+2,
+3
+],
+"type": "integer"
+},
+"mesh.Ntheta": {
+"default": "64",
+"dims": [
+2,
+3
+],
+"type": "integer"
+},
+"mesh.Nx": {
+"default": "100",
+"dims": [
+2,
+3
+],
+"type": "integer"
+},
+"mesh.Ny": {
+"default": "100",
+"dims": [
+2,
+3
+],
+"type": "integer"
+},
+"mesh.Nz": {
+"default": "100",
+"defaults_by_dim": {
+"2": "16",
+"3": "16"
+},
+"dims": [
+2,
+3
+],
+"type": "integer"
+},
+"mesh.angle": {
+"default": "360.0",
+"dimension": "angle (rad)",
+"dims": [
+2,
+3
+],
+"type": "number",
+"unit": "deg"
+},
+"mesh.cell_order": {
+"default": "\"auto\"",
+"dims": [
+2,
+3
+],
+"type": "string",
+"values": [
+"auto",
+"hilbert",
+"input"
+]
+},
+"mesh.curved": {
+"dims": [
+2,
+3
+]
+},
+"mesh.curved_geometry": {
+"default": "true",
+"dims": [
+2,
+3
+],
+"type": "bool"
+},
+"mesh.filename": {
+"default": "\"mesh.msh\"",
+"dims": [
+2,
+3
+],
+"type": "string"
+},
+"mesh.r_inner": {
+"default": "1.0",
+"dimension": "length (m)",
+"dims": [
+2,
+3
+],
+"type": "number"
+},
+"mesh.r_outer": {
+"default": "2.0",
+"dimension": "length (m)",
+"dims": [
+2,
+3
+],
+"type": "number"
+},
+"mesh.stretching": {
+"dims": [
+2,
+3
+],
+"type": "array"
+},
+"mesh.transform": {
+"dims": [
+2,
+3
+]
+},
+"mesh.transform.rotate": {
+"dims": [
+2,
+3
+]
+},
+"mesh.transform.rotate.angle": {
+"dims": [
+3
+]
+},
+"mesh.transform.rotate.axis": {
+"dims": [
+3
+]
+},
+"mesh.transform.scale": {
+"dims": [
+2,
+3
+]
+},
+"mesh.transform.translate": {
+"dims": [
+2,
+3
+]
+},
+"mesh.type": {
+"default": "\"file\"",
+"dims": [
+2,
+3
+],
+"type": "string",
+"values": [
+"annulus",
+"cartesian",
+"cartesian_mixed",
+"cartesian_prism",
+"cartesian_pyramid",
+"cartesian_tet",
+"cartesian_tri",
+"file",
+"wedge"
+]
+},
+"numerics": {
+"dims": [
+2,
+3
+]
+},
+"numerics.check_nan": {
+"default": "false",
+"dims": [
+2,
+3
+],
+"type": "bool"
+},
+"numerics.convective_flux": {
+"default": "\"riemann\"",
+"dims": [
+2,
+3
+],
+"type": "string",
+"values": [
+"hybrid",
+"riemann"
+]
+},
+"numerics.double_flux": {
+"default": "false",
+"dims": [
+2,
+3
+],
+"type": "bool"
+},
+"numerics.error_control": {
+"dims": [
+2,
+3
+]
+},
+"numerics.error_control.abs_tolerance": {
+"default": "0.0001",
+"dims": [
+2
+],
+"type": "number"
+},
+"numerics.error_control.beta": {
+"dims": [
+2
+],
+"required": true,
+"type": "array"
+},
+"numerics.error_control.rel_tolerance": {
+"default": "0.0001",
+"dims": [
+2
+],
+"type": "number"
+},
+"numerics.error_control.tolerance": {
+"default": "-1.0",
+"dims": [
+2
+],
+"type": "number"
+},
+"numerics.face_reconstruction": {
+"dims": [
+2,
+3
+]
+},
+"numerics.face_reconstruction.C_T": {
+"default": "-1.0",
+"dims": [
+2,
+3
+],
+"type": "number"
+},
+"numerics.face_reconstruction.bound_preserving": {
+"default": "false",
+"dims": [
+2,
+3
+],
+"type": "bool"
+},
+"numerics.face_reconstruction.cache_file": {
+"default": "\"\"",
+"dims": [
+2,
+3
+],
+"type": "string"
+},
+"numerics.face_reconstruction.cache_single_precision": {
+"default": "false",
+"dims": [
+2,
+3
+],
+"type": "bool"
+},
+"numerics.face_reconstruction.characteristic": {
+"default": "true",
+"dims": [
+2,
+3
+],
+"type": "bool"
+},
+"numerics.face_reconstruction.curved_mirrors": {
+"default": "false",
+"dims": [
+2,
+3
+],
+"type": "bool"
+},
+"numerics.face_reconstruction.curved_wall_degree": {
+"default": "3",
+"dims": [
+2,
+3
+],
+"type": "integer"
+},
+"numerics.face_reconstruction.limiter": {
+"default": "\"venkatakrishnan\"",
+"dims": [
+2,
+3
+],
+"type": "string",
+"values": [
+"barth_jespersen",
+"none",
+"venkatakrishnan"
+]
+},
+"numerics.face_reconstruction.max_condition": {
+"default": "100000000.0",
+"dims": [
+2,
+3
+],
+"type": "number"
+},
+"numerics.face_reconstruction.order": {
+"default": "5",
+"dims": [
+2,
+3
+],
+"type": "integer"
+},
+"numerics.face_reconstruction.single_precision_tables": {
+"default": "false",
+"dims": [
+2,
+3
+],
+"type": "bool"
+},
+"numerics.face_reconstruction.small_stencil_size": {
+"default": "18",
+"defaults_by_dim": {
+"2": "10"
+},
+"dims": [
+2,
+3
+],
+"type": "integer"
+},
+"numerics.face_reconstruction.stencil_factor": {
+"default": "2.0",
+"dims": [
+2,
+3
+],
+"type": "number"
+},
+"numerics.face_reconstruction.troubled_capacity": {
+"default": "0.5",
+"defaults_by_dim": {
+"2": "1.0"
+},
+"dims": [
+2,
+3
+],
+"type": "number"
+},
+"numerics.face_reconstruction.troubled_threshold": {
+"default": "0.001",
+"dims": [
+2,
+3
+],
+"type": "number"
+},
+"numerics.face_reconstruction.troubled_upper": {
+"default": "0.01",
+"dims": [
+2,
+3
+],
+"type": "number"
+},
+"numerics.face_reconstruction.type": {
+"default": "\"FO\"",
+"dims": [
+2,
+3
+],
+"type": "string",
+"values": [
+"FO",
+"MUSCL",
+"TENO"
+]
+},
+"numerics.face_reconstruction.venkatakrishnan_K": {
+"default": "5.0",
+"dims": [
+2,
+3
+],
+"type": "number"
+},
+"numerics.hybrid": {
+"dims": [
+2,
+3
+]
+},
+"numerics.hybrid.central": {
+"default": "\"cell_averages\"",
+"dims": [
+2
+],
+"type": "string"
+},
+"numerics.hybrid.sensor_threshold": {
+"default": "0.65",
+"dims": [
+2
+],
+"type": "number"
+},
+"numerics.hybrid.upwind_floor": {
+"default": "0.0",
+"dims": [
+2
+],
+"type": "number"
+},
+"numerics.low_mach_cutoff": {
+"default": "0.1",
+"dims": [
+2,
+3
+],
+"type": "number"
+},
+"numerics.preset": {
+"dims": [
+2,
+3
+],
+"values": [
+"first_order",
+"high_order",
+"les",
+"reacting",
+"second_order"
+]
+},
+"numerics.riemann_solver": {
+"default": "\"HLLC\"",
+"dims": [
+2,
+3
+],
+"type": "string",
+"values": [
+"HLL",
+"HLLC",
+"RHLL",
+"Roe",
+"Rusanov"
+]
+},
+"numerics.time_integrator": {
+"default": "\"SSPRK3\"",
+"dims": [
+2,
+3
+],
+"type": "string",
+"values": [
+"CK45",
+"FE",
+"RDPK3Sp35",
+"RK4",
+"SSPRK3",
+"SSPRK54"
+]
+},
+"output": {
+"dims": [
+2,
+3
+]
+},
+"output.async": {
+"default": "true",
+"dims": [
+2,
+3
+],
+"type": "bool"
+},
+"output.check_interval": {
+"default": "1",
+"dims": [
+2,
+3
+],
+"type": "integer"
+},
+"output.divergence_report": {
+"default": "\"divergence_report\"",
+"dims": [
+2,
+3
+],
+"type": "string"
+},
+"output.hash_mesh": {
+"default": "true",
+"dims": [
+2
+],
+"type": "bool"
+},
+"output.health": {
+"default": "true",
+"dims": [
+2,
+3
+],
+"type": "bool"
+},
+"output.io_threads": {
+"default": "1",
+"dims": [
+2,
+3
+],
+"type": "integer"
+},
+"output.mixture": {
+"dims": [
+2,
+3
+]
+},
+"output.mixture.fuel": {
+"dims": [
+3
+]
+},
+"output.mixture.fuel_species": {
+"default": "\"\"",
+"dims": [
+3
+],
+"type": "string"
+},
+"output.mixture.oxidizer": {
+"dims": [
+3
+]
+},
+"output.mixture.oxidizer_species": {
+"default": "\"\"",
+"dims": [
+3
+],
+"type": "string"
+},
+"output.mixture.progress": {
+"dims": [
+3
+]
+},
+"output.mixture.progress.T_burnt": {
+"dimension": "temperature (K)",
+"dims": [
+3
+],
+"required": true,
+"type": "number"
+},
+"output.mixture.progress.T_unburnt": {
+"dimension": "temperature (K)",
+"dims": [
+3
+],
+"required": true,
+"type": "number"
+},
+"output.mixture.progress.species": {
+"dims": [
+3
+]
+},
+"output.reference": {
+"dims": [
+2,
+3
+]
+},
+"output.report": {
+"default": "\"report.html\"",
+"dims": [
+2,
+3
+],
+"type": "string"
+},
+"output.run_log": {
+"default": "\"mallard.jsonl\"",
+"dims": [
+2,
+3
+],
+"type": "string"
+},
+"output.write_stencils": {
+"default": "\"\"",
+"dims": [
+2,
+3
+],
+"type": "string"
+},
+"parallel": {
+"dims": [
+2,
+3
+]
+},
+"parallel.halo_exchange": {
+"default": "\"mpi\"",
+"dims": [
+2
+],
+"type": "string",
+"values": [
+"mpi",
+"nccl"
+]
+},
+"parallel.partitioner": {
+"default": "\"multijagged\"",
+"dims": [
+2
+],
+"type": "string",
+"values": [
+"graph",
+"hilbert",
+"multijagged"
+]
+},
+"periodic": {
+"dims": [
+2,
+3
+],
+"type": "array"
+},
+"periodic.angle": {
+"default": "0.0",
+"dimension": "angle (rad)",
+"dims": [
+2,
+3
+],
+"type": "number",
+"unit": "deg"
+},
+"periodic.axis": {
+"dims": [
+2,
+3
+],
+"required": true,
+"type": "array"
+},
+"periodic.center": {
+"dimension": "length (m)",
+"dims": [
+2,
+3
+],
+"required": true,
+"type": "array"
+},
+"periodic.translation": {
+"dims": [
+2,
+3
+]
+},
+"periodic.zones": {
+"dims": [
+2,
+3
+],
+"required": true,
+"type": "array"
+},
+"physics": {
+"dims": [
+2,
+3
+]
+},
+"physics.Pr": {
+"default": "0.72",
+"dims": [
+2,
+3
+],
+"type": "number"
+},
+"physics.T_mu_ref": {
+"default": "273.15",
+"dimension": "temperature (K)",
+"dims": [
+2,
+3
+],
+"required": true,
+"type": "number"
+},
+"physics.T_ref": {
+"dimension": "temperature (K)",
+"dims": [
+2,
+3
+],
+"required": true,
+"type": "number"
+},
+"physics.axisymmetric": {
+"default": "false",
+"dims": [
+2,
+3
+],
+"type": "bool"
+},
+"physics.gamma": {
+"dims": [
+2,
+3
+],
+"required": true,
+"type": "number"
+},
+"physics.gas": {
+"default": "\"perfect\"",
+"dims": [
+2,
+3
+],
+"type": "string",
+"values": [
+"mixture",
+"perfect"
+]
+},
+"physics.lewis": {
+"dims": [
+2,
+3
+]
+},
+"physics.mechanism": {
+"dims": [
+2,
+3
+],
+"required": true,
+"type": "string"
+},
+"physics.mu": {
+"dimension": "dynamic viscosity (kg m^-1 s^-1)",
+"dims": [
+2,
+3
+],
+"required": true,
+"type": "number"
+},
+"physics.p_ref": {
+"dimension": "pressure (kg m^-1 s^-2)",
+"dims": [
+2,
+3
+],
+"required": true,
+"type": "number"
+},
+"physics.phase": {
+"default": "\"\"",
+"dims": [
+2,
+3
+],
+"type": "string"
+},
+"physics.rho_ref": {
+"dimension": "density (kg m^-3)",
+"dims": [
+2,
+3
+],
+"required": true,
+"type": "number"
+},
+"physics.soret": {
+"default": "false",
+"dims": [
+2,
+3
+],
+"type": "bool"
+},
+"physics.sutherland_S": {
+"default": "110.4",
+"dimension": "temperature (K)",
+"dims": [
+2
+],
+"type": "number"
+},
+"physics.transport": {
+"default": "\"mixture_averaged\"",
+"dims": [
+2,
+3
+],
+"type": "string"
+},
+"physics.type": {
+"default": "\"euler\"",
+"dims": [
+2,
+3
+],
+"type": "string",
+"values": [
+"euler",
+"navier_stokes"
+]
+},
+"physics.units": {
+"default": "\"SI\"",
+"dims": [
+2,
+3
+],
+"type": "string",
+"values": [
+"SI",
+"nondimensional"
+]
+},
+"physics.viscosity_exponent": {
+"dims": [
+3
+],
+"required": true,
+"type": "number"
+},
+"physics.viscosity_model": {
+"default": "\"constant\"",
+"dims": [
+2,
+3
+],
+"type": "string",
+"values": [
+"constant",
+"power_law",
+"sutherland"
+]
+},
+"probes": {
+"dims": [
+2,
+3
+],
+"type": "array"
+},
+"probes.average": {
+"default": "false",
+"dims": [
+2,
+3
+],
+"type": "bool"
+},
+"probes.boundary": {
+"dims": [
+2,
+3
+]
+},
+"probes.boundary_type": {
+"dims": [
+2,
+3
+]
+},
+"probes.copies": {
+"default": "\"combined\"",
+"dims": [
+2,
+3
+],
+"type": "string",
+"values": [
+"combined",
+"each"
+]
+},
+"probes.end": {
+"dims": [
+2,
+3
+]
+},
+"probes.fields": {
+"dims": [
+2,
+3
+],
+"required": true,
+"type": "array"
+},
+"probes.file": {
+"default": "\"probe_inlet_p.csv\"",
+"defaults_by_dim": {
+"2": "\"probe_cylinder.csv\"",
+"3": "\"probe_x5.csv\""
+},
+"dims": [
+2,
+3
+],
+"type": "string"
+},
+"probes.format": {
+"default": "\"csv\"",
+"dims": [
+2,
+3
+],
+"type": "string",
+"values": [
+"csv",
+"hdf5",
+"vtkhdf",
+"vtp"
+]
+},
+"probes.interval": {
+"default": "1",
+"dims": [
+2,
+3
+],
+"type": "integer"
+},
+"probes.moment_center": {
+"dimension": "length (m)",
+"dims": [
+2
+],
+"type": "array"
+},
+"probes.n_points": {
+"default": "0",
+"dims": [
+2,
+3
+],
+"type": "integer"
+},
+"probes.name": {
+"dims": [
+2,
+3
+],
+"required": true,
+"type": "string"
+},
+"probes.pivot": {
+"dims": [
+2,
+3
+]
+},
+"probes.point": {
+"dims": [
+2,
+3
+]
+},
+"probes.reductions": {
+"default": "[]",
+"dims": [
+2,
+3
+],
+"type": "array",
+"values": [
+"favre",
+"integral",
+"max",
+"mean",
+"min",
+"moment",
+"rms"
+]
+},
+"probes.reductions_file": {
+"default": "\"probe_inlet_p_reductions.csv\"",
+"defaults_by_dim": {
+"2": "\"probe_cylinder_reductions.csv\"",
+"3": "\"probe_x5_reductions.csv\""
+},
+"dims": [
+2,
+3
+],
+"type": "string"
+},
+"probes.reference": {
+"dims": [
+2,
+3
+]
+},
+"probes.region": {
+"dims": [
+2,
+3
+]
+},
+"probes.region.a": {
+"dims": [
+2
+]
+},
+"probes.region.b": {
+"dims": [
+2
+]
+},
+"probes.region.center": {
+"dims": [
+2
+]
+},
+"probes.region.edge": {
+"dims": [
+2
+]
+},
+"probes.region.field": {
+"dims": [
+2
+],
+"required": true,
+"type": "string"
+},
+"probes.region.filled": {
+"dims": [
+2
+]
+},
+"probes.region.flip": {
+"default": "false",
+"dims": [
+2
+],
+"type": "bool"
+},
+"probes.region.pivot": {
+"dims": [
+2
+]
+},
+"probes.region.radius": {
+"dims": [
+2
+]
+},
+"probes.region.regions": {
+"dims": [
+2
+]
+},
+"probes.region.regions.center": {
+"dims": [
+2
+]
+},
+"probes.region.regions.filled": {
+"dims": [
+2
+]
+},
+"probes.region.regions.flip": {
+"default": "false",
+"dims": [
+2
+],
+"type": "bool"
+},
+"probes.region.regions.pivot": {
+"dims": [
+2
+]
+},
+"probes.region.regions.radius": {
+"dims": [
+2
+]
+},
+"probes.region.regions.repeat": {
+"dims": [
+2
+]
+},
+"probes.region.regions.rotate": {
+"dims": [
+2
+]
+},
+"probes.region.regions.scale": {
+"dims": [
+2
+]
+},
+"probes.region.regions.translate": {
+"dims": [
+2
+]
+},
+"probes.region.regions.type": {
+"dims": [
+2
+],
+"required": true,
+"type": "string",
+"values": [
+"annulus",
+"boundary",
+"circle",
+"cone",
+"cylinder",
+"difference",
+"disk",
+"ellipse",
+"ellipsoid",
+"frustum",
+"half_space",
+"implicit",
+"interior",
+"intersection",
+"isosurface",
+"obj",
+"polygon",
+"rectangle",
+"sphere",
+"stl",
+"torus",
+"union",
+"where"
+]
+},
+"probes.region.repeat": {
+"dims": [
+2
+]
+},
+"probes.region.resolution": {
+"dims": [
+2
+]
+},
+"probes.region.rotate": {
+"dims": [
+2
+]
+},
+"probes.region.scale": {
+"dims": [
+2
+]
+},
+"probes.region.translate": {
+"dims": [
+2
+]
+},
+"probes.region.type": {
+"dims": [
+2
+],
+"required": true,
+"type": "string",
+"values": [
+"annulus",
+"boundary",
+"circle",
+"cone",
+"cylinder",
+"difference",
+"disk",
+"ellipse",
+"ellipsoid",
+"frustum",
+"half_space",
+"implicit",
+"interior",
+"intersection",
+"isosurface",
+"obj",
+"polygon",
+"rectangle",
+"sphere",
+"stl",
+"torus",
+"union",
+"where"
+]
+},
+"probes.region.value": {
+"dims": [
+2
+]
+},
+"probes.rotate": {
+"dims": [
+2,
+3
+]
+},
+"probes.samples": {
+"default": "true",
+"dims": [
+2,
+3
+],
+"type": "bool"
+},
+"probes.sampling": {
+"default": "\"cell\"",
+"dims": [
+2,
+3
+],
+"type": "string",
+"values": [
+"cell",
+"point"
+]
+},
+"probes.scale": {
+"dims": [
+2,
+3
+]
+},
+"probes.spectra": {
+"dims": [
+2,
+3
+]
+},
+"probes.start": {
+"dims": [
+2,
+3
+]
+},
+"probes.time_interval": {
+"dims": [
+2,
+3
+]
+},
+"probes.translate": {
+"dims": [
+2,
+3
+]
+},
+"probes.type": {
+"default": "\"\"",
+"dims": [
+2,
+3
+],
+"type": "string",
+"values": [
+"arc",
+"circle",
+"curve",
+"line",
+"point",
+"points",
+"polyline"
+]
+},
+"radiation": {
+"dims": [
+2,
+3
+]
+},
+"radiation.T_ambient": {
+"default": "300.0",
+"dimension": "temperature (K)",
+"dims": [
+2
+],
+"type": "number"
+},
+"radiation.model": {
+"default": "\"optically_thin\"",
+"dims": [
+2
+],
+"type": "string"
+},
+"radiation.species": {
+"dims": [
+2
+]
+},
+"regions": {
+"dims": [
+2,
+3
+]
+},
+"regions.<name>": {
+"dims": [
+2
+]
+},
+"regions.<name>.center": {
+"dims": [
+2
+]
+},
+"regions.<name>.condition": {
+"dims": [
+2
+],
+"required": true,
+"type": "string"
+},
+"regions.<name>.edge": {
+"dims": [
+2
+]
+},
+"regions.<name>.filled": {
+"dims": [
+2
+]
+},
+"regions.<name>.flip": {
+"default": "false",
+"dims": [
+2
+],
+"type": "bool"
+},
+"regions.<name>.inner_radius": {
+"dims": [
+2
+]
+},
+"regions.<name>.length": {
+"dims": [
+2
+]
+},
+"regions.<name>.pivot": {
+"dims": [
+2
+]
+},
+"regions.<name>.radius": {
+"dims": [
+2
+]
+},
+"regions.<name>.repeat": {
+"dims": [
+2
+]
+},
+"regions.<name>.repeat.count": {
+"dims": [
+2
+],
+"required": true,
+"type": "integer"
+},
+"regions.<name>.repeat.pivot": {
+"dims": [
+2
+]
+},
+"regions.<name>.repeat.rotate": {
+"dims": [
+2
+]
+},
+"regions.<name>.repeat.translate": {
+"dims": [
+2
+]
+},
+"regions.<name>.resolution": {
+"dims": [
+2
+]
+},
+"regions.<name>.rotate": {
+"dims": [
+2
+]
+},
+"regions.<name>.scale": {
+"dims": [
+2
+]
+},
+"regions.<name>.size": {
+"dims": [
+2
+]
+},
+"regions.<name>.translate": {
+"dims": [
+2
+]
+},
+"regions.<name>.type": {
+"dims": [
+2
+],
+"required": true,
+"type": "string",
+"values": [
+"annulus",
+"boundary",
+"circle",
+"cone",
+"cylinder",
+"difference",
+"disk",
+"ellipse",
+"ellipsoid",
+"frustum",
+"half_space",
+"implicit",
+"interior",
+"intersection",
+"isosurface",
+"obj",
+"polygon",
+"rectangle",
+"sphere",
+"stl",
+"torus",
+"union",
+"where"
+]
+},
+"run": {
+"dims": [
+2,
+3
+]
+},
+"run.cfl": {
+"dims": [
+2,
+3
+],
+"type": "number"
+},
+"run.control_file_interval": {
+"default": "0",
+"dims": [
+2,
+3
+],
+"type": "integer"
+},
+"run.control_socket": {
+"default": "true",
+"dims": [
+2,
+3
+],
+"type": "bool"
+},
+"run.cuda_graphs": {
+"default": "true",
+"dims": [
+2,
+3
+],
+"type": "bool"
+},
+"run.dt": {
+"dimension": "time (s)",
+"dims": [
+2,
+3
+],
+"required": true,
+"type": "number"
+},
+"run.keep_last_good": {
+"default": "true",
+"dims": [
+2,
+3
+],
+"type": "bool"
+},
+"run.n_steps": {
+"default": "0",
+"dims": [
+2,
+3
+],
+"type": "integer"
+},
+"run.step_queue": {
+"default": "3",
+"dims": [
+2,
+3
+],
+"type": "integer"
+},
+"run.t_stop": {
+"default": "-1.0",
+"dimension": "time (s)",
+"dims": [
+2,
+3
+],
+"type": "number"
+},
+"run.t_wall_stop": {
+"default": "-1.0",
+"dimension": "time (s)",
+"dims": [
+2,
+3
+],
+"type": "number"
+},
+"source": {
+"dims": [
+2,
+3
+]
+},
+"source.gravity": {
+"dimension": "acceleration (m s^-2)",
+"dims": [
+2,
+3
+],
+"type": "array"
+},
+"source.mass_flow": {
+"dimension": "mass flux (kg m^-2 s^-1)",
+"dims": [
+2,
+3
+],
+"type": "array"
+},
+"source.rho": {
+"dims": [
+2,
+3
+]
+},
+"source.rhoE": {
+"dims": [
+2,
+3
+]
+},
+"source.rhoY": {
+"dims": [
+2
+]
+},
+"source.rhou": {
+"dims": [
+2,
+3
+]
+},
+"source.time_dependent": {
+"dims": [
+2
+]
+},
+"sources": {
+"dims": [
+2,
+3
+]
+},
+"sources.name": {
+"dims": [
+2,
+3
+],
+"type": "string"
+},
+"sources.region": {
+"dims": [
+2,
+3
+]
+},
+"sources.region.center": {
+"dims": [
+2
+]
+},
+"sources.region.condition": {
+"dims": [
+2
+],
+"required": true,
+"type": "string"
+},
+"sources.region.edge": {
+"dims": [
+2
+]
+},
+"sources.region.filled": {
+"dims": [
+2
+]
+},
+"sources.region.flip": {
+"default": "false",
+"dims": [
+2
+],
+"type": "bool"
+},
+"sources.region.pivot": {
+"dims": [
+2
+]
+},
+"sources.region.repeat": {
+"dims": [
+2
+]
+},
+"sources.region.resolution": {
+"dims": [
+2
+]
+},
+"sources.region.rotate": {
+"dims": [
+2
+]
+},
+"sources.region.scale": {
+"dims": [
+2
+]
+},
+"sources.region.size": {
+"dims": [
+2
+]
+},
+"sources.region.translate": {
+"dims": [
+2
+]
+},
+"sources.region.type": {
+"dims": [
+2
+],
+"required": true,
+"type": "string",
+"values": [
+"annulus",
+"boundary",
+"circle",
+"cone",
+"cylinder",
+"difference",
+"disk",
+"ellipse",
+"ellipsoid",
+"frustum",
+"half_space",
+"implicit",
+"interior",
+"intersection",
+"isosurface",
+"obj",
+"polygon",
+"rectangle",
+"sphere",
+"stl",
+"torus",
+"union",
+"where"
+]
+},
+"sources.rho": {
+"dims": [
+2,
+3
+]
+},
+"sources.rhoE": {
+"dims": [
+2,
+3
+]
+},
+"sources.rhoY": {
+"dims": [
+2,
+3
+]
+},
+"sources.rhou": {
+"dims": [
+2,
+3
+]
+},
+"sources.total": {
+"default": "false",
+"dims": [
+2,
+3
+],
+"type": "bool"
+},
+"sponges": {
+"dims": [
+2,
+3
+],
+"type": "array"
+},
+"sponges.T": {
+"dims": [
+2,
+3
+]
+},
+"sponges.X": {
+"dims": [
+2
+]
+},
+"sponges.Y": {
+"dims": [
+2
+]
+},
+"sponges.balance": {
+"dims": [
+2
+],
+"required": true,
+"type": "string"
+},
+"sponges.p": {
+"dims": [
+2,
+3
+]
+},
+"sponges.region": {
+"dims": [
+2,
+3
+]
+},
+"sponges.strength": {
+"dims": [
+2,
+3
+]
+},
+"sponges.u": {
+"dims": [
+2,
+3
+]
+},
+"statistics": {
+"dims": [
+2,
+3
+]
+},
+"statistics.batch": {
+"dimension": "time (s)",
+"dims": [
+2,
+3
+],
+"type": "number"
+},
+"statistics.conditional": {
+"default": "[]",
+"dims": [
+2,
+3
+],
+"type": "array"
+},
+"statistics.conditional.bins": {
+"default": "[50]",
+"dims": [
+3
+],
+"type": "array"
+},
+"statistics.conditional.fields": {
+"default": "[]",
+"dims": [
+3
+],
+"type": "array"
+},
+"statistics.conditional.file": {
+"default": "\"conditional_PROGRESS_VARIABLE.csv\"",
+"dims": [
+3
+],
+"type": "string"
+},
+"statistics.conditional.interval": {
+"default": "10",
+"dims": [
+3
+],
+"type": "integer"
+},
+"statistics.conditional.on": {
+"default": "\"\"",
+"dims": [
+3
+],
+"type": "string"
+},
+"statistics.conditional.range": {
+"default": "[0.0, 1.0]",
+"dims": [
+3
+],
+"type": "array"
+},
+"statistics.conditional.region": {
+"dims": [
+3
+]
+},
+"statistics.conditional.t_start": {
+"default": "0.0002",
+"dimension": "time (s)",
+"dims": [
+3
+],
+"type": "number"
+},
+"statistics.conditional.weight": {
+"default": "\"volume\"",
+"dims": [
+3
+],
+"type": "string",
+"values": [
+"mass",
+"volume"
+]
+},
+"statistics.confidence": {
+"default": "0.95",
+"dims": [
+2
+],
+"type": "number"
+},
+"statistics.convergence": {
+"dims": [
+2,
+3
+]
+},
+"statistics.convergence.batches": {
+"default": "20",
+"dims": [
+2,
+3
+],
+"type": "integer"
+},
+"statistics.convergence.confidence": {
+"default": "0.95",
+"dims": [
+2,
+3
+],
+"type": "number"
+},
+"statistics.convergence.file": {
+"default": "\"convergence.csv\"",
+"dims": [
+2,
+3
+],
+"type": "string"
+},
+"statistics.convergence.min_samples": {
+"default": "100",
+"dims": [
+2,
+3
+],
+"type": "integer"
+},
+"statistics.convergence.signals": {
+"dims": [
+2,
+3
+],
+"required": true,
+"type": "array"
+},
+"statistics.convergence.tolerance": {
+"dims": [
+2,
+3
+],
+"required": true,
+"type": "number"
+},
+"statistics.convergence.variance_tolerance": {
+"default": "0.0",
+"dims": [
+2,
+3
+],
+"type": "number"
+},
+"statistics.fields": {
+"default": "[]",
+"dims": [
+2,
+3
+],
+"type": "array"
+},
+"statistics.interval": {
+"default": "1",
+"dims": [
+2,
+3
+],
+"type": "integer"
+},
+"statistics.phase": {
+"dims": [
+2,
+3
+]
+},
+"statistics.phase.bins": {
+"default": "0",
+"dims": [
+2
+],
+"type": "integer"
+},
+"statistics.phase.fields": {
+"default": "[]",
+"dims": [
+2
+],
+"type": "array"
+},
+"statistics.phase.interval": {
+"default": "1",
+"dims": [
+2
+],
+"type": "integer"
+},
+"statistics.phase.level": {
+"default": "0.0",
+"dimension": "velocity (m s^-1)",
+"dims": [
+2
+],
+"type": "number"
+},
+"statistics.phase.period": {
+"default": "0.0",
+"dimension": "time (s)",
+"dims": [
+2
+],
+"type": "number"
+},
+"statistics.phase.probe": {
+"dimension": "length (m)",
+"dims": [
+2
+],
+"required": true,
+"type": "array"
+},
+"statistics.phase.t_reference": {
+"default": "0.0",
+"dimension": "time (s)",
+"dims": [
+2
+],
+"type": "number"
+},
+"statistics.phase.t_start": {
+"default": "0.0",
+"dimension": "time (s)",
+"dims": [
+2
+],
+"type": "number"
+},
+"statistics.phase.variable": {
+"dims": [
+2
+],
+"required": true,
+"type": "string"
+},
+"statistics.products": {
+"default": "[]",
+"dims": [
+2,
+3
+],
+"type": "array"
+},
+"statistics.reset": {
+"default": "false",
+"dims": [
+2,
+3
+],
+"type": "bool"
+},
+"statistics.spectra": {
+"dims": [
+2,
+3
+]
+},
+"statistics.spectra.average": {
+"default": "true",
+"dims": [
+2
+],
+"type": "bool"
+},
+"statistics.spectra.directions": {
+"default": "[\"x\", \"y\"]",
+"dims": [
+2
+],
+"type": "array"
+},
+"statistics.spectra.fields": {
+"default": "[]",
+"dims": [
+2
+],
+"type": "array"
+},
+"statistics.spectra.file": {
+"default": "\"spectra.csv\"",
+"dims": [
+2
+],
+"type": "string"
+},
+"statistics.spectra.interval": {
+"default": "1",
+"dims": [
+2
+],
+"type": "integer"
+},
+"statistics.spectra.products": {
+"default": "[]",
+"dims": [
+2
+],
+"type": "array"
+},
+"statistics.spectra.t_start": {
+"default": "0.0",
+"dimension": "time (s)",
+"dims": [
+2
+],
+"type": "number"
+},
+"statistics.t_start": {
+"default": "0.0",
+"dimension": "time (s)",
+"dims": [
+2,
+3
+],
+"type": "number"
+},
+"triggers": {
+"dims": [
+2,
+3
+],
+"type": "array"
+},
+"triggers.do": {
+"dims": [
+2,
+3
+],
+"required": true,
+"type": "array|string"
+},
+"triggers.for": {
+"default": "0.0",
+"dimension": "time (s)",
+"dims": [
+2,
+3
+],
+"type": "number"
+},
+"triggers.name": {
+"default": "\"trigger_0\"",
+"dims": [
+2,
+3
+],
+"type": "string"
+},
+"triggers.repeat": {
+"default": "false",
+"dims": [
+2,
+3
+],
+"type": "bool"
+},
+"triggers.when": {
+"dims": [
+2,
+3
+],
+"required": true,
+"type": "string"
+},
+"write_data": {
+"dims": [
+2,
+3
+],
+"type": "array"
+},
+"write_data.boundary": {
+"dims": [
+3
+]
+},
+"write_data.boundary_type": {
+"dims": [
+3
+]
+},
+"write_data.chunk_cells": {
+"dims": [
+2,
+3
+]
+},
+"write_data.compression": {
+"default": "\"none\"",
+"dims": [
+2,
+3
+],
+"type": "string",
+"values": [
+"none",
+"zlib"
+]
+},
+"write_data.end": {
+"dims": [
+3
+]
+},
+"write_data.fields": {
+"dims": [
+2,
+3
+],
+"required": true,
+"type": "array"
+},
+"write_data.format": {
+"default": "\"vtu\"",
+"dims": [
+2,
+3
+],
+"type": "string",
+"values": [
+"restart",
+"vtkhdf",
+"vtu",
+"xdmf"
+]
+},
+"write_data.interval": {
+"dims": [
+2,
+3
+],
+"type": "integer"
+},
+"write_data.point": {
+"dims": [
+3
+]
+},
+"write_data.prefix": {
+"dims": [
+2,
+3
+],
+"required": true,
+"type": "string"
+},
+"write_data.reference": {
+"dims": [
+3
+]
+},
+"write_data.region": {
+"dims": [
+2,
+3
+]
+},
+"write_data.regions": {
+"dims": [
+2,
+3
+]
+},
+"write_data.relative_error": {
+"dims": [
+2,
+3
+]
+},
+"write_data.series": {
+"dims": [
+2,
+3
+]
+},
+"write_data.start": {
+"dims": [
+3
+]
+},
+"write_data.time_interval": {
+"dimension": "time (s)",
+"dims": [
+2,
+3
+],
+"type": "number"
+},
+"write_data.type": {
+"default": "\"\"",
+"dims": [
+3
+],
+"type": "string"
+}
+},
+"section": null
+}

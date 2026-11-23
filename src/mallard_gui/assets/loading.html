@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="color-scheme" content="light dark">
+<title>Mallard</title>
+<!-- mallard-loading:head -->
+<style id="mallard-loading-style">
+  html { color-scheme: light dark; background: #ffffff; }
+  @media (prefers-color-scheme: dark) { html { background: #0b0f13; } }
+  #mallard-loading {
+    --ml-bg: #ffffff; --ml-surface: #f6f7f9; --ml-border: #dde2e7; --ml-text: #10161c; --ml-muted: #4e5a66;
+    --ml-accent: #0b6b63; --ml-danger: #b42318; --ml-sheen: rgba(255, 255, 255, .55);
+    position: fixed; inset: 0; z-index: 2147483000; display: grid; place-items: center; overflow: auto;
+    background: var(--ml-bg); color: var(--ml-text);
+    font: 13px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased; font-variant-numeric: tabular-nums;
+    -webkit-user-select: none; user-select: none; cursor: default;
+    transition: opacity 180ms ease-out;
+  }
+  @media (prefers-color-scheme: dark) {
+    #mallard-loading {
+      --ml-bg: #0b0f13; --ml-surface: #11161b; --ml-border: #232c35; --ml-text: #e6ebef; --ml-muted: #9aa6b2;
+      --ml-accent: #4fc4b6; --ml-danger: #ff7b72; --ml-sheen: rgba(255, 255, 255, .35);
+    }
+  }
+  #mallard-loading.ml-leaving { opacity: 0; pointer-events: none; }
+  #mallard-loading * { box-sizing: border-box; }
+  .ml-card { width: min(360px, calc(100vw - 32px)); display: flex; flex-direction: column; align-items: center;
+    padding: 24px 0; }
+  .ml-mark { position: relative; width: 48px; height: 48px; margin-bottom: 14px; }
+  .ml-mark img { width: 100%; height: 100%; display: block; -webkit-user-drag: none; }
+  .ml-mark::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+    -webkit-mask: url(mallard_gui/favicon.png) center / contain no-repeat; mask: url(mallard_gui/favicon.png) center / contain no-repeat;
+    background: linear-gradient(105deg, transparent 40%, var(--ml-sheen) 50%, transparent 60%) no-repeat;
+    background-size: 300% 100%; background-position: 100% 0; animation: ml-sheen 3.2s ease-in-out .4s infinite; }
+  #mallard-loading[data-mode="failed"] .ml-mark::after, #mallard-loading[data-mode="idle"] .ml-mark::after { display: none; }
+  @keyframes ml-sheen { 0% { background-position: 100% 0; } 45%, 100% { background-position: 0% 0; } }
+  .ml-title { margin: 0; font-size: 15px; font-weight: 600; line-height: 20px; text-align: center; max-width: 100%;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ml-sub { margin: 2px 0 0; color: var(--ml-muted); text-align: center; max-width: 100%; overflow: hidden;
+    text-overflow: ellipsis; white-space: nowrap; direction: rtl; }
+  .ml-sub bdi { direction: ltr; unicode-bidi: isolate; }
+  .ml-message { margin: 8px 0 0; color: var(--ml-muted); text-align: center; white-space: pre-wrap; }
+  .ml-progress { width: 100%; margin: 18px 0 10px; accent-color: var(--ml-accent); }
+  .ml-stages { list-style: none; margin: 0; padding: 0; width: 100%; }
+  .ml-progress[hidden] + .ml-stages { margin-top: 18px; }
+  .ml-stages li { display: grid; grid-template-columns: 16px 1fr auto; column-gap: 8px; align-items: start;
+    padding: 3px 0; color: var(--ml-muted); }
+  .ml-stages li[data-state="active"], .ml-stages li[data-state="failed"] { color: var(--ml-text); }
+  .ml-glyph { width: 16px; height: 20px; display: grid; place-items: center; }
+  .ml-glyph svg { width: 12px; height: 12px; display: none; overflow: visible; fill: none; stroke-width: 1.6;
+    stroke-linecap: round; stroke-linejoin: round; }
+  li[data-state="pending"] .ml-pending { display: block; stroke: var(--ml-border); stroke-width: 1.5; }
+  li[data-state="active"] .ml-active { display: block; fill: var(--ml-accent); stroke: none;
+    transform-origin: center; animation: ml-pulse 1.6s ease-in-out infinite; }
+  li[data-state="done"] .ml-done { display: block; stroke: var(--ml-accent); }
+  li[data-state="failed"] .ml-failed { display: block; stroke: var(--ml-danger); }
+  @keyframes ml-pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .4; transform: scale(.75); } }
+  .ml-detail { display: block; color: var(--ml-muted); font-size: 12px; }
+  .ml-detail:empty { display: none; }
+  .ml-time { color: var(--ml-muted); font-size: 12px; line-height: 20px; }
+  .ml-slow, .ml-failure { width: 100%; margin-top: 16px; }
+  .ml-slow p, .ml-failure p { margin: 0 0 8px; }
+  .ml-reason { color: var(--ml-text); white-space: pre-wrap; overflow-wrap: anywhere; }
+  .ml-log { color: var(--ml-muted); font-size: 12px; overflow-wrap: anywhere; }
+  .ml-log code, .ml-failure pre { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px;
+    -webkit-user-select: text; user-select: text; cursor: text; }
+  .ml-failure details { margin: 0 0 12px; }
+  .ml-failure summary { color: var(--ml-muted); font-size: 12px; cursor: default; list-style: none; display: flex;
+    align-items: center; gap: 4px; min-height: 26px; }
+  .ml-failure summary::-webkit-details-marker { display: none; }
+  .ml-failure summary .chev { width: 16px; height: 16px; flex: none; display: inline-flex; }
+  .ml-failure summary .chev svg { transition: transform .15s ease; }
+  .ml-failure details[open] summary .chev svg { transform: rotate(90deg); }
+  .ml-failure summary:hover { color: var(--ml-text); }
+  .ml-failure pre { margin: 6px 0 0; padding: 8px 10px; max-height: 160px; overflow: auto; white-space: pre-wrap;
+    overflow-wrap: anywhere; background: var(--ml-surface); border: 1px solid var(--ml-border); border-radius: 6px; }
+  .ml-buttons { display: flex; justify-content: flex-end; gap: 8px; }
+  #mallard-loading [hidden] { display: none !important; }
+  @media (prefers-reduced-motion: reduce) {
+    .ml-mark::after { display: none; }
+    li[data-state="active"] .ml-active { animation: none; }
+  }
+</style>
+<!-- /mallard-loading:head -->
+</head>
+<body>
+<!-- mallard-loading:body -->
+<div id="mallard-loading" data-mode="loading" role="status" aria-live="polite">
+  <div class="ml-card">
+    <div class="ml-mark"><img src="mallard_gui/favicon.png" alt=""></div>
+    <h1 class="ml-title">Mallard</h1>
+    <p class="ml-sub" hidden><bdi></bdi></p>
+    <p class="ml-message" hidden></p>
+    <progress class="ml-progress" max="4" value="0" aria-label="Startup progress"></progress>
+    <ol class="ml-stages">
+      <li data-stage="server"><span class="ml-glyph"><svg class="ml-pending" viewBox="0 0 12 12"><circle cx="6" cy="6" r="3.5"/></svg><svg class="ml-active" viewBox="0 0 12 12"><circle cx="6" cy="6" r="4"/></svg><svg class="ml-done" viewBox="0 0 12 12"><path d="M2.5 6.3l2.3 2.3 4.7-5"/></svg><svg class="ml-failed" viewBox="0 0 12 12"><path d="M3 3l6 6M9 3l-6 6"/></svg></span><span>Starting the server<span class="ml-detail"></span></span><span class="ml-time"></span></li>
+      <li data-stage="case"><span class="ml-glyph"><svg class="ml-pending" viewBox="0 0 12 12"><circle cx="6" cy="6" r="3.5"/></svg><svg class="ml-active" viewBox="0 0 12 12"><circle cx="6" cy="6" r="4"/></svg><svg class="ml-done" viewBox="0 0 12 12"><path d="M2.5 6.3l2.3 2.3 4.7-5"/></svg><svg class="ml-failed" viewBox="0 0 12 12"><path d="M3 3l6 6M9 3l-6 6"/></svg></span><span>Loading the case<span class="ml-detail"></span></span><span class="ml-time"></span></li>
+      <li data-stage="interface"><span class="ml-glyph"><svg class="ml-pending" viewBox="0 0 12 12"><circle cx="6" cy="6" r="3.5"/></svg><svg class="ml-active" viewBox="0 0 12 12"><circle cx="6" cy="6" r="4"/></svg><svg class="ml-done" viewBox="0 0 12 12"><path d="M2.5 6.3l2.3 2.3 4.7-5"/></svg><svg class="ml-failed" viewBox="0 0 12 12"><path d="M3 3l6 6M9 3l-6 6"/></svg></span><span>Building the interface<span class="ml-detail"></span></span><span class="ml-time"></span></li>
+      <li data-stage="render"><span class="ml-glyph"><svg class="ml-pending" viewBox="0 0 12 12"><circle cx="6" cy="6" r="3.5"/></svg><svg class="ml-active" viewBox="0 0 12 12"><circle cx="6" cy="6" r="4"/></svg><svg class="ml-done" viewBox="0 0 12 12"><path d="M2.5 6.3l2.3 2.3 4.7-5"/></svg><svg class="ml-failed" viewBox="0 0 12 12"><path d="M3 3l6 6M9 3l-6 6"/></svg></span><span>Drawing the window<span class="ml-detail"></span></span><span class="ml-time"></span></li>
+    </ol>
+    <div class="ml-slow" hidden>
+      <p>This is taking longer than usual.</p>
+      <div class="ml-buttons"><button type="button" data-action="log">Show Log</button></div>
+    </div>
+    <div class="ml-failure" hidden>
+      <p class="ml-reason"></p>
+      <p class="ml-log">Log: <code></code></p>
+      <details><summary><span class="chev"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span>Last lines of the log</summary><pre></pre></details>
+      <div class="ml-buttons">
+        <button type="button" data-action="log">Show Log</button>
+        <button type="button" data-action="retry">Retry</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="application/json" id="mallard-loading-state">{}</script>
+<script>
+  // The startup screen: the desktop shell's splash, and the GUI page's cover until its first frame. The shell sends
+  // its state through eval (no IPC is exposed to this page): window.mallardSplash.update({mode, project, path, stage,
+  // detail, times, message, reason, log, tail}); the buttons ask for Retry and Show Log by navigating to
+  // /__mallard/<action>, which the shell intercepts.
+  (() => {
+    const root = document.getElementById("mallard-loading");
+    if (!root || window.mallardSplash) return;
+    const STAGES = ["server", "case", "interface", "render"];
+    const SLOW_MS = 20000;
+    const $ = (s) => root.querySelector(s);
+    const blank = { mode: "loading", project: "", path: "", stage: "server", detail: "", times: [], message: "",
+      reason: "", log: null, tail: "" };
+    let state = { ...blank };
+    let since = performance.now();
+    let slowTimer = 0;
+    const seconds = (ms) => (ms < 1000 ? `${(ms / 1000).toFixed(2)} s` : `${(ms / 1000).toFixed(1)} s`);
+
+    function render() {
+      const { mode } = state;
+      root.dataset.mode = mode;
+      const current = mode === "idle" ? -1 : Math.max(0, STAGES.indexOf(state.stage));
+      const title = mode === "failed" ? "Mallard couldn’t start"
+        : mode === "idle" ? (state.message ? "No project open" : "Mallard") : (state.project || "Mallard");
+      $(".ml-title").textContent = title;
+      const sub = $(".ml-sub");
+      sub.hidden = mode === "idle" || !state.path;
+      sub.querySelector("bdi").textContent = state.path;
+      sub.title = state.path;
+      const message = $(".ml-message");
+      message.hidden = mode !== "idle" || !state.message;
+      message.textContent = state.message;
+      const progress = $(".ml-progress");
+      progress.hidden = mode !== "loading" && mode !== "done";
+      progress.value = mode === "done" ? STAGES.length : current;
+      $(".ml-stages").hidden = mode === "idle";
+      root.querySelectorAll(".ml-stages li").forEach((li, i) => {
+        const finished = i < current || mode === "done";
+        li.dataset.state = finished ? "done" : i === current ? (mode === "failed" ? "failed" : "active") : "pending";
+        li.querySelector(".ml-detail").textContent = i === current && mode === "loading" ? state.detail : "";
+        const ms = state.times[i];
+        li.querySelector(".ml-time").textContent = finished && typeof ms === "number" ? seconds(ms) : "";
+      });
+      const failure = $(".ml-failure");
+      failure.hidden = mode !== "failed";
+      $(".ml-reason").textContent = state.reason;
+      $(".ml-log").hidden = !state.log;
+      $(".ml-log code").textContent = state.log || "";
+      $(".ml-failure details").hidden = !state.tail;
+      $(".ml-failure pre").textContent = state.tail;
+      root.querySelectorAll('[data-action="log"]').forEach((b) => { b.hidden = !state.log; });
+      root.setAttribute("aria-busy", String(mode === "loading"));
+      clearTimeout(slowTimer);
+      const slow = $(".ml-slow");
+      const waited = performance.now() - since;
+      slow.hidden = !(mode === "loading" && state.log && waited >= SLOW_MS);
+      if (mode === "loading" && state.log && waited < SLOW_MS) slowTimer = setTimeout(render, SLOW_MS - waited);
+    }
+
+    function update(next) {
+      const merged = { ...blank, ...next, times: Array.isArray(next && next.times) ? next.times : [] };
+      if (merged.stage !== state.stage || merged.mode !== state.mode) since = performance.now();
+      state = merged;
+      render();
+    }
+
+    // Return is Retry, the failure's default button, whichever button has the focus (Space presses that one).
+    window.addEventListener("keydown", (e) => {
+      if (state.mode === "failed" && e.key === "Enter") {
+        e.preventDefault();
+        root.querySelector('[data-action="retry"]').click();
+      }
+    });
+    root.addEventListener("click", (e) => {
+      const button = e.target instanceof Element && e.target.closest("button[data-action]");
+      if (button) window.location.assign(new URL(`/__mallard/${button.dataset.action}`, window.location.href).href);
+    });
+
+    // The GUI page: the shell's stage times arrive in the fragment (#startup=ms,ms,ms), dropped at once.
+    let initial = {};
+    try { initial = JSON.parse(document.getElementById("mallard-loading-state").textContent || "{}"); } catch {}
+    const startup = /(?:^#|&)startup=([\d,]+)/.exec(window.location.hash);
+    if (startup) {
+      initial.times = startup[1].split(",").map(Number);
+      history.replaceState(history.state, "", window.location.href.split("#")[0]);
+    }
+    update(initial);
+
+    let leaving = false;
+    // The GUI's first frame is drawn: show the last stage done, then fade out the cover and its style.
+    async function done() {
+      if (leaving || !root.isConnected) return;
+      leaving = true;
+      const started = performance.now();
+      const sheets = [...document.querySelectorAll('link[rel="stylesheet"]')].filter((l) => !l.sheet)
+        .map((l) => new Promise((r) => { l.addEventListener("load", r, { once: true }); l.addEventListener("error", r, { once: true }); }));
+      const fonts = document.fonts ? document.fonts.ready : Promise.resolve();
+      await Promise.race([Promise.all([fonts, ...sheets]), new Promise((r) => setTimeout(r, 1500))]);
+      await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+      const times = state.times.slice(0, STAGES.length - 1);
+      if (times.length === STAGES.length - 1) times.push(Math.round(performance.now()));
+      update({ ...state, mode: "done", times });
+      root.classList.add("ml-leaving");
+      const remove = () => { root.remove(); document.getElementById("mallard-loading-style")?.remove(); };
+      root.addEventListener("transitionend", remove, { once: true });
+      setTimeout(remove, 400);
+      return performance.now() - started;
+    }
+
+    window.mallardSplash = Object.freeze({ update, done });
+    // On the GUI's page, a page that never reports its first frame is uncovered anyway.
+    if (initial.stage === "render") setTimeout(done, 30000);
+  })();
+</script>
+<!-- /mallard-loading:body -->
+</body>
+</html>

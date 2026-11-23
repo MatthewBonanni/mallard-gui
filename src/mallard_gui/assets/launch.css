@@ -1,0 +1,72 @@
+/* The Run dialog: the settings (RUN, what Launch passes on, above ESTIMATE, what only the cost estimate reads, and
+   the check's rows they rest on) beside the estimate's verdict, figures and plots. Each column scrolls on its own,
+   with a shade at an edge that has more beyond it, so nothing is cut off at any window size. */
+.su-modal:has(> .su-dialog) { align-items: center; padding: 16px; }
+.su-modal > .su-dialog { width: min(1120px, 100%); max-height: 100%; }
+.su-launch-body { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(340px, 400px) minmax(0, 1fr); }
+.su-col { min-height: 0; overflow-y: auto; overscroll-behavior: contain;
+  background: linear-gradient(var(--m-bg) 30%, transparent) top / 100% 24px no-repeat local,
+    linear-gradient(transparent, var(--m-bg) 70%) bottom / 100% 24px no-repeat local,
+    linear-gradient(rgb(0 0 0 / 14%), transparent) top / 100% 8px no-repeat scroll,
+    linear-gradient(transparent, rgb(0 0 0 / 14%)) bottom / 100% 8px no-repeat scroll;
+  background-color: var(--m-bg); }
+.su-col-settings { border-right: 1px solid var(--m-border); }
+.su-col-results { background-color: var(--m-canvas); }
+.su-col-results .su-fit { margin: 0; padding: 8px var(--m-pad); border-bottom: 1px solid var(--m-border);
+  white-space: normal; line-height: 1.45; }
+.su-dialog .su-kv { grid-template-columns: minmax(0, 1fr) auto; row-gap: 0; }
+.su-dialog .su-kv .n { grid-column: 1 / -1; white-space: normal; overflow: visible; padding-bottom: 2px; }
+.su-dialog .su-kv .n:empty { display: none; }
+@media (max-width: 860px) {
+  .su-launch-body { display: block; overflow-y: auto; }
+  .su-col { overflow: visible; }
+  .su-col-settings { border-right: none; }
+}
+.su-part { border-top: 1px solid var(--m-border-strong); }
+.su-part-head { font-weight: 700; letter-spacing: .07em; }
+.su-part-head .note { font-weight: 400; letter-spacing: 0; text-transform: none; color: var(--m-text-muted); }
+.su-part.run { border-left: 3px solid var(--m-accent); }
+.su-part.estimate { border-left: 3px solid var(--m-border-strong); }
+.su-part-foot { display: flex; align-items: center; gap: 8px; padding: 6px var(--m-pad);
+  border-bottom: 1px solid var(--m-border); }
+.su-part-foot .btn, .su-measure .btn { display: inline-flex; align-items: center; justify-content: center; gap: 5px; }
+.su-dialog .su-launch-report { max-height: none; flex: none; overflow: visible; }
+.prow .su-measure .unit { position: static; flex: none; margin: 0 8px 0 4px; }
+.prow .su-measure input { flex: 0 0 72px; width: 72px; }
+.prow .su-measure .btn { flex: none; height: calc(var(--m-row) - 6px); margin-left: auto; margin-right: 4px; }
+.prow .su-tp { white-space: normal; font-size: 11px; line-height: 15px; padding-top: 4px; padding-bottom: 4px; }
+.su-tp.estimated { color: var(--m-text-muted); }
+.su-tp.measured { color: var(--m-success); }
+.su-check-state { font-size: 11px; color: var(--m-text-muted); }
+/* The estimate at a glance: large figures, then the plots over ranks */
+.su-headline { display: grid; grid-template-columns: repeat(3, 1fr); border-bottom: 1px solid var(--m-border); }
+.su-fig { padding: 8px var(--m-space-5) 9px; border-right: 1px solid var(--m-border); border-top: 1px solid var(--m-border);
+  min-width: 0; background: var(--m-bg); }
+.su-fig:nth-child(3n) { border-right: none; }
+.su-fig-k { font-size: var(--m-micro); font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--m-text-muted); }
+.su-fig-v { font-size: var(--m-figure); line-height: 28px; font-weight: 600; font-family: var(--m-font-mono); letter-spacing: -0.02em; color: var(--m-text); white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis; }
+.su-fig-u { margin-left: 4px; font-size: 12px; font-weight: 400; color: var(--m-text-muted); }
+.su-fig-n { font-size: 10.5px; line-height: 14px; color: var(--m-text-muted); overflow: hidden; display: -webkit-box;
+  -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.su-fig.ok .su-fig-v { color: var(--m-success); }
+.su-fig.warn .su-fig-v { color: var(--m-warning); }
+.su-fig.error .su-fig-v { color: var(--m-danger); }
+.su-fig-bar { height: 5px; margin: 3px 0 2px; background: var(--m-surface-2); border-radius: 3px; overflow: hidden; }
+.su-fig-bar > div { height: 100%; background: var(--m-accent); }
+.su-fig.error .su-fig-bar > div { background: var(--m-danger); }
+.su-charts { display: grid; grid-template-columns: 1.4fr 1fr 1fr; border-bottom: 1px solid var(--m-border); }
+.su-charts-head { grid-column: 1 / -1; display: flex; justify-content: space-between; gap: 8px;
+  padding: 4px var(--m-pad); font-size: 11px; }
+.su-chart { display: flex; flex-direction: column; min-width: 0; border-right: 1px solid var(--m-border); background: var(--m-bg); }
+.su-chart:last-child { border-right: none; }
+.su-chart-t { padding: 6px var(--m-space-5) 0; font-size: var(--m-body); font-weight: 600; color: var(--m-text); }
+.su-chart .m-chart { height: 170px; flex: none; }
+.su-chart-s { padding: 0 var(--m-space-5); font-size: var(--m-small); white-space: nowrap; overflow: hidden;
+  text-overflow: ellipsis; }
+.su-chart.secondary .su-chart-t { font-weight: 400; color: var(--m-text-muted); }
+.su-chart .m-chart .tb, .su-chart .m-chart-bar { display: none; }
+/* A dialog's title band */
+.su-dialog > .panel-head { height: 44px; padding: 0 var(--m-space-6); font-size: var(--m-title); }
+.su-dialog > .panel-head .su-check-state { font-size: var(--m-small); }
+.su-dialog > .actions { height: 52px; padding: 0 var(--m-space-6); }

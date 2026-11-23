@@ -1,0 +1,343 @@
+{
+ "schema": "mallard-capabilities",
+ "version": 1,
+ "mallard": {
+  "version": "v0.10.0-191-g317f4a918",
+  "git_sha": "317f4a918bfd81c517642a6630483efc62ef02ac",
+  "git_dirty": false
+ },
+ "build": {
+  "dim": 3,
+  "precision": "double",
+  "build_type": "Release",
+  "compiler": "AppleClang 21.0.0.21000334",
+  "cxx_flags": "-O3 -DNDEBUG",
+  "kokkos": "5.2.2",
+  "backend": "Threads",
+  "host_backend": "Threads",
+  "mpi": false,
+  "gpu_aware_mpi": false,
+  "nccl": false,
+  "hdf5": false,
+  "hdf5_parallel": false,
+  "kaminpar": false,
+  "cgns": false,
+  "zlib": false,
+  "species_layout": "right"
+ },
+ "dependencies": {
+  "compiler": "AppleClang 21.0.0.21000334",
+  "kokkos": "5.2.2",
+  "mpi": null,
+  "hdf5": null,
+  "cgns": null,
+  "zlib": null,
+  "nccl": null,
+  "gpu_runtime": null,
+  "gpu_driver": null
+ },
+ "dimensions": [
+  3
+ ],
+ "dimension": 3,
+ "interfaces": {
+  "capabilities": {
+   "schema": "mallard-capabilities",
+   "version": 1
+  },
+  "key_catalog": {
+   "schema": "mallard-key-catalog",
+   "version": 1
+  },
+  "unit_catalog": {
+   "schema": "mallard-unit-catalog",
+   "version": 1
+  },
+  "case_files": {
+   "schema": "mallard-case-files",
+   "version": 1
+  },
+  "file_info": {
+   "schema": "mallard-file-info",
+   "version": 1
+  },
+  "check_report": {
+   "schema": "mallard-check",
+   "version": 1
+  },
+  "case_view": {
+   "schema": "mallard-case-view",
+   "version": 1
+  },
+  "boundary_values": {
+   "schema": "mallard-boundary-values",
+   "version": 1
+  },
+  "run_log": {
+   "schema": "mallard-run-log",
+   "version": 2
+  },
+  "run_block": {
+   "schema": "mallard-run",
+   "version": 3
+  },
+  "snapshot_block": {
+   "schema": "mallard-snapshot",
+   "version": 1
+  },
+  "probe_sampling_block": {
+   "schema": "mallard-probe-sampling",
+   "version": 1
+  },
+  "run_directory": {
+   "schema": "mallard-run-directory",
+   "version": 1
+  },
+  "run_control": {
+   "schema": "mallard-run-control",
+   "version": 2,
+   "commands": [
+    "status",
+    "checkpoint",
+    "stop",
+    "set"
+   ],
+   "files": [
+    "STOP",
+    "CHECKPOINT"
+   ]
+  },
+  "run_endpoint": {
+   "schema": "mallard-run-endpoint",
+   "version": 1
+  },
+  "run_launch": {
+   "schema": "mallard-run-launch",
+   "version": 1
+  },
+  "convergence": {
+   "schema": "mallard-convergence",
+   "version": 1
+  },
+  "pack": {
+   "schema": "mallard-pack",
+   "version": 1
+  }
+ },
+ "methods": [
+  {
+   "name": "initialize",
+   "command": "mallard version --format json",
+   "result": "mallard-capabilities"
+  },
+  {
+   "name": "shutdown",
+   "command": null,
+   "result": null
+  },
+  {
+   "name": "case.open",
+   "command": null,
+   "result": "mallard-case"
+  },
+  {
+   "name": "case.update",
+   "command": null,
+   "result": "mallard-case"
+  },
+  {
+   "name": "case.close",
+   "command": null,
+   "result": null
+  },
+  {
+   "name": "case.check",
+   "command": "mallard check INPUT --format json",
+   "result": "mallard-check"
+  },
+  {
+   "name": "case.view",
+   "command": "mallard check INPUT --view DIR --format json",
+   "result": "mallard-case-view"
+  },
+  {
+   "name": "case.boundary_values",
+   "command": "mallard check INPUT --boundary-values DIR --format json",
+   "result": "mallard-boundary-values"
+  },
+  {
+   "name": "case.keys",
+   "command": "mallard list keys [SECTION] INPUT --format json",
+   "result": "mallard-key-catalog"
+  },
+  {
+   "name": "case.files",
+   "command": "mallard files INPUT --format json",
+   "result": "mallard-case-files"
+  },
+  {
+   "name": "keys.catalog",
+   "command": "mallard list keys [SECTION] --format json",
+   "result": "mallard-key-catalog"
+  },
+  {
+   "name": "file.info",
+   "command": "mallard info FILE --format json",
+   "result": "mallard-file-info"
+  },
+  {
+   "name": "units.catalog",
+   "command": "mallard list units --format json",
+   "result": "mallard-unit-catalog"
+  },
+  {
+   "name": "run.launch",
+   "command": "mallard -i INPUT --detach",
+   "result": "mallard-run-launch"
+  },
+  {
+   "name": "run.control",
+   "command": "mallard ctl RUN ACTION [KEY=VALUE...] --format json",
+   "result": "mallard-run-control"
+  }
+ ],
+ "devices": {
+  "backend": "Threads",
+  "count": 0,
+  "visible": [],
+  "host": {
+   "cpu": "test CPU",
+   "threads": 14
+  }
+ },
+ "control": {
+  "schema": "mallard-run-control",
+  "version": 2,
+  "commands": [
+   "status",
+   "checkpoint",
+   "stop",
+   "set"
+  ],
+  "settings": [
+   {
+    "key": "n_steps",
+    "type": "count",
+    "units": null,
+    "selector": null,
+    "help": "steps to run in all; 0: no step limit"
+   },
+   {
+    "key": "t_stop",
+    "type": "time",
+    "units": "s",
+    "selector": null,
+    "help": "simulated time to stop at; 0 or less: no limit"
+   },
+   {
+    "key": "t_wall_stop",
+    "type": "time",
+    "units": "s",
+    "selector": null,
+    "help": "wall time to stop after, with a restart; 0 or less: no limit"
+   },
+   {
+    "key": "check_interval",
+    "type": "count",
+    "units": null,
+    "selector": null,
+    "help": "steps between progress rows (positive)"
+   },
+   {
+    "key": "write_data.<prefix_or_index>.interval",
+    "type": "count",
+    "units": null,
+    "selector": "prefix_or_index",
+    "help": "steps between writes of a [[write_data]]"
+   },
+   {
+    "key": "write_data.<prefix_or_index>.time_interval",
+    "type": "time",
+    "units": "s",
+    "selector": "prefix_or_index",
+    "help": "simulated time between writes of a [[write_data]]"
+   },
+   {
+    "key": "probes.<name>.interval",
+    "type": "count",
+    "units": null,
+    "selector": "name",
+    "help": "steps between samples of a probe"
+   },
+   {
+    "key": "probes.<name>.time_interval",
+    "type": "time",
+    "units": "s",
+    "selector": "name",
+    "help": "simulated time between samples of a probe"
+   },
+   {
+    "key": "forces.<zone>.interval",
+    "type": "count",
+    "units": null,
+    "selector": "zone",
+    "help": "steps between force rows of a zone (positive)"
+   },
+   {
+    "key": "integrals.interval",
+    "type": "count",
+    "units": null,
+    "selector": null,
+    "help": "steps between rows of [integrals] (positive)"
+   }
+  ],
+  "files": [
+   "STOP",
+   "CHECKPOINT"
+  ],
+  "routes": [
+   {
+    "kind": "socket",
+    "programs": [],
+    "available": true
+   },
+   {
+    "kind": "srun",
+    "programs": [
+     "srun"
+    ],
+    "available": false
+   },
+   {
+    "kind": "kubectl",
+    "programs": [
+     "kubectl"
+    ],
+    "available": true
+   },
+   {
+    "kind": "ssh",
+    "programs": [
+     "ssh"
+    ],
+    "available": true
+   },
+   {
+    "kind": "signal",
+    "programs": [
+     "kill",
+     "scancel",
+     "qsig",
+     "bkill"
+    ],
+    "available": true
+   },
+   {
+    "kind": "file",
+    "programs": [],
+    "available": true
+   }
+  ]
+ },
+ "case": null
+}

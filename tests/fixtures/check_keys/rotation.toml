@@ -1,0 +1,35 @@
+[run]
+n_steps = 10
+
+[mesh]
+type = "annulus"
+r_inner = 1.0
+r_outer = 2.0
+angle = 45.0
+Ntheta = 8
+Nr = 4
+
+[initialize]
+type = "constant"
+T = 1.0
+u = [0.0, 0.0]
+p = 1.0
+
+[[periodic]]
+zones = ["start", "end"]
+angle = 45.0
+
+[[boundaries]]
+name = "inner"
+type = "symmetry"
+
+[[boundaries]]
+name = "outer"
+type = "symmetry"
+
+[physics]
+type = "euler"
+gamma = 1.4
+p_ref = 1.0
+T_ref = 1.0
+rho_ref = 1.0

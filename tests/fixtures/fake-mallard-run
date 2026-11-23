@@ -1,0 +1,36 @@
+#!/usr/bin/env python3
+"""Stands in for a running `mallard -i input.toml` in the browser tests: appends a progress record to
+mallard.jsonl every 20 ms (dt, CFL, a residual monitor, forces) until a STOP file appears or a minute passes."""
+import json
+import math
+import os
+import sys
+import time
+
+if "-i" not in sys.argv:
+    sys.exit(f"fake mallard: {' '.join(sys.argv[1:])}")
+N, DT = 3000, 0.01
+
+
+def write(f, record):
+    f.write(json.dumps(record) + "\n")
+    f.flush()
+
+
+with open("mallard.jsonl", "w") as f:
+    write(f, {"type": "start", "schema": "mallard-run-log", "version": 2, "run_id": "live-run",
+              "units": {"t": "s", "dt": "s"}, "provenance": {"build": {"dim": 2}, "run": {"ranks": 1}}})
+    outcome, step = "finished", 0
+    for step in range(N):
+        if os.path.exists("STOP"):
+            outcome = "stopped"
+            break
+        t = DT * step
+        write(f, {
+            "type": "progress", "step": step, "t": t, "dt": DT, "cfl": 0.8 + 0.1 * math.sin(t),
+            "progress": step / N, "wall_per_step": 0.02, "eta": 0.02 * (N - step), "cells": 1536,
+            "monitors": {"residual_rho": 10 ** (-step / 300), "min_rho": 0.9 + 0.01 * math.cos(t)},
+            "forces_cylinder": {"Fx_pressure": 0.23 + 0.01 * math.sin(2 * t), "Fy_pressure": 0.1 * math.sin(t)},
+        })
+        time.sleep(0.02)
+    write(f, {"type": "end", "outcome": outcome, "step": step, "t": DT * step})

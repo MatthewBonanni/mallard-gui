@@ -1,0 +1,34 @@
+[run]
+n_steps = 10
+cfl = 0.5
+
+[mesh]
+type = "cartesian"
+Nx = 16
+Ny = 8
+Lx = 2.0
+Ly = 1.0
+
+[initialize]
+type = "constant"
+T = 1.0
+u = [0.5, 0.0]
+p = 1.0
+
+[[periodic]]
+zones = ["left", "right"]
+
+[[boundaries]]
+name = "bottom"
+type = "symmetry"
+
+[[boundaries]]
+name = "top"
+type = "symmetry"
+
+[physics]
+type = "euler"
+gamma = 1.4
+p_ref = 1.0
+T_ref = 1.0
+rho_ref = 1.0

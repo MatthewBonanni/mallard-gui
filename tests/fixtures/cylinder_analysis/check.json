@@ -1,0 +1,798 @@
+{
+ "version": 1,
+ "status": "warning",
+ "errors": 0,
+ "warnings": 1,
+ "input_file": "input.toml",
+ "setup_done": true,
+ "dim": 2,
+ "environment": {
+  "build": {
+   "dim": 2,
+   "precision": "double",
+   "build_type": "Release",
+   "compiler": "AppleClang 21.0.0.21000334",
+   "cxx_flags": "-O3 -DNDEBUG",
+   "kokkos": "5.2.2",
+   "backend": "Threads",
+   "host_backend": "Threads",
+   "mpi": false,
+   "gpu_aware_mpi": false,
+   "nccl": false,
+   "hdf5": false,
+   "hdf5_parallel": false,
+   "kaminpar": false,
+   "species_layout": "right"
+  },
+  "dependencies": {
+   "compiler": "AppleClang 21.0.0.21000334",
+   "kokkos": "5.2.2",
+   "mpi": null,
+   "hdf5": null,
+   "cgns": null,
+   "zlib": null,
+   "nccl": null,
+   "gpu_runtime": null,
+   "gpu_driver": null
+  },
+  "solvers": [
+   2
+  ],
+  "ranks": 1,
+  "hosts": 1,
+  "ranks_per_host": 1,
+  "gpu_aware_mpi": {
+   "library": null,
+   "used": false
+  },
+  "nccl": {
+   "used": false
+  },
+  "placement": [
+   {
+    "rank": 0,
+    "host": "workstation",
+    "device": "Apple M4 Pro",
+    "threads": 2,
+    "cpus": null,
+    "omp_bind": false,
+    "gpu": null,
+    "gpu_index": null,
+    "gpu_numa": null,
+    "gpus_visible": 0
+   }
+  ]
+ },
+ "diagnostics": [
+  {
+   "severity": "warning",
+   "code": "W-DNS-ETA",
+   "message": "DNS: cells of 6.38 eta on average (eta 0.356 m from the initial field's resolved dissipation): resolving the dissipation needs about 2 eta or less: refine to cells of 0.712 m, or model the small scales with LES ([les])",
+   "docs": "docs/guide/input_files.md#w-dns-eta"
+  }
+ ],
+ "unused_keys": [],
+ "boundaries": [
+  {
+   "zone": "cylinder",
+   "condition": "wall_adiabatic",
+   "faces": 64,
+   "details": "",
+   "turbulence": ""
+  },
+  {
+   "zone": "farfield",
+   "condition": "farfield",
+   "faces": 64,
+   "details": "",
+   "turbulence": ""
+  }
+ ],
+ "unassigned": [],
+ "periodic": [],
+ "regions": [
+  {
+   "name": "domain",
+   "of_mesh": true,
+   "dimension": 2,
+   "measure": 1959.5586694685717,
+   "per_radian": false,
+   "cells": 1536,
+   "exact": true,
+   "resolution": null,
+   "solution": false,
+   "surface": null,
+   "box": null,
+   "own": null
+  },
+  {
+   "name": "cylinder",
+   "of_mesh": true,
+   "dimension": 1,
+   "measure": 3.1403311569547525,
+   "per_radian": false,
+   "cells": 64,
+   "exact": true,
+   "resolution": null,
+   "solution": false,
+   "surface": null,
+   "box": null,
+   "own": null
+  },
+  {
+   "name": "farfield",
+   "of_mesh": true,
+   "dimension": 1,
+   "measure": 157.01655784773757,
+   "per_radian": false,
+   "cells": 64,
+   "exact": true,
+   "resolution": null,
+   "solution": false,
+   "surface": null,
+   "box": null,
+   "own": null
+  },
+  {
+   "name": "write_data[prefix = \"./solut/near_wake\"].region",
+   "of_mesh": false,
+   "dimension": 2,
+   "measure": 17.60795971861609,
+   "per_radian": false,
+   "cells": 398,
+   "exact": true,
+   "resolution": null,
+   "solution": false,
+   "surface": 18.570165578477294,
+   "box": null,
+   "own": {
+    "measure": 18,
+    "surface": 18,
+    "tolerance": 0
+   }
+  }
+ ],
+ "case_view": "view/case.vtm",
+ "case_view_images": [],
+ "initial_file": "initial_000000.vtu",
+ "mesh_quality": {
+  "NON_ORTHOGONALITY": {
+   "name": "non-orthogonality",
+   "min": 0,
+   "max": 1.7075472925031877e-06,
+   "mean": 5.051585688023281e-07,
+   "units": "deg",
+   "limit": 70,
+   "above_limit": 0,
+   "histogram": {
+    "edges": [
+     0,
+     8.537736462515938e-08,
+     1.7075472925031877e-07,
+     2.5613209387547814e-07,
+     3.4150945850063754e-07,
+     4.2688682312579694e-07,
+     5.122641877509563e-07,
+     5.976415523761157e-07,
+     6.830189170012751e-07,
+     7.683962816264345e-07,
+     8.537736462515939e-07,
+     9.391510108767532e-07,
+     1.0245283755019126e-06,
+     1.1099057401270721e-06,
+     1.1952831047522315e-06,
+     1.2806604693773908e-06,
+     1.3660378340025502e-06,
+     1.4514151986277097e-06,
+     1.536792563252869e-06,
+     1.6221699278780282e-06,
+     1.7075472925031877e-06
+    ],
+    "counts": [
+     740,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     528,
+     0,
+     0,
+     0,
+     264,
+     0,
+     0,
+     2,
+     0,
+     2
+    ]
+   },
+   "worst": [
+    {
+     "value": 1.7075472925031877e-06,
+     "cell": 1523,
+     "x": [
+      7.7005504658021575,
+      -21.521596797031368
+     ]
+    },
+    {
+     "value": 1.7075472925031877e-06,
+     "cell": 1524,
+     "x": [
+      9.772955583905617,
+      -20.663178490381476
+     ]
+    },
+    {
+     "value": 1.4787793334710982e-06,
+     "cell": 594,
+     "x": [
+      -0.4258620987651375,
+      1.7001367992964285
+     ]
+    },
+    {
+     "value": 1.4787793334710982e-06,
+     "cell": 595,
+     "x": [
+      -0.5904540035957191,
+      1.6502083908174572
+     ]
+    },
+    {
+     "value": 1.2074182697257333e-06,
+     "cell": 114,
+     "x": [
+      0.14097541001123198,
+      -0.5628053847735804
+     ]
+    }
+   ]
+  },
+  "SKEWNESS": {
+   "name": "skewness",
+   "min": 0.00040926420040694744,
+   "max": 0.016857762318742142,
+   "mean": 0.0062308161399728485,
+   "units": "dimensionless",
+   "limit": 0.5,
+   "above_limit": 0,
+   "histogram": {
+    "edges": [
+     0.00040926420040694744,
+     0.0012316891063237072,
+     0.002054114012240467,
+     0.0028765389181572266,
+     0.0036989638240739866,
+     0.004521388729990746,
+     0.005343813635907506,
+     0.006166238541824265,
+     0.006988663447741026,
+     0.007811088353657786,
+     0.008633513259574545,
+     0.009455938165491303,
+     0.010278363071408064,
+     0.011100787977324824,
+     0.011923212883241583,
+     0.012745637789158343,
+     0.013568062695075104,
+     0.014390487600991864,
+     0.015212912506908625,
+     0.01603533741282538,
+     0.016857762318742142
+    ],
+    "counts": [
+     128,
+     128,
+     64,
+     128,
+     128,
+     128,
+     192,
+     256,
+     0,
+     64,
+     0,
+     64,
+     0,
+     64,
+     0,
+     64,
+     0,
+     0,
+     64,
+     64
+    ]
+   },
+   "worst": [
+    {
+     "value": 0.016857762318742142,
+     "cell": 47,
+     "x": [
+      -0.025748947181813173,
+      -0.5241318607369023
+     ]
+    },
+    {
+     "value": 0.016857762318742142,
+     "cell": 48,
+     "x": [
+      0.02574894718181298,
+      -0.5241318607369023
+     ]
+    },
+    {
+     "value": 0.016857762318742094,
+     "cell": 0,
+     "x": [
+      0.5241318607369023,
+      0.02574894718181315
+     ]
+    },
+    {
+     "value": 0.016857762318742094,
+     "cell": 63,
+     "x": [
+      0.5241318607369023,
+      -0.025748947181813146
+     ]
+    },
+    {
+     "value": 0.016857762318742073,
+     "cell": 32,
+     "x": [
+      -0.5241318607369023,
+      -0.025748947181813114
+     ]
+    }
+   ]
+  },
+  "ASPECT_RATIO": {
+   "name": "aspect ratio",
+   "min": 1.0484276566173518,
+   "max": 2.007155229476555,
+   "mean": 1.7017548362184567,
+   "units": "dimensionless",
+   "limit": 1000,
+   "above_limit": 0,
+   "histogram": {
+    "edges": [
+     1.0484276566173518,
+     1.096364035260312,
+     1.1443004139032722,
+     1.1922367925462323,
+     1.2401731711891926,
+     1.2881095498321526,
+     1.3360459284751127,
+     1.383982307118073,
+     1.431918685761033,
+     1.4798550644039934,
+     1.5277914430469535,
+     1.5757278216899135,
+     1.6236642003328738,
+     1.671600578975834,
+     1.7195369576187942,
+     1.7674733362617543,
+     1.8154097149047144,
+     1.8633460935476747,
+     1.9112824721906347,
+     1.959218850833595,
+     2.007155229476555
+    ],
+    "counts": [
+     128,
+     0,
+     64,
+     0,
+     64,
+     0,
+     64,
+     0,
+     64,
+     64,
+     0,
+     64,
+     64,
+     64,
+     64,
+     64,
+     64,
+     128,
+     192,
+     384
+    ]
+   },
+   "worst": [
+    {
+     "value": 2.007155229476555,
+     "cell": 1482,
+     "x": [
+      11.751241797295103,
+      19.605762479226897
+     ]
+    },
+    {
+     "value": 2.007155229476555,
+     "cell": 1498,
+     "x": [
+      -19.605762479226897,
+      11.751241797295103
+     ]
+    },
+    {
+     "value": 2.007155229476555,
+     "cell": 1514,
+     "x": [
+      -11.751241797295103,
+      -19.605762479226897
+     ]
+    },
+    {
+     "value": 2.007155229476555,
+     "cell": 1530,
+     "x": [
+      19.605762479226897,
+      -11.751241797295103
+     ]
+    },
+    {
+     "value": 2.0071552294765524,
+     "cell": 1477,
+     "x": [
+      19.605762479226897,
+      11.751241797295098
+     ]
+    }
+   ]
+  },
+  "VOLUME_RATIO": {
+   "name": "volume ratio",
+   "min": 1.3426064777395252,
+   "max": 1.4713893810972754,
+   "mean": 1.4331786909433044,
+   "units": "dimensionless",
+   "limit": 10,
+   "above_limit": 0,
+   "histogram": {
+    "edges": [
+     1.3426064777395252,
+     1.3490456229074128,
+     1.3554847680753002,
+     1.3619239132431877,
+     1.3683630584110753,
+     1.3748022035789629,
+     1.3812413487468502,
+     1.3876804939147378,
+     1.3941196390826254,
+     1.4005587842505127,
+     1.4069979294184003,
+     1.4134370745862879,
+     1.4198762197541752,
+     1.4263153649220628,
+     1.4327545100899504,
+     1.4391936552578377,
+     1.4456328004257253,
+     1.4520719455936129,
+     1.4585110907615004,
+     1.4649502359293878,
+     1.4713893810972754
+    ],
+    "counts": [
+     64,
+     64,
+     0,
+     64,
+     0,
+     64,
+     0,
+     64,
+     0,
+     64,
+     64,
+     0,
+     64,
+     64,
+     64,
+     64,
+     128,
+     128,
+     128,
+     448
+    ]
+   },
+   "worst": [
+    {
+     "value": 1.4713893810972754,
+     "cell": 1445,
+     "x": [
+      -16.18294829811007,
+      -9.699685928854304
+     ]
+    },
+    {
+     "value": 1.4713893810972754,
+     "cell": 1509,
+     "x": [
+      -19.605762479226897,
+      -11.751241797295098
+     ]
+    },
+    {
+     "value": 1.4713893810972751,
+     "cell": 1461,
+     "x": [
+      9.699685928854304,
+      -16.18294829811007
+     ]
+    },
+    {
+     "value": 1.4713893810972751,
+     "cell": 1525,
+     "x": [
+      11.751241797295098,
+      -19.605762479226897
+     ]
+    },
+    {
+     "value": 1.4713893810972578,
+     "cell": 1412,
+     "x": [
+      17.055758455646135,
+      8.066772975631157
+     ]
+    }
+   ]
+  }
+ },
+ "mesh_fields_file": "mesh_000000.vtu",
+ "stencil_file": null,
+ "time_step": {
+  "t": 0,
+  "dt": 0.01880780631404159,
+  "dt_cfl1": 0.01880780631404159,
+  "cfl": 1,
+  "cfl_limit": 1.2,
+  "integrator": "SSPRK3",
+  "set_by": "CFL",
+  "limiting_cell": 1,
+  "limiting_x": [
+   0.519084184398386,
+   0.07699886510827236
+  ],
+  "region_cells": 64,
+  "region_lo": [
+   -0.5241318607369023,
+   -0.5241318607369023
+  ],
+  "region_hi": [
+   0.5241318607369023,
+   0.5241318607369023
+  ]
+ },
+ "resolution": {
+  "cell_size_min": {
+   "quantity": "cell size V^(1/2), smallest",
+   "value": 0.050724253899401245,
+   "units": "m",
+   "target": "",
+   "status": "none",
+   "basis": "over every cell",
+   "x": null,
+   "region": null
+  },
+  "cell_size_mean": {
+   "quantity": "cell size V^(1/2), mean",
+   "value": 2.2722428044998244,
+   "units": "m",
+   "target": "",
+   "status": "none",
+   "basis": "volume-weighted",
+   "x": null,
+   "region": null
+  },
+  "cell_size_max": {
+   "quantity": "cell size V^(1/2), largest",
+   "value": 3.1256895490669874,
+   "units": "m",
+   "target": "",
+   "status": "none",
+   "basis": "over every cell",
+   "x": [
+    -16.936489704383995,
+    -15.350339496690353
+   ],
+   "region": null
+  },
+  "u_tau": {
+   "quantity": "friction velocity u_tau",
+   "value": 0.05591862026938844,
+   "units": "m/s",
+   "target": "",
+   "status": "none",
+   "basis": "root mean square over the walls' area, from a flat plate's laminar mean skin friction at Re_L = 111 (the walls' length 1 along the mean flow, the largest initial speed 0.222991)",
+   "x": null,
+   "region": null
+  },
+  "y_plus_max": {
+   "quantity": "first-cell y+, largest",
+   "value": 0.7092223979978217,
+   "units": "wall units",
+   "target": "<= 1 (DNS)",
+   "status": "ok",
+   "basis": "first cell centers of the walls without a wall model",
+   "x": [
+    -0.17678765419370784,
+    -0.49408839395920395
+   ],
+   "region": null
+  },
+  "y_plus_mean": {
+   "quantity": "first-cell y+, mean",
+   "value": 0.7092223979978126,
+   "units": "wall units",
+   "target": "",
+   "status": "none",
+   "basis": "area-weighted over every wall",
+   "x": null,
+   "region": null
+  },
+  "x_plus_max": {
+   "quantity": "wall-cell x+, largest",
+   "value": 1.3718983241084786,
+   "units": "wall units",
+   "target": "<= 15 (DNS)",
+   "status": "ok",
+   "basis": "wall faces' extent along the flow",
+   "x": null,
+   "region": null
+  },
+  "epsilon": {
+   "quantity": "dissipation epsilon, mean",
+   "value": 4.976334773955854e-07,
+   "units": "m^2/s^3",
+   "target": "",
+   "status": "none",
+   "basis": "the initial field's resolved dissipation, mass-weighted",
+   "x": null,
+   "region": null
+  },
+  "nu": {
+   "quantity": "kinematic viscosity nu, mean",
+   "value": 0.0019999999999999996,
+   "units": "m^2/s",
+   "target": "",
+   "status": "none",
+   "basis": "the mean mu over the mean rho",
+   "x": null,
+   "region": null
+  },
+  "eta": {
+   "quantity": "Kolmogorov length eta",
+   "value": 0.35607796517702345,
+   "units": "m",
+   "target": "",
+   "status": "none",
+   "basis": "(nu^3 / epsilon)^(1/4)",
+   "x": null,
+   "region": null
+  },
+  "delta_over_eta_mean": {
+   "quantity": "cell size / eta, mean",
+   "value": 6.381306979695257,
+   "units": "dimensionless",
+   "target": "<= 2 (DNS)",
+   "status": "warning",
+   "basis": "the volume-weighted mean cell size over eta",
+   "x": null,
+   "region": null
+  },
+  "delta_over_eta_max": {
+   "quantity": "cell size / eta, largest",
+   "value": 8.77810438933804,
+   "units": "dimensionless",
+   "target": "",
+   "status": "none",
+   "basis": "the largest cell size over eta",
+   "x": [
+    -16.936489704383995,
+    -15.350339496690353
+   ],
+   "region": null
+  },
+  "u_prime": {
+   "quantity": "velocity fluctuation u'",
+   "value": 0.002806694875287542,
+   "units": "m/s",
+   "target": "",
+   "status": "none",
+   "basis": "root mean square per component about the mass-weighted mean velocity",
+   "x": null,
+   "region": null
+  },
+  "taylor": {
+   "quantity": "Taylor microscale lambda",
+   "value": 0.6891298063696616,
+   "units": "m",
+   "target": "",
+   "status": "none",
+   "basis": "(15 nu u'^2 / epsilon)^(1/2)",
+   "x": null,
+   "region": null
+  },
+  "cells_per_taylor": {
+   "quantity": "cells across lambda, mean",
+   "value": 0.3032817641692811,
+   "units": "dimensionless",
+   "target": "",
+   "status": "none",
+   "basis": "lambda over the mean cell size",
+   "x": null,
+   "region": null
+  }
+ },
+ "memory": {
+  "device_memory": false,
+  "ranks": 1,
+  "bytes": 7808120,
+  "bytes_peak": 8648472,
+  "local_cells": 1536,
+  "local_owned": 1536,
+  "target_ranks": 1,
+  "target_owned": 1536,
+  "target_halo": 0,
+  "target_bytes": 7808120,
+  "target_bytes_peak": 8648472,
+  "device_capacity": 0,
+  "outside_kokkos": 0,
+  "view_entries_per_cell": 80,
+  "view_max_local_cells": 53687091,
+  "steps_timed": 0,
+  "at_setup_peak": {
+   "solution and stages": 356872,
+   "faces and gradients": 1835016,
+   "reconstruction tables": 3832736,
+   "mesh and geometry": 607256,
+   "boundaries and models": 27952,
+   "chemistry": 0,
+   "diagnostics": 520920,
+   "output staging": 627040,
+   "halo buffers": 0,
+   "work memory": 0,
+   "setup": 840680,
+   "runtime and pages": 0,
+   "other": 0
+  },
+  "steady": {
+   "solution and stages": 356872,
+   "faces and gradients": 1835016,
+   "reconstruction tables": 3832736,
+   "mesh and geometry": 607256,
+   "boundaries and models": 27480,
+   "chemistry": 0,
+   "diagnostics": 521720,
+   "output staging": 627040,
+   "halo buffers": 0,
+   "work memory": 0,
+   "setup": 0,
+   "runtime and pages": 0,
+   "other": 0
+  }
+ },
+ "sizing": null,
+ "cost": {
+  "cells": 1536,
+  "ranks": 1,
+  "throughput": 0,
+  "throughput_measured": false,
+  "steps_timed": 0,
+  "wall_per_time": 0,
+  "flow_through_time": 250.29476701285705,
+  "t_stop": 160,
+  "n_steps": 0
+ }
+}

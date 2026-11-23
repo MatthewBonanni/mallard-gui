@@ -1,0 +1,28 @@
+#!/bin/sh
+# A stand-in for OpenSSH that never opens a connection: `fake-ssh [options] HOST COMMAND` runs COMMAND
+# with this machine's shell, as sshd would on HOST, so tests drive real pipelines without a server.
+#   FAKE_SSH_HOMES  each host's home is $FAKE_SSH_HOMES/HOST (created), the command's working directory
+#   FAKE_SSH_LOG    a line "HOST<TAB>COMMAND" per command
+# Hosts named unreachable* refuse the connection, as ssh does (exit 255).
+op=""
+while [ $# -gt 0 ]; do
+  case "$1" in
+    -o) shift 2 ;;
+    -A | -T | -q) shift ;;
+    -O) op=$2; shift 2 ;;
+    *) break ;;
+  esac
+done
+host=$1
+shift
+[ -n "$op" ] && exit 0
+if [ -n "$FAKE_SSH_LOG" ]; then printf '%s\t%s\n' "$host" "$*" >> "$FAKE_SSH_LOG"; fi
+case "$host" in
+  unreachable*) echo "ssh: connect to host $host port 22: Connection refused" >&2; exit 255 ;;
+esac
+if [ -n "$FAKE_SSH_HOMES" ]; then
+  HOME="$FAKE_SSH_HOMES/$host"
+  export HOME
+  mkdir -p "$HOME" && cd "$HOME" || exit 255
+fi
+exec sh -c "$*"

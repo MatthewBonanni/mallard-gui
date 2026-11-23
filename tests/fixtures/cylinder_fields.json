@@ -1,0 +1,1049 @@
+{
+ "input": "input.toml",
+ "dim": 2,
+ "fields": [
+  {
+   "name": "RHO",
+   "units": "kg m-3",
+   "long_name": "density",
+   "group": "conservative",
+   "available": [
+    "write_data",
+    "probes",
+    "statistics"
+   ]
+  },
+  {
+   "name": "RHOU_X",
+   "units": "kg m-2 s-1",
+   "long_name": "x component of momentum density",
+   "group": "conservative",
+   "available": [
+    "write_data",
+    "probes",
+    "statistics"
+   ]
+  },
+  {
+   "name": "RHOU_Y",
+   "units": "kg m-2 s-1",
+   "long_name": "y component of momentum density",
+   "group": "conservative",
+   "available": [
+    "write_data",
+    "probes",
+    "statistics"
+   ]
+  },
+  {
+   "name": "RHOE",
+   "units": "kg m-1 s-2",
+   "long_name": "total energy density",
+   "group": "conservative",
+   "available": [
+    "write_data",
+    "probes",
+    "statistics"
+   ]
+  },
+  {
+   "name": "U_X",
+   "units": "m s-1",
+   "long_name": "x component of velocity",
+   "group": "primitive",
+   "available": [
+    "write_data",
+    "probes",
+    "statistics"
+   ]
+  },
+  {
+   "name": "U_Y",
+   "units": "m s-1",
+   "long_name": "y component of velocity",
+   "group": "primitive",
+   "available": [
+    "write_data",
+    "probes",
+    "statistics"
+   ]
+  },
+  {
+   "name": "P",
+   "units": "kg m-1 s-2",
+   "long_name": "pressure",
+   "group": "primitive",
+   "available": [
+    "write_data",
+    "probes",
+    "statistics"
+   ]
+  },
+  {
+   "name": "T",
+   "units": "K",
+   "long_name": "temperature",
+   "group": "primitive",
+   "available": [
+    "write_data",
+    "probes",
+    "statistics"
+   ]
+  },
+  {
+   "name": "H",
+   "units": "m2 s-2",
+   "long_name": "specific enthalpy",
+   "group": "primitive",
+   "available": [
+    "write_data",
+    "probes",
+    "statistics"
+   ]
+  },
+  {
+   "name": "CFL",
+   "units": "1",
+   "long_name": "local CFL number",
+   "group": "derived",
+   "available": [
+    "write_data"
+   ]
+  },
+  {
+   "name": "PHASE_00_U_X",
+   "units": "m s-1",
+   "long_name": "phase average of x component of velocity in bin 00",
+   "group": "statistics",
+   "available": [
+    "write_data",
+    "probes"
+   ]
+  },
+  {
+   "name": "PHASE_00_U_Y",
+   "units": "m s-1",
+   "long_name": "phase average of y component of velocity in bin 00",
+   "group": "statistics",
+   "available": [
+    "write_data",
+    "probes"
+   ]
+  },
+  {
+   "name": "PHASE_00_P",
+   "units": "kg m-1 s-2",
+   "long_name": "phase average of pressure in bin 00",
+   "group": "statistics",
+   "available": [
+    "write_data",
+    "probes"
+   ]
+  },
+  {
+   "name": "PHASE_01_U_X",
+   "units": "m s-1",
+   "long_name": "phase average of x component of velocity in bin 01",
+   "group": "statistics",
+   "available": [
+    "write_data",
+    "probes"
+   ]
+  },
+  {
+   "name": "PHASE_01_U_Y",
+   "units": "m s-1",
+   "long_name": "phase average of y component of velocity in bin 01",
+   "group": "statistics",
+   "available": [
+    "write_data",
+    "probes"
+   ]
+  },
+  {
+   "name": "PHASE_01_P",
+   "units": "kg m-1 s-2",
+   "long_name": "phase average of pressure in bin 01",
+   "group": "statistics",
+   "available": [
+    "write_data",
+    "probes"
+   ]
+  },
+  {
+   "name": "PHASE_02_U_X",
+   "units": "m s-1",
+   "long_name": "phase average of x component of velocity in bin 02",
+   "group": "statistics",
+   "available": [
+    "write_data",
+    "probes"
+   ]
+  },
+  {
+   "name": "PHASE_02_U_Y",
+   "units": "m s-1",
+   "long_name": "phase average of y component of velocity in bin 02",
+   "group": "statistics",
+   "available": [
+    "write_data",
+    "probes"
+   ]
+  },
+  {
+   "name": "PHASE_02_P",
+   "units": "kg m-1 s-2",
+   "long_name": "phase average of pressure in bin 02",
+   "group": "statistics",
+   "available": [
+    "write_data",
+    "probes"
+   ]
+  },
+  {
+   "name": "PHASE_03_U_X",
+   "units": "m s-1",
+   "long_name": "phase average of x component of velocity in bin 03",
+   "group": "statistics",
+   "available": [
+    "write_data",
+    "probes"
+   ]
+  },
+  {
+   "name": "PHASE_03_U_Y",
+   "units": "m s-1",
+   "long_name": "phase average of y component of velocity in bin 03",
+   "group": "statistics",
+   "available": [
+    "write_data",
+    "probes"
+   ]
+  },
+  {
+   "name": "PHASE_03_P",
+   "units": "kg m-1 s-2",
+   "long_name": "phase average of pressure in bin 03",
+   "group": "statistics",
+   "available": [
+    "write_data",
+    "probes"
+   ]
+  },
+  {
+   "name": "PHASE_04_U_X",
+   "units": "m s-1",
+   "long_name": "phase average of x component of velocity in bin 04",
+   "group": "statistics",
+   "available": [
+    "write_data",
+    "probes"
+   ]
+  },
+  {
+   "name": "PHASE_04_U_Y",
+   "units": "m s-1",
+   "long_name": "phase average of y component of velocity in bin 04",
+   "group": "statistics",
+   "available": [
+    "write_data",
+    "probes"
+   ]
+  },
+  {
+   "name": "PHASE_04_P",
+   "units": "kg m-1 s-2",
+   "long_name": "phase average of pressure in bin 04",
+   "group": "statistics",
+   "available": [
+    "write_data",
+    "probes"
+   ]
+  },
+  {
+   "name": "PHASE_05_U_X",
+   "units": "m s-1",
+   "long_name": "phase average of x component of velocity in bin 05",
+   "group": "statistics",
+   "available": [
+    "write_data",
+    "probes"
+   ]
+  },
+  {
+   "name": "PHASE_05_U_Y",
+   "units": "m s-1",
+   "long_name": "phase average of y component of velocity in bin 05",
+   "group": "statistics",
+   "available": [
+    "write_data",
+    "probes"
+   ]
+  },
+  {
+   "name": "PHASE_05_P",
+   "units": "kg m-1 s-2",
+   "long_name": "phase average of pressure in bin 05",
+   "group": "statistics",
+   "available": [
+    "write_data",
+    "probes"
+   ]
+  },
+  {
+   "name": "PHASE_06_U_X",
+   "units": "m s-1",
+   "long_name": "phase average of x component of velocity in bin 06",
+   "group": "statistics",
+   "available": [
+    "write_data",
+    "probes"
+   ]
+  },
+  {
+   "name": "PHASE_06_U_Y",
+   "units": "m s-1",
+   "long_name": "phase average of y component of velocity in bin 06",
+   "group": "statistics",
+   "available": [
+    "write_data",
+    "probes"
+   ]
+  },
+  {
+   "name": "PHASE_06_P",
+   "units": "kg m-1 s-2",
+   "long_name": "phase average of pressure in bin 06",
+   "group": "statistics",
+   "available": [
+    "write_data",
+    "probes"
+   ]
+  },
+  {
+   "name": "PHASE_07_U_X",
+   "units": "m s-1",
+   "long_name": "phase average of x component of velocity in bin 07",
+   "group": "statistics",
+   "available": [
+    "write_data",
+    "probes"
+   ]
+  },
+  {
+   "name": "PHASE_07_U_Y",
+   "units": "m s-1",
+   "long_name": "phase average of y component of velocity in bin 07",
+   "group": "statistics",
+   "available": [
+    "write_data",
+    "probes"
+   ]
+  },
+  {
+   "name": "PHASE_07_P",
+   "units": "kg m-1 s-2",
+   "long_name": "phase average of pressure in bin 07",
+   "group": "statistics",
+   "available": [
+    "write_data",
+    "probes"
+   ]
+  },
+  {
+   "name": "PHASE_08_U_X",
+   "units": "m s-1",
+   "long_name": "phase average of x component of velocity in bin 08",
+   "group": "statistics",
+   "available": [
+    "write_data",
+    "probes"
+   ]
+  },
+  {
+   "name": "PHASE_08_U_Y",
+   "units": "m s-1",
+   "long_name": "phase average of y component of velocity in bin 08",
+   "group": "statistics",
+   "available": [
+    "write_data",
+    "probes"
+   ]
+  },
+  {
+   "name": "PHASE_08_P",
+   "units": "kg m-1 s-2",
+   "long_name": "phase average of pressure in bin 08",
+   "group": "statistics",
+   "available": [
+    "write_data",
+    "probes"
+   ]
+  },
+  {
+   "name": "PHASE_09_U_X",
+   "units": "m s-1",
+   "long_name": "phase average of x component of velocity in bin 09",
+   "group": "statistics",
+   "available": [
+    "write_data",
+    "probes"
+   ]
+  },
+  {
+   "name": "PHASE_09_U_Y",
+   "units": "m s-1",
+   "long_name": "phase average of y component of velocity in bin 09",
+   "group": "statistics",
+   "available": [
+    "write_data",
+    "probes"
+   ]
+  },
+  {
+   "name": "PHASE_09_P",
+   "units": "kg m-1 s-2",
+   "long_name": "phase average of pressure in bin 09",
+   "group": "statistics",
+   "available": [
+    "write_data",
+    "probes"
+   ]
+  },
+  {
+   "name": "PHASE_10_U_X",
+   "units": "m s-1",
+   "long_name": "phase average of x component of velocity in bin 10",
+   "group": "statistics",
+   "available": [
+    "write_data",
+    "probes"
+   ]
+  },
+  {
+   "name": "PHASE_10_U_Y",
+   "units": "m s-1",
+   "long_name": "phase average of y component of velocity in bin 10",
+   "group": "statistics",
+   "available": [
+    "write_data",
+    "probes"
+   ]
+  },
+  {
+   "name": "PHASE_10_P",
+   "units": "kg m-1 s-2",
+   "long_name": "phase average of pressure in bin 10",
+   "group": "statistics",
+   "available": [
+    "write_data",
+    "probes"
+   ]
+  },
+  {
+   "name": "PHASE_11_U_X",
+   "units": "m s-1",
+   "long_name": "phase average of x component of velocity in bin 11",
+   "group": "statistics",
+   "available": [
+    "write_data",
+    "probes"
+   ]
+  },
+  {
+   "name": "PHASE_11_U_Y",
+   "units": "m s-1",
+   "long_name": "phase average of y component of velocity in bin 11",
+   "group": "statistics",
+   "available": [
+    "write_data",
+    "probes"
+   ]
+  },
+  {
+   "name": "PHASE_11_P",
+   "units": "kg m-1 s-2",
+   "long_name": "phase average of pressure in bin 11",
+   "group": "statistics",
+   "available": [
+    "write_data",
+    "probes"
+   ]
+  },
+  {
+   "name": "TENO_SIGMA",
+   "units": "1",
+   "long_name": "TENO troubled-cell indicator",
+   "group": "derived",
+   "available": [
+    "write_data"
+   ]
+  },
+  {
+   "name": "P_MAX",
+   "units": "kg m-1 s-2",
+   "long_name": "largest pressure seen",
+   "group": "derived",
+   "available": [
+    "write_data"
+   ]
+  },
+  {
+   "name": "MACH",
+   "units": "1",
+   "long_name": "Mach number",
+   "group": "derived",
+   "available": [
+    "write_data",
+    "post derive"
+   ]
+  },
+  {
+   "name": "Q_CRITERION",
+   "units": "s-2",
+   "long_name": "Q-criterion",
+   "group": "derived",
+   "available": [
+    "write_data",
+    "post derive"
+   ]
+  },
+  {
+   "name": "LAMBDA2",
+   "units": "s-2",
+   "long_name": "lambda2 vortex criterion",
+   "group": "derived",
+   "available": [
+    "write_data",
+    "post derive"
+   ]
+  },
+  {
+   "name": "SCHLIEREN",
+   "units": "kg m-4",
+   "long_name": "density gradient magnitude",
+   "group": "derived",
+   "available": [
+    "write_data",
+    "post derive"
+   ]
+  },
+  {
+   "name": "P0",
+   "units": "kg m-1 s-2",
+   "long_name": "stagnation pressure",
+   "group": "derived",
+   "available": [
+    "write_data",
+    "post derive"
+   ]
+  },
+  {
+   "name": "T0",
+   "units": "K",
+   "long_name": "stagnation temperature",
+   "group": "derived",
+   "available": [
+    "write_data",
+    "post derive"
+   ]
+  },
+  {
+   "name": "H0",
+   "units": "m2 s-2",
+   "long_name": "stagnation (total) specific enthalpy",
+   "group": "derived",
+   "available": [
+    "write_data",
+    "post derive"
+   ]
+  },
+  {
+   "name": "SOUND_SPEED",
+   "units": "m s-1",
+   "long_name": "speed of sound",
+   "group": "derived",
+   "available": [
+    "write_data",
+    "post derive"
+   ]
+  },
+  {
+   "name": "ENTROPY",
+   "units": "m2 s-2 K-1",
+   "long_name": "specific entropy",
+   "group": "derived",
+   "available": [
+    "write_data",
+    "post derive"
+   ]
+  },
+  {
+   "name": "DILATATION",
+   "units": "s-1",
+   "long_name": "dilatation (velocity divergence)",
+   "group": "derived",
+   "available": [
+    "write_data",
+    "post derive"
+   ]
+  },
+  {
+   "name": "ENSTROPHY",
+   "units": "s-2",
+   "long_name": "enstrophy",
+   "group": "derived",
+   "available": [
+    "write_data",
+    "post derive"
+   ]
+  },
+  {
+   "name": "STRAIN_RATE",
+   "units": "s-1",
+   "long_name": "strain-rate magnitude",
+   "group": "derived",
+   "available": [
+    "write_data",
+    "post derive"
+   ]
+  },
+  {
+   "name": "CP",
+   "units": "1",
+   "long_name": "pressure coefficient",
+   "group": "derived",
+   "available": [
+    "write_data",
+    "probes",
+    "post derive"
+   ]
+  },
+  {
+   "name": "NON_ORTHOGONALITY",
+   "units": "degree",
+   "long_name": "largest face non-orthogonality",
+   "group": "mesh quality",
+   "available": [
+    "write_data"
+   ]
+  },
+  {
+   "name": "SKEWNESS",
+   "units": "1",
+   "long_name": "largest face skewness",
+   "group": "mesh quality",
+   "available": [
+    "write_data"
+   ]
+  },
+  {
+   "name": "ASPECT_RATIO",
+   "units": "1",
+   "long_name": "cell aspect ratio",
+   "group": "mesh quality",
+   "available": [
+    "write_data"
+   ]
+  },
+  {
+   "name": "VOLUME_RATIO",
+   "units": "1",
+   "long_name": "largest volume ratio to a neighbor",
+   "group": "mesh quality",
+   "available": [
+    "write_data"
+   ]
+  },
+  {
+   "name": "STENCIL_SIZE",
+   "units": "1",
+   "long_name": "cells in the central stencil",
+   "group": "stencils",
+   "available": [
+    "write_data"
+   ]
+  },
+  {
+   "name": "STENCIL_SECTORS",
+   "units": "1",
+   "long_name": "sector stencils kept (TENO)",
+   "group": "stencils",
+   "available": [
+    "write_data"
+   ]
+  },
+  {
+   "name": "STENCIL_DEGREE",
+   "units": "1",
+   "long_name": "degree of the central reconstruction polynomial",
+   "group": "stencils",
+   "available": [
+    "write_data"
+   ]
+  },
+  {
+   "name": "STENCIL_CONDITION",
+   "units": "1",
+   "long_name": "condition number of the central least-squares fit",
+   "group": "stencils",
+   "available": [
+    "write_data"
+   ]
+  },
+  {
+   "name": "STENCIL_WALL",
+   "units": "1",
+   "long_name": "1 where a stencil reaches a wall",
+   "group": "stencils",
+   "available": [
+    "write_data"
+   ]
+  },
+  {
+   "name": "STENCIL_SEAM",
+   "units": "1",
+   "long_name": "1 where a stencil reaches across a periodic seam",
+   "group": "stencils",
+   "available": [
+    "write_data"
+   ]
+  },
+  {
+   "name": "STENCIL_PARTITION",
+   "units": "1",
+   "long_name": "1 where a stencil reaches cells of another rank",
+   "group": "stencils",
+   "available": [
+    "write_data"
+   ]
+  },
+  {
+   "name": "VORTICITY",
+   "units": "s-1",
+   "long_name": "vorticity",
+   "group": "derived",
+   "available": [
+    "write_data",
+    "post derive"
+   ]
+  }
+ ],
+ "missing": [
+  {
+   "name": "RHOY_<s>",
+   "units": "kg m-3",
+   "long_name": "partial density of species s",
+   "group": "conservative",
+   "needs": "a mixture",
+   "available": [
+    "write_data",
+    "probes",
+    "statistics"
+   ]
+  },
+  {
+   "name": "HELICITY",
+   "units": "m s-2",
+   "long_name": "helicity density",
+   "group": "derived",
+   "needs": "a 3D build (in 2D the vorticity is normal to the velocity)",
+   "available": [
+    "write_data",
+    "post derive"
+   ]
+  },
+  {
+   "name": "MU",
+   "units": "kg m-1 s-1",
+   "long_name": "dynamic viscosity",
+   "group": "transport",
+   "needs": "a mixture with navier_stokes",
+   "available": [
+    "write_data"
+   ]
+  },
+  {
+   "name": "LAMBDA",
+   "units": "kg m s-3 K-1",
+   "long_name": "thermal conductivity",
+   "group": "transport",
+   "needs": "a mixture with navier_stokes",
+   "available": [
+    "write_data"
+   ]
+  },
+  {
+   "name": "D_<s>",
+   "units": "m2 s-1",
+   "long_name": "diffusion coefficient of species s",
+   "group": "transport",
+   "needs": "a mixture with navier_stokes",
+   "available": [
+    "write_data"
+   ]
+  },
+  {
+   "name": "DT_<s>",
+   "units": "kg m-1 s-1",
+   "long_name": "thermal diffusion coefficient of species s",
+   "group": "transport",
+   "needs": "a mixture with navier_stokes and soret = true",
+   "available": [
+    "write_data"
+   ]
+  },
+  {
+   "name": "MIXTURE_FRACTION",
+   "units": "1",
+   "long_name": "Bilger mixture fraction",
+   "group": "mixture",
+   "needs": "a mixture with [output.mixture] fuel and oxidizer",
+   "available": [
+    "write_data",
+    "post derive"
+   ]
+  },
+  {
+   "name": "PROGRESS_VARIABLE",
+   "units": "1",
+   "long_name": "progress variable",
+   "group": "mixture",
+   "needs": "a mixture with [output.mixture] progress",
+   "available": [
+    "write_data",
+    "post derive"
+   ]
+  },
+  {
+   "name": "FLAME_INDEX",
+   "units": "1",
+   "long_name": "Takeno flame index",
+   "group": "mixture",
+   "needs": "a mixture with [output.mixture] fuel and oxidizer, or fuel_species and oxidizer_species",
+   "available": [
+    "write_data",
+    "post derive"
+   ]
+  },
+  {
+   "name": "SCALAR_DISSIPATION",
+   "units": "s-1",
+   "long_name": "scalar dissipation rate of the mixture fraction",
+   "group": "mixture",
+   "needs": "a mixture with navier_stokes and [output.mixture] fuel and oxidizer",
+   "available": [
+    "write_data",
+    "post derive"
+   ]
+  },
+  {
+   "name": "T_SEED",
+   "units": "K",
+   "long_name": "temperature guess of the thermodynamic state",
+   "group": "mixture",
+   "needs": "a mixture",
+   "available": [
+    "write_data"
+   ]
+  },
+  {
+   "name": "Y_<s>",
+   "units": "1",
+   "long_name": "mass fraction of species s",
+   "group": "mixture",
+   "needs": "a mixture",
+   "available": [
+    "write_data",
+    "probes",
+    "statistics"
+   ]
+  },
+  {
+   "name": "X_<s>",
+   "units": "1",
+   "long_name": "mole fraction of species s",
+   "group": "mixture",
+   "needs": "a mixture",
+   "available": [
+    "write_data"
+   ]
+  },
+  {
+   "name": "HRR",
+   "units": "kg m-1 s-3",
+   "long_name": "heat release rate",
+   "group": "chemistry",
+   "needs": "a mixture with [chemistry]",
+   "available": [
+    "write_data"
+   ]
+  },
+  {
+   "name": "CHEM_H",
+   "units": "s",
+   "long_name": "last chemistry sub-step, negated after a failed explicit step",
+   "group": "chemistry",
+   "needs": "a mixture with [chemistry]",
+   "available": [
+    "write_data"
+   ]
+  },
+  {
+   "name": "CHEM_COST",
+   "units": "1",
+   "long_name": "chemistry sub-steps in the last step",
+   "group": "chemistry",
+   "needs": "a mixture with [chemistry]",
+   "available": [
+    "write_data"
+   ]
+  },
+  {
+   "name": "QRAD",
+   "units": "kg m-1 s-3",
+   "long_name": "radiative heat source",
+   "group": "chemistry",
+   "needs": "[radiation]",
+   "available": [
+    "write_data"
+   ]
+  },
+  {
+   "name": "OMEGA_<s>",
+   "units": "kg m-3 s-1",
+   "long_name": "net production rate of species s",
+   "group": "chemistry",
+   "needs": "a mixture with [chemistry]",
+   "available": [
+    "write_data"
+   ]
+  },
+  {
+   "name": "MU_T",
+   "units": "kg m-1 s-1",
+   "long_name": "eddy viscosity",
+   "group": "LES",
+   "needs": "[les]",
+   "available": [
+    "write_data"
+   ]
+  },
+  {
+   "name": "TF_F",
+   "units": "1",
+   "long_name": "flame thickening factor",
+   "group": "LES",
+   "needs": "[les.combustion] (TFLES)",
+   "available": [
+    "write_data"
+   ]
+  },
+  {
+   "name": "TF_E",
+   "units": "1",
+   "long_name": "flame wrinkling efficiency",
+   "group": "LES",
+   "needs": "[les.combustion] (TFLES)",
+   "available": [
+    "write_data"
+   ]
+  },
+  {
+   "name": "TF_OMEGA",
+   "units": "1",
+   "long_name": "flame sensor",
+   "group": "LES",
+   "needs": "[les.combustion] (TFLES)",
+   "available": [
+    "write_data"
+   ]
+  },
+  {
+   "name": "PASR_KAPPA",
+   "units": "1",
+   "long_name": "PaSR reacting fraction",
+   "group": "LES",
+   "needs": "[les.combustion] model = \"pasr\"",
+   "available": [
+    "write_data"
+   ]
+  },
+  {
+   "name": "SOURCE_<A>",
+   "units": "A's s-1",
+   "long_name": "source of A, per second",
+   "group": "sources",
+   "needs": "[[sources]] or [source]",
+   "available": [
+    "write_data"
+   ]
+  },
+  {
+   "name": "MEAN_<A>",
+   "units": "A's",
+   "long_name": "time average of A",
+   "group": "statistics",
+   "needs": "[statistics] fields with A, or [[probes]] averaging A",
+   "available": [
+    "write_data",
+    "probes"
+   ]
+  },
+  {
+   "name": "COV_<A>_<B>",
+   "units": "A's times B's",
+   "long_name": "covariance of A and B",
+   "group": "statistics",
+   "needs": "[statistics] products with A*B",
+   "available": [
+    "write_data",
+    "probes"
+   ]
+  },
+  {
+   "name": "RMS_<A>",
+   "units": "A's",
+   "long_name": "root mean square fluctuation of A",
+   "group": "statistics",
+   "needs": "mallard post average, of A with its variance",
+   "available": [
+    "write_data",
+    "probes"
+   ]
+  },
+  {
+   "name": "FAVRE_MEAN_<A>",
+   "units": "A's",
+   "long_name": "Favre (density-weighted) time average of A",
+   "group": "statistics",
+   "needs": "mallard post average --favre",
+   "available": [
+    "write_data",
+    "probes"
+   ]
+  },
+  {
+   "name": "FAVRE_COV_<A>_<B>",
+   "units": "A's times B's",
+   "long_name": "Favre covariance of A and B",
+   "group": "statistics",
+   "needs": "mallard post average --favre, of A*B",
+   "available": [
+    "write_data",
+    "probes"
+   ]
+  },
+  {
+   "name": "CI_<average>",
+   "units": "the average's",
+   "long_name": "confidence interval half width of an average",
+   "group": "statistics",
+   "needs": "[statistics] batch, of a MEAN_ or COV_ average",
+   "available": [
+    "write_data",
+    "probes"
+   ]
+  }
+ ]
+}

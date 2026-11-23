@@ -1,0 +1,359 @@
+{
+ "schema": "mallard-boundary-values",
+ "version": 1,
+ "t": 0,
+ "entries": [
+  {
+   "entry": "boundaries[name = \"left\"]",
+   "index": 0,
+   "zone": "left",
+   "condition": "inlet_state",
+   "file": "boundaries_0_left.csv",
+   "faces": 20,
+   "columns": [
+    {
+     "name": "x",
+     "units": "m",
+     "estimated": false,
+     "min": 0,
+     "mean": 0,
+     "max": 0
+    },
+    {
+     "name": "y",
+     "units": "m",
+     "estimated": false,
+     "min": 0.0025,
+     "mean": 0.049999999999999996,
+     "max": 0.0975
+    },
+    {
+     "name": "n_x",
+     "units": "1",
+     "estimated": false,
+     "min": 1,
+     "mean": 1,
+     "max": 1
+    },
+    {
+     "name": "n_y",
+     "units": "1",
+     "estimated": false,
+     "min": 0,
+     "mean": 0,
+     "max": 0
+    },
+    {
+     "name": "u[0]",
+     "units": "m/s",
+     "estimated": false,
+     "min": 9.75,
+     "mean": 66.75000000000001,
+     "max": 99.75000000000001
+    },
+    {
+     "name": "u[1]",
+     "units": "m/s",
+     "estimated": false,
+     "min": 0,
+     "mean": 0,
+     "max": 0
+    },
+    {
+     "name": "p",
+     "units": "Pa",
+     "estimated": false,
+     "min": 100000.0,
+     "mean": 99999.99999999996,
+     "max": 100000.0
+    },
+    {
+     "name": "T",
+     "units": "K",
+     "estimated": false,
+     "min": 300,
+     "mean": 299.99999999999994,
+     "max": 300
+    },
+    {
+     "name": "u_x",
+     "units": "m/s",
+     "estimated": false,
+     "min": 9.75,
+     "mean": 66.75000000000001,
+     "max": 99.75000000000001
+    },
+    {
+     "name": "u_y",
+     "units": "m/s",
+     "estimated": false,
+     "min": 0,
+     "mean": 0,
+     "max": 0
+    }
+   ]
+  },
+  {
+   "entry": "boundaries[name = \"bottom\"]",
+   "index": 1,
+   "zone": "bottom",
+   "condition": "inlet_mass_flow",
+   "file": "boundaries_1_bottom.csv",
+   "faces": 40,
+   "columns": [
+    {
+     "name": "x",
+     "units": "m",
+     "estimated": false,
+     "min": 0.0025,
+     "mean": 0.09999999999999999,
+     "max": 0.1975
+    },
+    {
+     "name": "y",
+     "units": "m",
+     "estimated": false,
+     "min": 0,
+     "mean": 0,
+     "max": 0
+    },
+    {
+     "name": "n_x",
+     "units": "1",
+     "estimated": false,
+     "min": 0,
+     "mean": 0,
+     "max": 0
+    },
+    {
+     "name": "n_y",
+     "units": "1",
+     "estimated": false,
+     "min": 1,
+     "mean": 1,
+     "max": 1
+    },
+    {
+     "name": "T",
+     "units": "K",
+     "estimated": false,
+     "min": 300,
+     "mean": 299.9999999999999,
+     "max": 300
+    },
+    {
+     "name": "mass_flux",
+     "units": "kg/(m^2 s)",
+     "estimated": false,
+     "min": 20,
+     "mean": 20,
+     "max": 20
+    },
+    {
+     "name": "rho",
+     "units": "kg/m^3",
+     "estimated": true,
+     "min": 1.2356625728172912,
+     "mean": 1.235662572817291,
+     "max": 1.2356625728172912
+    },
+    {
+     "name": "u_x",
+     "units": "m/s",
+     "estimated": true,
+     "min": 0,
+     "mean": 0,
+     "max": 0
+    },
+    {
+     "name": "u_y",
+     "units": "m/s",
+     "estimated": true,
+     "min": 16.18564844478563,
+     "mean": 16.18564844478562,
+     "max": 16.18564844478563
+    },
+    {
+     "name": "speed",
+     "units": "m/s",
+     "estimated": true,
+     "min": 16.18564844478563,
+     "mean": 16.18564844478562,
+     "max": 16.18564844478563
+    },
+    {
+     "name": "rho_u_n",
+     "units": "kg/(m^2 s)",
+     "estimated": true,
+     "min": 20,
+     "mean": 20,
+     "max": 20
+    },
+    {
+     "name": "p",
+     "units": "Pa",
+     "estimated": true,
+     "min": 106522.63558769753,
+     "mean": 106522.63558769759,
+     "max": 106522.63558769753
+    }
+   ]
+  },
+  {
+   "entry": "boundaries[name = \"right\"]",
+   "index": 2,
+   "zone": "right",
+   "condition": "outlet_pressure",
+   "file": "boundaries_2_right.csv",
+   "faces": 20,
+   "columns": [
+    {
+     "name": "x",
+     "units": "m",
+     "estimated": false,
+     "min": 0.2,
+     "mean": 0.19999999999999998,
+     "max": 0.2
+    },
+    {
+     "name": "y",
+     "units": "m",
+     "estimated": false,
+     "min": 0.0025,
+     "mean": 0.049999999999999996,
+     "max": 0.0975
+    },
+    {
+     "name": "n_x",
+     "units": "1",
+     "estimated": false,
+     "min": -1,
+     "mean": -1,
+     "max": -1
+    },
+    {
+     "name": "n_y",
+     "units": "1",
+     "estimated": false,
+     "min": 0,
+     "mean": 0,
+     "max": 0
+    },
+    {
+     "name": "p",
+     "units": "Pa",
+     "estimated": false,
+     "min": 99000,
+     "mean": 98999.99999999996,
+     "max": 99000
+    }
+   ]
+  },
+  {
+   "entry": "boundaries[name = \"top\"]",
+   "index": 3,
+   "zone": "top",
+   "condition": "inlet_stagnation",
+   "file": "boundaries_3_top.csv",
+   "faces": 40,
+   "columns": [
+    {
+     "name": "x",
+     "units": "m",
+     "estimated": false,
+     "min": 0.0025,
+     "mean": 0.09999999999999999,
+     "max": 0.1975
+    },
+    {
+     "name": "y",
+     "units": "m",
+     "estimated": false,
+     "min": 0.1,
+     "mean": 0.09999999999999999,
+     "max": 0.1
+    },
+    {
+     "name": "n_x",
+     "units": "1",
+     "estimated": false,
+     "min": 0,
+     "mean": 0,
+     "max": 0
+    },
+    {
+     "name": "n_y",
+     "units": "1",
+     "estimated": false,
+     "min": -1,
+     "mean": -1,
+     "max": -1
+    },
+    {
+     "name": "p0",
+     "units": "Pa",
+     "estimated": false,
+     "min": 105000,
+     "mean": 104999.99999999996,
+     "max": 105000
+    },
+    {
+     "name": "T0",
+     "units": "K",
+     "estimated": false,
+     "min": 300,
+     "mean": 299.9999999999999,
+     "max": 300
+    },
+    {
+     "name": "rho",
+     "units": "kg/m^3",
+     "estimated": true,
+     "min": 1.218,
+     "mean": 1.2180000000000009,
+     "max": 1.218
+    },
+    {
+     "name": "u_x",
+     "units": "m/s",
+     "estimated": true,
+     "min": 0,
+     "mean": 0,
+     "max": 0
+    },
+    {
+     "name": "u_y",
+     "units": "m/s",
+     "estimated": true,
+     "min": 0,
+     "mean": 0,
+     "max": 0
+    },
+    {
+     "name": "speed",
+     "units": "m/s",
+     "estimated": true,
+     "min": 0,
+     "mean": 0,
+     "max": 0
+    },
+    {
+     "name": "rho_u_n",
+     "units": "kg/(m^2 s)",
+     "estimated": true,
+     "min": 0,
+     "mean": 0,
+     "max": 0
+    },
+    {
+     "name": "p",
+     "units": "Pa",
+     "estimated": true,
+     "min": 105000,
+     "mean": 104999.99999999996,
+     "max": 105000
+    }
+   ]
+  }
+ ]
+}
