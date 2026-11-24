@@ -523,3 +523,12 @@ def test_a_choice_of_models_links_each_to_its_theory_section_on_the_website(cyli
 def test_site_urls_follow_mkdocs_directory_urls() -> None:
     assert site_url("docs/theory/index.md#notation") == "https://matthewbonanni.github.io/mallard/docs/theory/#notation"
     assert site_url("docs/guide/les.md") == "https://matthewbonanni.github.io/mallard/docs/guide/les/"
+
+
+def test_a_table_leads_with_its_name_and_type(cylinder_project: Path) -> None:
+    """The keys were alphabetical: a boundary's type sat between p and u, face_reconstruction's under 15 others."""
+    s = session(cylinder_project)
+    boundary = [r["label"] for r in groups(s, "el:boundaries[1]")["boundaries[1]"]["rows"]]
+    assert boundary[:2] == ["name", "type"]
+    reconstruction = groups(s, "section:numerics")["numerics.face_reconstruction"]["rows"]
+    assert reconstruction[0]["label"] == "type"

@@ -115,6 +115,10 @@ OTHER_GROUP = "Other"
 _KNOWN_TABLES = {t for _, _, tables in SECTIONS for t in tables}
 
 
+# Keys a table leads with: which entry it is and what kind, on which its other keys depend.
+LEAD = ("name", "type")
+
+
 def catalog_path(path: str) -> str:
     """`boundaries[1].T` and `boundaries[name = "x"].T` -> `boundaries.T`, as the catalog names keys."""
     return ".".join(s for s in parse_path(path) if isinstance(s, str))
@@ -1444,6 +1448,7 @@ class Session:
             value = {}
         leaves = [k for k in self.children(path) if not k.startswith("<")]
         leaves += [k for k in value if k not in leaves]
+        leaves.sort(key=lambda k: LEAD.index(k) if k in LEAD else len(LEAD))
         rows: list[Row] = []
         nested: list[Group] = []
         comp = self._composition_row(path, value) if all(b in leaves for b in choices.BASES) else None
