@@ -1595,8 +1595,8 @@ class ResultsPage:
             empty_state(
                 "results",
                 "No results yet",
-                "Snapshots a run writes open here for analysis: fields, probes and lines over time. "
-                "Figures and movies are ParaView's job: Open in ParaView hands it the view.",
+                "Snapshots a run writes open here for analysis: fields, probes and lines over time, with images "
+                "and GIF or MP4 animations of the view. Open in ParaView hands it the view for heavier rendering.",
                 "!v_run && !runs.length",
                 ("Go to Case setup", "case", (self.app.set_page, "['case']")),
             )
