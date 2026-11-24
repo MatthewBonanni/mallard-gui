@@ -388,6 +388,17 @@ def test_a_2d_case_offers_no_key_only_3d_reads(cylinder_project: Path) -> None:
     assert s.general["forces.zone"].dims == [3] and not rows(s, "el:forces[0]", "forces[0]")["zone"]["readonly"]
 
 
+def test_a_feature_whose_keys_2d_does_not_read_keeps_its_title(cylinder_project: Path) -> None:
+    """Every `boundaries.wall_model` key is 3D-only in the catalog: the switch sat on a group titled
+    "not read in 2D" and the table's own name was gone."""
+    s = session(cylinder_project)
+    page = groups(s, "el:boundaries[1]")
+    model = page["boundaries[1].wall_model"]
+    assert model["title"] == "wall_model" and model["feature"]["name"] == "Wall model"
+    unread = page["boundaries[1].wall_model#unread"]
+    assert not unread["feature"] and unread["hidden"]  # under the switch, which is off
+
+
 def test_a_3d_only_key_the_2d_input_sets_is_flagged_with_reset(cylinder_project: Path) -> None:
     text = (cylinder_project / "input.toml").read_text()
     text = text.replace('prefix = "./solut/cylinder"\n', 'prefix = "./solut/cylinder"\nboundary = "cylinder"\n', 1)
