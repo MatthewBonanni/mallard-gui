@@ -46,7 +46,7 @@ from .export_panel import ExportPanel
 from .file_watch import FileWatch
 from .fmt import bytes_text as _bytes
 from .fmt import duration as _duration
-from .fmt import grouped
+from .fmt import grouped, local_time
 from .fmt import number as _fmt
 from .health_panel import HealthPanel
 from .icons import ICONS
@@ -1053,7 +1053,7 @@ class App:
             {"k": "cells", "v": grouped(last.get("cells", 0)) if last else "–"},
             {"k": "ranks", "v": f"{prov.get('ranks', 1)} · {prov.get('host') or ''}" if prov else "–"},
             {"k": "device", "v": str(prov.get("device") or "–")},
-            {"k": "started", "v": str(prov.get("start_time") or "").replace("T", " ")[:16] or "–"},
+            {"k": "started", "v": local_time(prov.get("start_time")) if prov.get("start_time") else "–"},
             {"k": "restart of", "v": _restart_of(start)},
             {"k": "parts", "v": str(st.starts) if st.starts > 1 else "1"},
             {"k": "directory", "v": record.home.get("directory", "")},
