@@ -56,3 +56,11 @@ def test_the_empty_runs_page_goes_to_case_setup(page: Any) -> None:
     pg.locator(".center .empty-state:visible").get_by_role("button", name="Go to Case setup").click()
     pg.wait_for_selector(".case-tree .tree-row")
     assert pg.locator(".rail button.on").get_attribute("aria-label") == "Case setup"
+
+
+def test_the_empty_results_page_names_its_own_exports(page: Any) -> None:
+    pg = page
+    pg.click(".rail button[aria-label='Results']")
+    text = pg.locator(".center .empty-state:visible").inner_text()
+    assert "GIF or MP4" in text
+    assert "ParaView's job" not in text
