@@ -247,6 +247,7 @@ class App:
         s.outputs = []
         s.lineage = []
         s.restart_pick = {}
+        s.convert_accept = False
 
     def _register(self) -> None:
         self.state.change("search")(self._search)
@@ -968,14 +969,28 @@ class App:
         ]
         with self.state:
             self.state.restart_pick = {"run": name, "rows": shown, "path": path, "checking": True}
+            self.state.convert_accept = False
+        await self._check_restart(name, path, shown)
+
+    async def _check_restart(self, name: str, path: str, shown: list[dict[str, Any]], converted: str = "") -> None:
+        """Mallard's per-key answer for the picked restart (or its conversion); while a change is incompatible and
+        Mallard can convert the file to the case's gas, its dry run's summary, which the user accepts first."""
         try:
-            result = await asyncio.to_thread(self.session.restart_check, name, path)
+            result = await asyncio.to_thread(self.session.restart_check, name, path, converted)
         except (RestartError, MallardError, KeyError, OSError) as e:
             result = {"path": path, "error": str(e), "known": False, "changes": []}
-        if self.state.restart_pick.get("path") != path or self.state.run_sel != name:
-            return
         changes = result["changes"]
         blocked = [c["key"] for c in changes if c.get("effect") == "incompatible"]
+        conversion: dict[str, Any] = {}
+        if blocked and not converted:
+            try:
+                summary = await asyncio.to_thread(self.session.convert_preview, name, path)
+            except (RestartError, MallardError, OSError) as e:
+                conversion = {"error": str(e)}
+            else:
+                conversion = _conversion_view(summary) if summary else {}
+        if self.state.restart_pick.get("path") != path or self.state.run_sel != name:
+            return
         with self.state:
             self.state.restart_pick = {
                 "run": name,
@@ -990,8 +1005,28 @@ class App:
                     for c in changes
                 ],
                 "blocked": blocked,
+                "conversion": conversion,
+                "converted": converted,
                 "can_launch": not result["error"] and not blocked,
             }
+
+    async def accept_conversion(self) -> None:
+        """The previewed conversion, written once the user accepted its rule; the converted file is checked again
+        and becomes what the run starts from."""
+        pick = dict(self.state.restart_pick)
+        conversion = pick.get("conversion") or {}
+        name, path = pick.get("run", ""), pick.get("path", "")
+        with self.state:
+            self.state.restart_pick = {**pick, "checking": True}
+        try:
+            out = await asyncio.to_thread(self.session.convert_restart, name, path, conversion.get("rule", ""))
+        except (RestartError, MallardError, OSError) as e:
+            with self.state:
+                self.state.restart_pick = {**pick, "checking": False, "conversion": {**conversion, "error": str(e)}}
+            return
+        await self._check_restart(name, path, pick.get("rows", []), str(out))
+        with self.state:
+            self.state.restart_pick = {**self.state.restart_pick, "conversion": {**conversion, "written": str(out)}}
 
     def launch_restart(self) -> None:
         pick = self.state.restart_pick
@@ -1001,7 +1036,7 @@ class App:
         if self.session.run_blocked or not self.document.guard_run(self.launch_restart):
             return
         try:
-            run = self.session.start_run(name, restart_path=path)
+            run = self.session.start_run(name, restart_path=path, converted=pick.get("converted", ""))
         except (RestartError, KeyError, OSError) as e:
             self.state.run = {**self.state.run, "requested": str(e)}
             return
@@ -2086,7 +2121,8 @@ class App:
             )
             html.Div(
                 "Launch is off: the case changes {{ restart_pick.blocked.join(', ') }} in a way this restart "
-                "cannot continue (below).",
+                "cannot continue (below){{ (restart_pick.conversion || {}).rule ? '; Mallard can convert it first' "
+                ": '' }}.",
                 classes="notice",
                 v_if="!restart_pick.checking && (restart_pick.blocked || []).length",
             )
@@ -2095,6 +2131,7 @@ class App:
                 classes="muted",
                 v_if="!restart_pick.checking && restart_pick.known && !(restart_pick.changes || []).length",
             )
+            self._conversion_layout()
             with html.Div(
                 classes="restart-changes",
                 v_if="!restart_pick.checking && (restart_pick.changes || []).length",
@@ -2113,6 +2150,47 @@ class App:
                     html.Code("{{ c.case }}")
                     html.Span("{{ c.effect }}", classes=("['pill', c.effect]",))
                     html.Span("{{ c.detail }}", classes="etext")
+
+    def _conversion_layout(self) -> None:
+        """Mallard's dry run of converting the restart to the case's gas: its rule and every figure, then the
+        conversion only once the user accepts the rule."""
+        with html.Div(classes="conversion", v_if="!restart_pick.checking && (restart_pick.conversion || {}).rule"):
+            with html.Div(classes="conversion-head"):
+                html.Span("Convert the restart to the case's gas", classes="name")
+                html.Span(
+                    "{{ restart_pick.conversion.exact ? 'exact' : 'not exact' }}",
+                    classes=("['pill', restart_pick.conversion.exact ? 'accepted' : 'resets']",),
+                )
+            with html.Ul(classes="conversion-reasons", v_if="(restart_pick.conversion.reasons || []).length"):
+                html.Li("{{ r }}", v_for="(r, i) in restart_pick.conversion.reasons", key="i")
+            with html.Div(classes="conversion-rows"):
+                with html.Template(v_for="r in restart_pick.conversion.rows", key="r.k"):
+                    html.Span("{{ r.k }}", classes="muted")
+                    html.Span("{{ r.v }}")
+            with html.Div(classes="conversion-accept", v_if="!restart_pick.converted"):
+                with html.Label(v_if="!restart_pick.conversion.exact"):
+                    html.Input(type="checkbox", v_model=("convert_accept",))
+                    html.Span(
+                        "Accept the mapping rule {{ restart_pick.conversion.rule }}: the mass of species the case "
+                        "lacks moves onto its species, conserving each element"
+                    )
+                html.Button(
+                    "Convert",
+                    classes="btn primary",
+                    disabled=("!restart_pick.conversion.exact && !convert_accept",),
+                    click=self.accept_conversion,
+                    title="Write the converted restart under converted/, then check the case against it",
+                )
+            html.Div(
+                "Converted: {{ restart_pick.converted.split('/').pop() }}; the run starts from it.",
+                classes="muted",
+                v_if="restart_pick.converted",
+            )
+        html.Div(
+            "Mallard could not preview a conversion: {{ restart_pick.conversion.error }}",
+            classes="notice",
+            v_if="!restart_pick.checking && (restart_pick.conversion || {}).error",
+        )
 
     def _statusbar(self) -> None:
         """Where the case runs and with what, the case's size, the last check's verdict and the file's state, each
@@ -2171,6 +2249,48 @@ def _local_pick(event: Any) -> tuple[list[float], str] | None:
         if isinstance(p, dict) and p.get("worldPosition"):
             return [float(c) for c in p["worldPosition"][:3]], str(p.get("remoteId") or "")
     return None
+
+
+def _conversion_view(summary: dict[str, Any]) -> dict[str, Any]:
+    """Mallard's conversion summary (`mallard-restart-convert`) as the restart view shows it, every figure kept."""
+    source, target = summary.get("source") or {}, summary.get("target") or {}
+    energy = summary.get("energy") or {}
+    flamelet = summary.get("flamelet") or {}
+    rows = [
+        ("from", f"{source.get('gas', '')} · {Path(str(source.get('model', ''))).name}"),
+        ("to", f"{target.get('gas', '')} · {Path(str(target.get('model', ''))).name}"),
+    ]
+    dropped = summary.get("dropped_species") or {}
+    held = {k: v for k, v in dropped.items() if v}
+    if held:
+        rows.append(("species dropped", ", ".join(f"{k} (max Y {_fmt(v)})" for k, v in held.items())))
+    if len(dropped) > len(held):
+        rows.append(("species dropped without mass", grouped(len(dropped) - len(held))))
+    if summary.get("added_species"):
+        rows.append(("species added", ", ".join(summary["added_species"])))
+    if summary.get("aliases"):
+        rows.append(("aliases", ", ".join(f"{a['source']} → {a['target']}" for a in summary["aliases"])))
+    moved = summary.get("moved_max") or {}
+    mean = summary.get("moved_mean") or {}
+    if moved:
+        rows.append(
+            ("mass moved", ", ".join(f"{e} max {_fmt(v)}, mean {_fmt(mean.get(e, 0))}" for e, v in moved.items()))
+        )
+        rows.append(("cells projected", grouped(summary.get("cells_projected") or 0)))
+    if summary.get("max_shared_change"):
+        rows.append(("largest change of a shared Y", _fmt(summary["max_shared_change"])))
+    if energy:
+        rows.append(("total energy change", f"{100 * float(energy.get('relative_change') or 0):.3g} %"))
+    for key in ("Z_clamped_cells", "C_clamped_cells"):
+        if flamelet.get(key):
+            rows.append((key.replace("_", " "), grouped(flamelet[key])))
+    rows += [("note", str(n)) for n in summary.get("notes") or []]
+    return {
+        "rule": str(summary.get("rule") or ""),
+        "exact": bool(summary.get("exact")),
+        "reasons": [str(r) for r in summary.get("reasons") or []],
+        "rows": [{"k": k, "v": v} for k, v in rows],
+    }
 
 
 def _restart_of(start: dict[str, Any]) -> str:

@@ -1,0 +1,126 @@
+{
+ "schema": "mallard-check",
+ "version": 1,
+ "status": "error",
+ "errors": 3,
+ "warnings": 0,
+ "input_file": "b.toml",
+ "setup_done": false,
+ "dim": 2,
+ "environment": {
+  "build": {
+   "dim": 2,
+   "precision": "double",
+   "build_type": "Release",
+   "compiler": "AppleClang 21.0.0.21000334",
+   "cxx_flags": "-O3 -DNDEBUG",
+   "kokkos": "5.2.2",
+   "backend": "Threads",
+   "host_backend": "Threads",
+   "mpi": false,
+   "gpu_aware_mpi": false,
+   "nccl": false,
+   "hdf5": false,
+   "hdf5_parallel": false,
+   "kaminpar": false,
+   "cgns": false,
+   "zlib": false,
+   "species_layout": "right"
+  },
+  "dependencies": {
+   "compiler": "AppleClang 21.0.0.21000334",
+   "kokkos": "5.2.2",
+   "mpi": null,
+   "hdf5": null,
+   "cgns": null,
+   "zlib": null,
+   "nccl": null,
+   "gpu_runtime": null,
+   "gpu_driver": null
+  },
+  "solvers": [
+   2
+  ],
+  "ranks": 1,
+  "hosts": 1,
+  "ranks_per_host": 1,
+  "gpu_aware_mpi": {
+   "library": null,
+   "used": false
+  },
+  "nccl": {
+   "used": false
+  },
+  "placement": [
+   {
+    "rank": 0,
+    "host": "fixture-host",
+    "device": "Apple M4 Pro",
+    "threads": 2,
+    "cpus": null,
+    "omp_bind": false,
+    "gpu": null,
+    "gpu_index": null,
+    "gpu_numa": null,
+    "gpus_visible": 0
+   }
+  ]
+ },
+ "restart": {
+  "file": "solut/restart_000020.restart",
+  "step": 2,
+  "t": 2e-09,
+  "run_id": "338d3686-59c2-47c0-bb47-86ad26fe7cd9",
+  "input_recorded": true,
+  "changes": [
+   {
+    "key": "variables",
+    "restart": "RHO, RHOU_X, RHOU_Y, RHOE, RHOY_H2, RHOY_H, RHOY_O, RHOY_O2, RHOY_OH, RHOY_H2O, RHOY_HO2, RHOY_H2O2, RHOY_C, RHOY_CH, RHOY_CH2, RHOY_CH2(S), RHOY_CH3, RHOY_CH4, RHOY_CO, RHOY_CO2, RHOY_HCO, RHOY_CH2O, RHOY_CH2OH, RHOY_CH3O, RHOY_CH3OH, RHOY_C2H, RHOY_C2H2, RHOY_C2H3, RHOY_C2H4, RHOY_C2H5, RHOY_C2H6, RHOY_HCCO, RHOY_CH2CO, RHOY_HCCOH, RHOY_N, RHOY_NH, RHOY_NH2, RHOY_NH3, RHOY_NNH, RHOY_NO, RHOY_NO2, RHOY_N2O, RHOY_HNO, RHOY_CN, RHOY_HCN, RHOY_H2CN, RHOY_HCNN, RHOY_HCNO, RHOY_HOCN, RHOY_HNCO, RHOY_NCO, RHOY_N2, RHOY_AR, RHOY_C3H7, RHOY_C3H8, RHOY_CH2CHO, RHOY_CH3CHO, T_SEED",
+    "case": "RHO, RHOU_X, RHOU_Y, RHOE, RHOY_CH4, RHOY_O2, RHOY_CO, RHOY_CO2, RHOY_H2O, RHOY_N2, T_SEED",
+    "effect": "incompatible",
+    "detail": "the restart file's variables are not this case's: this case has no RHOY_H2, RHOY_H, RHOY_O, RHOY_OH, RHOY_HO2, RHOY_H2O2, RHOY_C, RHOY_CH, RHOY_CH2, RHOY_CH2(S), RHOY_CH3, RHOY_HCO, RHOY_CH2O, RHOY_CH2OH, RHOY_CH3O, RHOY_CH3OH, RHOY_C2H, RHOY_C2H2, RHOY_C2H3, RHOY_C2H4, RHOY_C2H5, RHOY_C2H6, RHOY_HCCO, RHOY_CH2CO, RHOY_HCCOH, RHOY_N, RHOY_NH, RHOY_NH2, RHOY_NH3, RHOY_NNH, RHOY_NO, RHOY_NO2, RHOY_N2O, RHOY_HNO, RHOY_CN, RHOY_HCN, RHOY_H2CN, RHOY_HCNN, RHOY_HCNO, RHOY_HOCN, RHOY_HNCO, RHOY_NCO, RHOY_AR, RHOY_C3H7, RHOY_C3H8, RHOY_CH2CHO, RHOY_CH3CHO"
+   },
+   {
+    "key": "physics.mechanism",
+    "restart": "\"mechanisms/gri30.yaml\"",
+    "case": "\"mechanisms/ch4_bfer.yaml\"",
+    "effect": "incompatible",
+    "detail": "the restart file's variables are not this case's: this case has no RHOY_H2, RHOY_H, RHOY_O, RHOY_OH, RHOY_HO2, RHOY_H2O2, RHOY_C, RHOY_CH, RHOY_CH2, RHOY_CH2(S), RHOY_CH3, RHOY_HCO, RHOY_CH2O, RHOY_CH2OH, RHOY_CH3O, RHOY_CH3OH, RHOY_C2H, RHOY_C2H2, RHOY_C2H3, RHOY_C2H4, RHOY_C2H5, RHOY_C2H6, RHOY_HCCO, RHOY_CH2CO, RHOY_HCCOH, RHOY_N, RHOY_NH, RHOY_NH2, RHOY_NH3, RHOY_NNH, RHOY_NO, RHOY_NO2, RHOY_N2O, RHOY_HNO, RHOY_CN, RHOY_HCN, RHOY_H2CN, RHOY_HCNN, RHOY_HCNO, RHOY_HOCN, RHOY_HNCO, RHOY_NCO, RHOY_AR, RHOY_C3H7, RHOY_C3H8, RHOY_CH2CHO, RHOY_CH3CHO"
+   }
+  ]
+ },
+ "diagnostics": [
+  {
+   "severity": "error",
+   "code": "E-SETUP",
+   "message": "Restart file solut/restart_000020.restart has variable RHOY_H2, which this run does not transport.",
+   "docs": "docs/guide/input_files.md#e-setup"
+  },
+  {
+   "severity": "error",
+   "code": "E-RESTART-INCOMPATIBLE",
+   "message": "variables: the restart file's variables are not this case's: this case has no RHOY_H2, RHOY_H, RHOY_O, RHOY_OH, RHOY_HO2, RHOY_H2O2, RHOY_C, RHOY_CH, RHOY_CH2, RHOY_CH2(S), RHOY_CH3, RHOY_HCO, RHOY_CH2O, RHOY_CH2OH, RHOY_CH3O, RHOY_CH3OH, RHOY_C2H, RHOY_C2H2, RHOY_C2H3, RHOY_C2H4, RHOY_C2H5, RHOY_C2H6, RHOY_HCCO, RHOY_CH2CO, RHOY_HCCOH, RHOY_N, RHOY_NH, RHOY_NH2, RHOY_NH3, RHOY_NNH, RHOY_NO, RHOY_NO2, RHOY_N2O, RHOY_HNO, RHOY_CN, RHOY_HCN, RHOY_H2CN, RHOY_HCNN, RHOY_HCNO, RHOY_HOCN, RHOY_HNCO, RHOY_NCO, RHOY_AR, RHOY_C3H7, RHOY_C3H8, RHOY_CH2CHO, RHOY_CH3CHO.",
+   "docs": "docs/guide/input_files.md#e-restart-incompatible"
+  },
+  {
+   "severity": "error",
+   "code": "E-RESTART-INCOMPATIBLE",
+   "message": "physics.mechanism: the restart file's variables are not this case's: this case has no RHOY_H2, RHOY_H, RHOY_O, RHOY_OH, RHOY_HO2, RHOY_H2O2, RHOY_C, RHOY_CH, RHOY_CH2, RHOY_CH2(S), RHOY_CH3, RHOY_HCO, RHOY_CH2O, RHOY_CH2OH, RHOY_CH3O, RHOY_CH3OH, RHOY_C2H, RHOY_C2H2, RHOY_C2H3, RHOY_C2H4, RHOY_C2H5, RHOY_C2H6, RHOY_HCCO, RHOY_CH2CO, RHOY_HCCOH, RHOY_N, RHOY_NH, RHOY_NH2, RHOY_NH3, RHOY_NNH, RHOY_NO, RHOY_NO2, RHOY_N2O, RHOY_HNO, RHOY_CN, RHOY_HCN, RHOY_H2CN, RHOY_HCNN, RHOY_HCNO, RHOY_HOCN, RHOY_HNCO, RHOY_NCO, RHOY_AR, RHOY_C3H7, RHOY_C3H8, RHOY_CH2CHO, RHOY_CH3CHO.",
+   "docs": "docs/guide/input_files.md#e-restart-incompatible"
+  }
+ ],
+ "unused_keys": [],
+ "boundaries": [],
+ "unassigned": [],
+ "periodic": [],
+ "regions": [],
+ "case_view": null,
+ "case_view_images": [],
+ "initial_file": null,
+ "mesh_quality": null,
+ "time_step": null,
+ "resolution": {},
+ "memory": null,
+ "sizing": null,
+ "cost": null
+}

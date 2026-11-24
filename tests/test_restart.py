@@ -145,6 +145,47 @@ def test_restart_check_refuses_a_changed_file(session: Session) -> None:
     assert "SHA-256" in session.restart_check(source)["error"]
 
 
+def test_a_restart_of_another_gas_is_previewed_then_converted_once_the_rule_is_accepted(session: Session) -> None:
+    source = session.start_run().record.name
+    finish(session, source)
+    fake = session.mallard
+    fake.restart_check = "mixture_check_restart_mechanism.json"  # type: ignore[attr-defined]
+    fake.converted_check = "mixture_check_restart_converted.json"  # type: ignore[attr-defined]
+    fake.convert_fixture = "restart_convert_dry.json"  # type: ignore[attr-defined]
+    effects = {c["key"]: c["effect"] for c in session.restart_check(source)["changes"]}
+    assert effects["physics.mechanism"] == "incompatible"
+    preview = session.convert_preview(source)
+    assert preview is not None and preview["rule"] == "element-projection" and not preview["exact"]
+    restart = session.verified_restart(session.project.run(source))
+    assert fake.converts[-1] == {"restart": restart, "out": "", "accept": ""}  # type: ignore[attr-defined]
+
+    out = session.convert_restart(source, "", preview["rule"])
+    assert out.parent == session.project.root / "converted" and out.read_bytes().endswith(b"converted\n")
+    assert fake.converts[-1]["accept"] == "element-projection"  # type: ignore[attr-defined]
+    after = session.restart_check(source, converted=str(out))
+    assert fake.extra[-2:] == ["--restart", str(out)]  # type: ignore[attr-defined]
+    assert not any(c["effect"] == "incompatible" for c in after["changes"]) and not after["error"]
+    run = session.start_run(restart_from=source, converted=str(out))
+    finish(session, run.record.name)
+    assert (Path(run.job.run_dir) / "args-0.txt").read_text().strip() == str(out)
+
+
+def test_a_setup_that_stops_on_the_file_with_no_key_to_blame_is_an_error(session: Session) -> None:
+    source = session.start_run().record.name
+    finish(session, source)
+    session.mallard.restart_check = "mixture_check_restart_unclassified.json"  # type: ignore[attr-defined]
+    result = session.restart_check(source)
+    assert result["known"] and "RHOY_H2" in result["error"]
+
+
+def test_a_build_that_cannot_convert_previews_nothing_and_refuses_to(session: Session) -> None:
+    source = session.start_run().record.name
+    finish(session, source)
+    assert session.convert_preview(source) is None
+    with pytest.raises(RestartError, match="cannot convert"):
+        session.convert_restart(source, "", "element-projection")
+
+
 @pytest.mark.mallard
 def test_a_real_run_stopped_and_continued(real_mallard, cylinder_project: Path) -> None:  # type: ignore[no-untyped-def]
     path = cylinder_project / "input.toml"

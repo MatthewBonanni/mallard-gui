@@ -1,0 +1,649 @@
+{
+ "schema": "mallard-check",
+ "version": 1,
+ "status": "ok",
+ "errors": 0,
+ "warnings": 0,
+ "input_file": "b.toml",
+ "setup_done": true,
+ "dim": 2,
+ "environment": {
+  "build": {
+   "dim": 2,
+   "precision": "double",
+   "build_type": "Release",
+   "compiler": "AppleClang 21.0.0.21000334",
+   "cxx_flags": "-O3 -DNDEBUG",
+   "kokkos": "5.2.2",
+   "backend": "Threads",
+   "host_backend": "Threads",
+   "mpi": false,
+   "gpu_aware_mpi": false,
+   "nccl": false,
+   "hdf5": false,
+   "hdf5_parallel": false,
+   "kaminpar": false,
+   "cgns": false,
+   "zlib": false,
+   "species_layout": "right"
+  },
+  "dependencies": {
+   "compiler": "AppleClang 21.0.0.21000334",
+   "kokkos": "5.2.2",
+   "mpi": null,
+   "hdf5": null,
+   "cgns": null,
+   "zlib": null,
+   "nccl": null,
+   "gpu_runtime": null,
+   "gpu_driver": null
+  },
+  "solvers": [
+   2
+  ],
+  "ranks": 1,
+  "hosts": 1,
+  "ranks_per_host": 1,
+  "gpu_aware_mpi": {
+   "library": null,
+   "used": false
+  },
+  "nccl": {
+   "used": false
+  },
+  "placement": [
+   {
+    "rank": 0,
+    "host": "fixture-host",
+    "device": "Apple M4 Pro",
+    "threads": 2,
+    "cpus": null,
+    "omp_bind": false,
+    "gpu": null,
+    "gpu_index": null,
+    "gpu_numa": null,
+    "gpus_visible": 0
+   }
+  ]
+ },
+ "restart": {
+  "file": "solut/restart_000020.restart",
+  "step": 2,
+  "t": 2e-09,
+  "run_id": "62d3e0cb-f591-4149-bb1f-be5f26b4eea3",
+  "input_recorded": true,
+  "changes": []
+ },
+ "diagnostics": [],
+ "unused_keys": [],
+ "boundaries": [
+  {
+   "zone": "left",
+   "condition": "symmetry",
+   "faces": 2,
+   "details": "",
+   "turbulence": ""
+  },
+  {
+   "zone": "right",
+   "condition": "symmetry",
+   "faces": 2,
+   "details": "",
+   "turbulence": ""
+  },
+  {
+   "zone": "bottom",
+   "condition": "symmetry",
+   "faces": 4,
+   "details": "",
+   "turbulence": ""
+  },
+  {
+   "zone": "top",
+   "condition": "symmetry",
+   "faces": 4,
+   "details": "",
+   "turbulence": ""
+  }
+ ],
+ "unassigned": [],
+ "periodic": [],
+ "regions": [
+  {
+   "name": "domain",
+   "of_mesh": true,
+   "dimension": 2,
+   "measure": 0.005,
+   "per_radian": false,
+   "cells": 8,
+   "exact": true,
+   "resolution": null,
+   "solution": false,
+   "surface": null,
+   "box": null,
+   "own": null
+  },
+  {
+   "name": "bottom",
+   "of_mesh": true,
+   "dimension": 1,
+   "measure": 0.1,
+   "per_radian": false,
+   "cells": 4,
+   "exact": true,
+   "resolution": null,
+   "solution": false,
+   "surface": null,
+   "box": null,
+   "own": null
+  },
+  {
+   "name": "left",
+   "of_mesh": true,
+   "dimension": 1,
+   "measure": 0.05,
+   "per_radian": false,
+   "cells": 2,
+   "exact": true,
+   "resolution": null,
+   "solution": false,
+   "surface": null,
+   "box": null,
+   "own": null
+  },
+  {
+   "name": "right",
+   "of_mesh": true,
+   "dimension": 1,
+   "measure": 0.05,
+   "per_radian": false,
+   "cells": 2,
+   "exact": true,
+   "resolution": null,
+   "solution": false,
+   "surface": null,
+   "box": null,
+   "own": null
+  },
+  {
+   "name": "top",
+   "of_mesh": true,
+   "dimension": 1,
+   "measure": 0.1,
+   "per_radian": false,
+   "cells": 4,
+   "exact": true,
+   "resolution": null,
+   "solution": false,
+   "surface": null,
+   "box": null,
+   "own": null
+  }
+ ],
+ "case_view": null,
+ "case_view_images": [],
+ "initial_file": null,
+ "mesh_quality": {
+  "NON_ORTHOGONALITY": {
+   "name": "non-orthogonality",
+   "min": 0,
+   "max": 0,
+   "mean": 0,
+   "units": "deg",
+   "limit": 70,
+   "above_limit": 0,
+   "histogram": {
+    "edges": [
+     0,
+     0
+    ],
+    "counts": [
+     8
+    ]
+   },
+   "worst": [
+    {
+     "value": 0,
+     "cell": 0,
+     "x": [
+      0.0125,
+      0.0125
+     ]
+    },
+    {
+     "value": 0,
+     "cell": 1,
+     "x": [
+      0.0125,
+      0.037500000000000006
+     ]
+    },
+    {
+     "value": 0,
+     "cell": 2,
+     "x": [
+      0.037500000000000006,
+      0.0125
+     ]
+    },
+    {
+     "value": 0,
+     "cell": 3,
+     "x": [
+      0.037500000000000006,
+      0.037500000000000006
+     ]
+    },
+    {
+     "value": 0,
+     "cell": 4,
+     "x": [
+      0.0625,
+      0.0125
+     ]
+    }
+   ]
+  },
+  "SKEWNESS": {
+   "name": "skewness",
+   "min": 0,
+   "max": 0,
+   "mean": 0,
+   "units": "dimensionless",
+   "limit": 0.5,
+   "above_limit": 0,
+   "histogram": {
+    "edges": [
+     0,
+     0
+    ],
+    "counts": [
+     8
+    ]
+   },
+   "worst": [
+    {
+     "value": 0,
+     "cell": 0,
+     "x": [
+      0.0125,
+      0.0125
+     ]
+    },
+    {
+     "value": 0,
+     "cell": 1,
+     "x": [
+      0.0125,
+      0.037500000000000006
+     ]
+    },
+    {
+     "value": 0,
+     "cell": 2,
+     "x": [
+      0.037500000000000006,
+      0.0125
+     ]
+    },
+    {
+     "value": 0,
+     "cell": 3,
+     "x": [
+      0.037500000000000006,
+      0.037500000000000006
+     ]
+    },
+    {
+     "value": 0,
+     "cell": 4,
+     "x": [
+      0.0625,
+      0.0125
+     ]
+    }
+   ]
+  },
+  "ASPECT_RATIO": {
+   "name": "aspect ratio",
+   "min": 1,
+   "max": 1.000000000000001,
+   "mean": 1.0000000000000007,
+   "units": "dimensionless",
+   "limit": 1000,
+   "above_limit": 0,
+   "histogram": {
+    "edges": [
+     1,
+     1,
+     1,
+     1.0000000000000002,
+     1.0000000000000002,
+     1.0000000000000002,
+     1.0000000000000004,
+     1.0000000000000004,
+     1.0000000000000004,
+     1.0000000000000004,
+     1.0000000000000004,
+     1.0000000000000007,
+     1.0000000000000007,
+     1.0000000000000007,
+     1.0000000000000009,
+     1.0000000000000009,
+     1.0000000000000009,
+     1.0000000000000009,
+     1.0000000000000009,
+     1.000000000000001,
+     1.000000000000001
+    ],
+    "counts": [
+     1,
+     0,
+     0,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     4,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     2
+    ]
+   },
+   "worst": [
+    {
+     "value": 1.000000000000001,
+     "cell": 4,
+     "x": [
+      0.0625,
+      0.0125
+     ]
+    },
+    {
+     "value": 1.000000000000001,
+     "cell": 5,
+     "x": [
+      0.0625,
+      0.037500000000000006
+     ]
+    },
+    {
+     "value": 1.0000000000000007,
+     "cell": 1,
+     "x": [
+      0.0125,
+      0.037500000000000006
+     ]
+    },
+    {
+     "value": 1.0000000000000007,
+     "cell": 2,
+     "x": [
+      0.037500000000000006,
+      0.0125
+     ]
+    },
+    {
+     "value": 1.0000000000000007,
+     "cell": 3,
+     "x": [
+      0.037500000000000006,
+      0.037500000000000006
+     ]
+    }
+   ]
+  },
+  "VOLUME_RATIO": {
+   "name": "volume ratio",
+   "min": 1.0000000000000002,
+   "max": 1.0000000000000004,
+   "mean": 1.0000000000000002,
+   "units": "dimensionless",
+   "limit": 10,
+   "above_limit": 0,
+   "histogram": {
+    "edges": [
+     1.0000000000000002,
+     1.0000000000000002,
+     1.0000000000000002,
+     1.0000000000000002,
+     1.0000000000000002,
+     1.0000000000000002,
+     1.0000000000000002,
+     1.0000000000000002,
+     1.0000000000000002,
+     1.0000000000000002,
+     1.0000000000000004,
+     1.0000000000000004,
+     1.0000000000000004,
+     1.0000000000000004,
+     1.0000000000000004,
+     1.0000000000000004,
+     1.0000000000000004,
+     1.0000000000000004,
+     1.0000000000000004,
+     1.0000000000000004,
+     1.0000000000000004
+    ],
+    "counts": [
+     4,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     4
+    ]
+   },
+   "worst": [
+    {
+     "value": 1.0000000000000004,
+     "cell": 4,
+     "x": [
+      0.0625,
+      0.0125
+     ]
+    },
+    {
+     "value": 1.0000000000000004,
+     "cell": 5,
+     "x": [
+      0.0625,
+      0.037500000000000006
+     ]
+    },
+    {
+     "value": 1.0000000000000004,
+     "cell": 6,
+     "x": [
+      0.08750000000000001,
+      0.0125
+     ]
+    },
+    {
+     "value": 1.0000000000000004,
+     "cell": 7,
+     "x": [
+      0.08750000000000001,
+      0.037500000000000006
+     ]
+    },
+    {
+     "value": 1.0000000000000002,
+     "cell": 2,
+     "x": [
+      0.037500000000000006,
+      0.0125
+     ]
+    }
+   ]
+  }
+ },
+ "mesh_fields_file": null,
+ "stencil_file": null,
+ "time_step": {
+  "t": 2e-09,
+  "dt": 1e-09,
+  "dt_cfl1": 3.500995469791848e-05,
+  "cfl": 2.8563304598033517e-05,
+  "cfl_limit": 1.2,
+  "integrator": "SSPRK3",
+  "set_by": "fixed",
+  "limiting_cell": 4,
+  "limiting_x": [
+   0.0625,
+   0.0125
+  ],
+  "region_cells": 8,
+  "region_lo": [
+   0.0125,
+   0.0125
+  ],
+  "region_hi": [
+   0.08750000000000001,
+   0.037500000000000006
+  ]
+ },
+ "resolution": {
+  "cell_size_min": {
+   "quantity": "cell size V^(1/2), smallest",
+   "value": 0.024999999999999998,
+   "units": "m",
+   "target": "",
+   "status": "none",
+   "basis": "over every cell",
+   "x": null,
+   "region": null
+  },
+  "cell_size_mean": {
+   "quantity": "cell size V^(1/2), mean",
+   "value": 0.025,
+   "units": "m",
+   "target": "",
+   "status": "none",
+   "basis": "volume-weighted",
+   "x": null,
+   "region": null
+  },
+  "cell_size_max": {
+   "quantity": "cell size V^(1/2), largest",
+   "value": 0.025,
+   "units": "m",
+   "target": "",
+   "status": "none",
+   "basis": "over every cell",
+   "x": [
+    0.0125,
+    0.0125
+   ],
+   "region": null
+  },
+  "viscous_scales": {
+   "quantity": "Kolmogorov length, wall units",
+   "value": null,
+   "units": "",
+   "target": "",
+   "status": "none",
+   "basis": "not estimated: inviscid",
+   "x": null,
+   "region": null
+  }
+ },
+ "memory": {
+  "device_memory": false,
+  "ranks": 1,
+  "bytes": 70912,
+  "bytes_peak": 296960,
+  "local_cells": 8,
+  "local_owned": 8,
+  "target_ranks": 1,
+  "target_owned": 8,
+  "target_halo": 0,
+  "target_bytes": 70912,
+  "target_bytes_peak": 296960,
+  "device_capacity": 0,
+  "outside_kokkos": 0,
+  "view_entries_per_cell": 105,
+  "view_max_local_cells": 40904450,
+  "steps_timed": 0,
+  "at_setup_peak": {
+   "solution and stages": 8,
+   "faces and gradients": 0,
+   "reconstruction tables": 59184,
+   "mesh and geometry": 4536,
+   "boundaries and models": 2728,
+   "chemistry": 2080,
+   "diagnostics": 0,
+   "output staging": 0,
+   "halo buffers": 0,
+   "work memory": 0,
+   "setup": 228424,
+   "runtime and pages": 0,
+   "other": 0
+  },
+  "steady": {
+   "solution and stages": 3848,
+   "faces and gradients": 17048,
+   "reconstruction tables": 39240,
+   "mesh and geometry": 3600,
+   "boundaries and models": 2728,
+   "chemistry": 2080,
+   "diagnostics": 448,
+   "output staging": 1920,
+   "halo buffers": 0,
+   "work memory": 0,
+   "setup": 0,
+   "runtime and pages": 0,
+   "other": 0
+  },
+  "released_on_devices": {
+   "solution and stages": 0,
+   "faces and gradients": 0,
+   "reconstruction tables": 0,
+   "mesh and geometry": 252,
+   "boundaries and models": 0,
+   "chemistry": 0,
+   "diagnostics": 0,
+   "output staging": 0,
+   "halo buffers": 0,
+   "work memory": 0,
+   "setup": 0,
+   "runtime and pages": 0,
+   "other": 0
+  }
+ },
+ "sizing": null,
+ "cost": {
+  "cells": 8,
+  "ranks": 1,
+  "throughput": 0,
+  "throughput_measured": false,
+  "steps_timed": 0,
+  "wall_per_time": 0,
+  "flow_through_time": 0.010000074484484717,
+  "t_stop": -1,
+  "n_steps": 2
+ }
+}

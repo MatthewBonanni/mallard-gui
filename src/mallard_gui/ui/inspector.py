@@ -59,6 +59,7 @@ class Inspector:
             ("insp_add", self.add),
             ("insp_feature", self.feature),
             ("insp_feature_mech", self.feature_mechanism),
+            ("insp_gas_model", self.gas_model),
             ("insp_duplicate", self.duplicate),
             ("insp_delete", self.delete),
             ("insp_reset", self.reset),
@@ -205,6 +206,37 @@ class Inspector:
             self._edited(None)
 
         self.app.paths.choose("mechanism", root, "", chosen, title="Choose the reaction mechanism")
+
+    def gas_model(self, name: str, files: dict[str, str] | None = None) -> None:
+        """Switch the gas model; a key it requires that the input lacks (its mechanism, its table) is asked for
+        first, with the file dialog."""
+        files = dict(files or {})
+        option = next(
+            (
+                o
+                for g in self.state.props.get("groups", [])
+                for o in (g.get("models") or {}).get("options", [])
+                if o["name"] == name
+            ),
+            None,
+        )
+        title = option["title"] if option else name
+        missing = [k for k in (option or {}).get("missing", []) if k not in files]
+        if missing:
+            root = self.session.input_path.parent
+
+            def chosen(p: Path) -> None:
+                self.gas_model(name, {**files, missing[0]: project_relative(root, p)})
+
+            self.app.paths.choose("file", root, "", chosen, title=f"{title}: choose {missing[0]}")
+            return
+        try:
+            self.session.set_gas_model(name, files)
+        except (KeyError, ValueError) as e:
+            self.state.props = {**self.state.props, "edit_error": str(e)}
+            return
+        self.state.undo_notice = {"text": f"Gas model: {title}", "seq": next(self._seq)}
+        self._edited(None)
 
     def undo(self) -> None:
         self.state.undo_notice = {}
@@ -659,6 +691,42 @@ class Inspector:
                 classes="pgroup-body",
                 style=("{'--indent': (16 * g.depth) + 'px'}",),
             ):
+                with html.Div(
+                    v_if="g.models.options",
+                    classes="gas-models",
+                    role="radiogroup",
+                    aria_label="Gas model",
+                ):
+                    with html.Div(
+                        v_for="m in g.models.options",
+                        key="m.name",
+                        role="radio",
+                        tabindex="0",
+                        classes=("['gas-model', {on: m.name === g.models.current}]",),
+                        __properties=[("aria_checked", "aria-checked")],
+                        aria_checked=("String(m.name === g.models.current)",),
+                        click="m.name === g.models.current || trigger('insp_gas_model', [m.name])",
+                        keydown_enter="m.name === g.models.current || trigger('insp_gas_model', [m.name])",
+                    ):
+                        with html.Div(classes="gm-head"):
+                            html.Span(classes="gm-dot")
+                            html.Span("{{ m.title }}", classes="gm-title")
+                            html.Button(
+                                v_html="icons.info",
+                                v_if="m.docs",
+                                classes="icon-btn gm-docs",
+                                title=("'The guide on ' + m.title",),
+                                aria_label=("'The guide on ' + m.title",),
+                                __events=[("click_stop", "click.stop")],
+                                click_stop=(self.open_theory, "[m.docs]"),
+                            )
+                        html.Div("{{ m.description }}", classes="gm-text")
+                        html.Div(
+                            "{{ m.changes.join(' · ') }}"
+                            "{{ m.missing.length ? ' · asks for ' + m.missing.join(', ') : '' }}",
+                            classes="gm-changes",
+                            v_if="m.name !== g.models.current && (m.changes.length || m.missing.length)",
+                        )
                 with html.Div(v_if="!g.rows.length && g.add && g.add.path", classes="prop-empty list-empty"):
                     html.Span("None yet: the case has no {{ g.add.path }} until you add one.")
                     html.Button(

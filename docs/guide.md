@@ -49,6 +49,9 @@ and layout kept.
 - **Presets**: a section with a `preset` key shows the preset in effect, the keys it fills, and what switching
   would change, as `mallard input resolve` reports them.
 - **Boundaries**: zones without a condition show "no condition"; choose one in Properties.
+- **Gas model**: Physics starts with Mallard's gas models (`mallard list models`): perfect gas, frozen
+  mixture, finite-rate chemistry, flamelet table. Each names the keys switching sets and removes, and asks for
+  the file it requires (a mechanism or a table) before switching; one Undo reverts the switch.
 - **`input.toml` tab**: the input as text; Apply applies the edited text, Revert discards it.
 - **Files tab**: every file the setup reads, with role, resolved path and size; missing files flagged.
 
@@ -99,6 +102,11 @@ Select a run on the Runs page.
 - **Continue** resumes a run that ended stopped, by signal or at its wall-time limit, in its own directory from
   its last restart (SHA-256 checked first); its run log, CSV files and snapshot series are appended to.
 - **Restart from** starts a new run of the case's current input from this run's last restart.
+  When the restart holds another gas than the case (another mechanism, or finite-rate chemistry and a
+  flamelet table), it shows Mallard's dry run of the conversion (`mallard restart convert --dry-run`): species
+  dropped, mass moved per element, energy change, clamped cells. An inexact conversion needs its mapping rule
+  accepted; Convert writes `converted/<run>-<restart>.restart`, the case is checked against it, and the run
+  starts from it.
 - **Plots**: four live plots, each with a chosen source (dt, CFL, monitors, forces, probes, reductions). Wheel
   zooms (Shift for y), drag a box, pan; a zoom pauses following and loads full-resolution data, and a
   double-click resumes.

@@ -419,6 +419,7 @@ class Mallard:
         self.timeout = timeout
         self._version: str | None = None
         self._help: dict[str, str] = {}
+        self._commands: dict[str, bool] = {}
         self._services: dict[str, MallardService] = {}
         self.case_input: Path | None = None  # the case requests without one start their session with
         self._capabilities: Capabilities | None = None
@@ -532,6 +533,45 @@ class Mallard:
         except (json.JSONDecodeError, TypeError, ValueError) as e:
             raise MallardError(f"mallard list species: not its JSON: {e}") from e
 
+    def gas_models(self, input_file: Path) -> dict[str, Any] | None:
+        """`mallard list models INPUT`: the gas models, the keys each sets, requires and removes, and the one the
+        input chooses (`mallard-gas-models` v1); None from builds without the command."""
+        out = self.run(["list", "models", input_file.name, "--format", "json"], cwd=input_file.parent, kokkos=False)
+        if out.returncode != 0:
+            return None
+        try:
+            data = json.loads(out.stdout)
+        except json.JSONDecodeError:
+            return None
+        if not isinstance(data, dict) or data.get("schema") != "mallard-gas-models" or data.get("version") != 1:
+            return None
+        return data
+
+    def restart_convert(
+        self, restart: Path, input_file: Path, out: Path | None = None, accept: str = ""
+    ) -> dict[str, Any] | None:
+        """`mallard restart convert RESTART -i INPUT --format json`: with no `out`, the dry run's summary of
+        converting the restart's state to the input's gas (`mallard-restart-convert` v1); with `out`, the
+        conversion written there (`written`), `accept` naming the mapping rule the user accepted. A summary without
+        `rule` is a restart that already holds the input's gas. None from builds without the command; MallardError
+        for a conversion that cannot be done or was not accepted."""
+        if not self.has_command("restart", "convert"):
+            return None
+        args = ["restart", "convert", str(restart), "-i", input_file.name, "--format", "json"]
+        args += ["-o", str(out)] if out is not None else ["--dry-run"]
+        if accept:
+            args += ["--accept-mapping", accept]
+        done = self.run(args, cwd=input_file.parent)
+        try:
+            data = json.loads(done.stdout.strip().splitlines()[-1]) if done.stdout.strip() else None
+        except json.JSONDecodeError:
+            data = None
+        if not isinstance(data, dict) or data.get("schema") != "mallard-restart-convert" or data.get("version") != 1:
+            raise MallardError(_last_error(done) or f"mallard restart convert exited {done.returncode}")
+        if data.get("error"):
+            raise MallardError(str(data["error"]))
+        return data
+
     def list_fields(self, input_file: Path | None = None) -> dict[str, Any] | None:
         """`mallard list fields`: the case's output fields and the catalog's others with what they need, or the
         build's whole catalog without an input; None from builds without the command or a case that does not set
@@ -557,6 +597,13 @@ class Mallard:
         out = self.run(["check", input_file.name], cwd=input_file.parent)
         m = re.search(r"^\s*Preset\s{2,}(.+(?:\n\s{10,}\S.*)*)", out.stdout, re.M)
         return " ".join(m.group(1).split()) if m else None
+
+    def has_command(self, *words: str) -> bool:
+        """Whether this build has the command `mallard WORDS...` (its --help answers), cached."""
+        key = " ".join(words)
+        if key not in self._commands:
+            self._commands[key] = self.run([*words, "--help"], cwd=Path.cwd(), kokkos=False).returncode == 0
+        return self._commands[key]
 
     def help_text(self, command: str) -> str:
         """`mallard COMMAND --help`, cached. Only `capabilities()` reads it, until the session protocol."""

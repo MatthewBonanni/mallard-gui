@@ -1,0 +1,103 @@
+{
+ "schema": "mallard-restart-convert",
+ "version": 1,
+ "source": {
+  "file": "start_000002.restart",
+  "gas": "mixture",
+  "model": "mechanisms/gri30.yaml",
+  "sha256": "06650b1e0ee0012f6903d5328b1bb218cb6007d07f8ebe375d18f24811039345"
+ },
+ "target": {
+  "gas": "mixture",
+  "model": "mechanisms/ch4_bfer.yaml",
+  "sha256": "d242ec013c1841a85da79bae08ff14f2f70e0dd5ec37c9c8299f68e94b2fde00"
+ },
+ "rule": "element-projection",
+ "exact": false,
+ "reasons": [
+  "species the target lacks hold mass, moved onto the target's species in 8 cells",
+  "the target mechanism's thermodynamics change the total energy by -2.95729% at the kept p and T"
+ ],
+ "dropped_species": {
+  "H2": 0,
+  "H": 0,
+  "O": 0,
+  "OH": 0.001186703561213166,
+  "HO2": 0,
+  "H2O2": 0,
+  "C": 0,
+  "CH": 0,
+  "CH2": 0,
+  "CH2(S)": 0,
+  "CH3": 0,
+  "HCO": 0,
+  "CH2O": 0,
+  "CH2OH": 0,
+  "CH3O": 0,
+  "CH3OH": 0,
+  "C2H": 0,
+  "C2H2": 0,
+  "C2H3": 0,
+  "C2H4": 0,
+  "C2H5": 0,
+  "C2H6": 0,
+  "HCCO": 0,
+  "CH2CO": 0,
+  "HCCOH": 0,
+  "N": 0,
+  "NH": 0,
+  "NH2": 0,
+  "NH3": 0,
+  "NNH": 0,
+  "NO": 0,
+  "NO2": 0,
+  "N2O": 0,
+  "HNO": 0,
+  "CN": 0,
+  "HCN": 0,
+  "H2CN": 0,
+  "HCNN": 0,
+  "HCNO": 0,
+  "HOCN": 0,
+  "HNCO": 0,
+  "NCO": 0,
+  "AR": 0,
+  "C3H7": 0,
+  "C3H8": 0,
+  "CH2CHO": 0,
+  "CH3CHO": 0
+ },
+ "added_species": [],
+ "aliases": [],
+ "moved_max": {
+  "H": 7.033557886181404e-05,
+  "O": 0.001116367982351352
+ },
+ "moved_mean": {
+  "H": 7.033557886181403e-05,
+  "O": 0.0011163679823513516
+ },
+ "cells_projected": 8,
+ "max_shared_change": 0.0006285195700374939,
+ "energy": {
+  "source": -2178.5713609394534,
+  "target": -2242.9980897198984,
+  "relative_change": -0.029572925604173305
+ },
+ "flamelet": {
+  "table_mechanism": "",
+  "Z_clamped_cells": 0,
+  "C_clamped_cells": 0,
+  "Z_round_trip": 0,
+  "C_round_trip": 0,
+  "table_sum_error": 0
+ },
+ "notes": [
+  "T_SEED set to the kept temperature",
+  "averages of fields the target does not sample are not read; the target refuses averages it samples and the file lacks (statistics.reset = true starts them afresh)"
+ ],
+ "dry_run": true,
+ "accepted": false,
+ "written": null,
+ "error": null
+}

@@ -141,6 +141,9 @@ def main() -> None:
     if os.environ.get("FAKE_MALLARD_EXE"):  # post jobs run this executable
         fake.executable = Path(os.environ["FAKE_MALLARD_EXE"])
     fake.restart_check = os.environ.get("MALLARD_GUI_TEST_RESTART_CHECK", "")
+    fake.models_fixture = os.environ.get("MALLARD_GUI_TEST_MODELS", "")
+    fake.convert_fixture = os.environ.get("MALLARD_GUI_TEST_CONVERT", "")
+    fake.converted_check = os.environ.get("MALLARD_GUI_TEST_CONVERTED_CHECK", "")
     session = Session(project, fake)  # type: ignore[arg-type]
     app = App(session, server)
     server.controller.trigger("test_reuse_address")(lambda: reuse_address(app))
