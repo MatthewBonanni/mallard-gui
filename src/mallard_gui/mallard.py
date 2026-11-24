@@ -73,6 +73,7 @@ class KeyInfo:
     description: str = ""  # one line, from catalogs that give one (#1256)
     when: str = ""  # when it applies, from catalogs that say (#1256)
     models: dict[str, ModelDoc] = field(default_factory=dict)  # values naming models from the literature
+    value_notes: dict[str, ValueNote] = field(default_factory=dict)  # what each value does, and its cost
 
     @property
     def section(self) -> str:
@@ -86,7 +87,7 @@ class KeyInfo:
     def widget(self) -> str:
         """The form widget the declaration asks for."""
         if self.values:
-            return "select"
+            return "checks" if self.type == "array" else "select"
         if self.type == "bool":
             return "bool"
         if self.type in ("number", "integer"):
@@ -161,6 +162,31 @@ def parse_models(entry: Any) -> dict[str, ModelDoc]:
     }
 
 
+COSTS = ("cheap", "moderate", "expensive")
+
+
+@dataclass
+class ValueNote:
+    """What one accepted value of a key does, in a line, and roughly what it costs against the others."""
+
+    summary: str = ""
+    cost: str = ""  # one of COSTS, or "" when the catalog does not rate it
+    why: str = ""  # the cost's reason, in a line
+
+
+def parse_value_notes(entry: Any) -> dict[str, ValueNote]:
+    """A catalog entry's `value_notes` (Mallard PR adding them; absent from older catalogs): value -> its note."""
+    if not isinstance(entry, dict):
+        return {}
+    out = {}
+    for v, n in entry.items():
+        if not isinstance(n, dict):
+            continue
+        cost = n.get("cost") if n.get("cost") in COSTS else ""
+        out[str(v)] = ValueNote(str(n.get("summary") or ""), str(cost), str(n.get("cost_why") or "") if cost else "")
+    return out
+
+
 @dataclass
 class Species:
     names: list[str]
@@ -225,6 +251,7 @@ def parse_catalog(data: dict[str, Any]) -> dict[str, KeyInfo]:
             description=str(entry.get("description") or entry.get("summary") or ""),
             when=str(entry.get("when") or entry.get("applies") or ""),
             models=parse_models(entry.get("models")),
+            value_notes=parse_value_notes(entry.get("value_notes")),
         )
     return out
 

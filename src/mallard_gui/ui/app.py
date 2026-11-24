@@ -1659,7 +1659,9 @@ class App:
                 )
                 dropdown(
                     "r.value",
-                    "r.options.map(o => r.models[o] ? {value: o, label: o, note: r.models[o].cite} : o)",
+                    "r.options.map(o => r.models[o] || (r.notes[o] && r.notes[o].cost) ? {value: o, label: o, "
+                    "note: [r.models[o] && r.models[o].cite, r.notes[o] && r.notes[o].cost].filter(Boolean)"
+                    ".join(' · ')} : o)",
                     (self.set_key, "[r.path, $event.detail]"),
                     ("r.path",),
                     placeholder=(
@@ -1697,7 +1699,7 @@ class App:
                 html.Input(
                     v_if=(
                         "!r.readonly && !['select', 'assign', 'quantity', 'bool', 'composition', 'oneof', 'fields', "
-                        "'vector', 'points'].includes(r.widget)"
+                        "'vector', 'points', 'checks'].includes(r.widget)"
                     ),
                     value=("r.value",),
                     placeholder=("r.placeholder",),
@@ -1737,12 +1739,14 @@ class App:
                 self.inspector.file_button()
                 self.inspector.composition_head()
                 self.inspector.fields_cell()
+                self.inspector.checks_cell()
             with html.Div(classes="pext"):
                 self.inspector.row_extras()
             self.inspector.composition_body()
             self.inspector.oneof_body()
             self.inspector.vector_error()
             self.inspector.points_body()
+            self.inspector.checks_body()
             message("r.error", "perr", v_if="r.error")
 
     def _check_status(self) -> None:
