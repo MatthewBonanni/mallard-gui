@@ -21,6 +21,7 @@ from .backends.base import Backend, Job, JobState, RunSpec
 from .backends.k8s import HelperPod
 from .backends.local import LocalBackend
 from .backends.ssh import RemoteError
+from .backends.staging import run_input
 from .checkinfo import LaunchOptions
 from .checklinks import referenced_keys
 from .data.chunks import tree_at
@@ -2021,13 +2022,17 @@ class Session:
 
     # Runs
 
-    def start_run(self, restart_from: str = "", ranks: int = 1) -> ActiveRun:
-        """A new run of the case's input; `restart_from` names a run whose last restart initializes it. A build
-        that polls control files gets them turned on, so the run can be changed from wherever its files are."""
+    def start_run(self, restart_from: str = "", ranks: int = 1, restart_path: str = "") -> ActiveRun:
+        """A new run of the case's input; `restart_from` names a run whose restart initializes it: `restart_path`,
+        one of its `restarts`, else its last. A build that polls control files gets them turned on, so the run
+        can be changed from wherever its files are."""
         self.require_saved()
         if self.run_blocked:
             raise RuntimeError(f"cannot run: {self.run_blocked}")
-        restart = self.verified_restart(self.project.run(restart_from)) if restart_from else ""
+        restart = ""
+        if restart_from:
+            record = self.project.run(restart_from)
+            restart = self.verified_restart(record, self._restart_entry(record, restart_path))
         name = self.project.new_run_name(self.input_path.stem)
         run_dir = self.project.root / "runs" / name
         settings = [f"control_file_interval={CONTROL_FILE_INTERVAL}"] if self.mallard.capabilities().set_file else []
@@ -2122,9 +2127,73 @@ class Session:
         except (RelocateError, RemoteError, TransferError, ValueError, KeyError, OSError) as e:
             raise RestartError(str(e)) from e
 
-    def verified_restart(self, record: RunRecord) -> str:
-        """The absolute path of the run's last restart, once its SHA-256 matches the one its run log recorded."""
-        entry = record.last_restart
+    def restarts(self, name: str) -> list[dict[str, Any]]:
+        """Every restart file run `name`'s log recorded, newest first: path, step, t, bytes and its hash."""
+        active = self.active.get(name)
+        st = active.follower.state if active else self.open_run(self.project.run(name))
+        out: list[dict[str, Any]] = []
+        for o in st.outputs:
+            if o.get("kind") != "restart" or not o.get("path"):
+                continue
+            path = str(o["path"])
+            out.append({"path": path, "step": o.get("step"), "t": o.get("t"), "bytes": o.get("bytes")})
+            out[-1] |= self._sha_of(st, path)
+        return list(reversed(out))
+
+    def _restart_entry(self, record: RunRecord, path: str) -> dict[str, Any]:
+        if not path or path == record.last_restart.get("path"):
+            return record.last_restart
+        for entry in self.restarts(record.name):
+            if entry["path"].removeprefix("./") == path.removeprefix("./"):
+                return entry
+        raise RestartError(f"run {record.name}: no restart {path} in its run log")
+
+    def restart_check(self, name: str, path: str = "") -> dict[str, Any]:
+        """What a new run of the case from run `name`'s restart `path` (else its last) does with each key the case
+        changes from the input the file was written with (`mallard check --restart`'s `restart`): `changes`, and
+        `known` false from builds that do not classify them."""
+        record = self.project.run(name)
+        entry = self._restart_entry(record, path)
+        try:
+            file = self.verified_restart(record, entry)
+        except RestartError as e:
+            return {"path": entry.get("path", path), "error": str(e), "known": False, "changes": []}
+        # The input as the run directory gets it, so its file paths and settings are the run's
+        staged = self.view_dir / "restart-check" / "input.toml"
+        staged.parent.mkdir(exist_ok=True)
+        staged.write_text(run_input(self.checked_path, absolute_paths=True), encoding="utf-8")
+        report = self.mallard.check(staged, None, [*self.launch.args(), "--restart", file])
+        restart = report.data.get("restart")
+        out: dict[str, Any] = {"path": entry.get("path", path), "error": "", "known": isinstance(restart, dict)}
+        out["changes"] = list(restart.get("changes") or []) if isinstance(restart, dict) else []
+        if not out["known"] and report.errors and not report.data.get("setup_done"):
+            out["error"] = "; ".join(d.message for d in report.diagnostics if d.severity == "error")
+        return out
+
+    def lineage(self, name: str) -> list[dict[str, Any]]:
+        """The restarts run `name` descends from, nearest first: each file, its step and the project's run that
+        wrote it (empty where the project has none of that run_id)."""
+        by_id = {r.run_id: r for r in self.project.runs() if r.run_id}
+        out: list[dict[str, Any]] = []
+        seen = {name}
+        record: RunRecord | None = self.project.run(name)
+        while record is not None:
+            active = self.active.get(record.name)
+            start = (active.follower.state if active else self.open_run(record)).start
+            of = (start or {}).get("restart_of") or {}
+            if not of.get("file"):
+                break
+            parent = by_id.get(str(of.get("run_id") or ""))
+            out.append({"file": str(of["file"]), "step": of.get("step"), "run": parent.name if parent else ""})
+            record = parent if parent and parent.name not in seen else None
+            if record is not None:
+                seen.add(record.name)
+        return out
+
+    def verified_restart(self, record: RunRecord, entry: dict[str, Any] | None = None) -> str:
+        """The absolute path of one of the run's restarts (`entry`, else its last), once its SHA-256 matches the
+        one its run log recorded."""
+        entry = record.last_restart if entry is None else entry
         if not entry.get("path"):
             raise RestartError(f"run {record.name}: no restart recorded")
         home = self.data.home(record)

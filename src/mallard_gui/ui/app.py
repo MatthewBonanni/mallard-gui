@@ -245,6 +245,8 @@ class App:
         s.run_log = ""
         s.run_tab = "log"
         s.outputs = []
+        s.lineage = []
+        s.restart_pick = {}
 
     def _register(self) -> None:
         self.state.change("search")(self._search)
@@ -945,6 +947,67 @@ class App:
             return
         self._follow(run)
 
+    async def pick_restart(self, path: str = "") -> None:
+        """The pre-launch view of a restart of the selected run: its restarts to pick from, and what a new run
+        of the case from the picked one does with each key the case changed (`Session.restart_check`)."""
+        name = self.state.run_sel
+        try:
+            rows = await asyncio.to_thread(self.session.restarts, name)
+        except (KeyError, OSError) as e:
+            self.state.restart_pick = {"run": name, "rows": [], "error": str(e)}
+            return
+        path = path or (rows[0]["path"] if rows else str(self.session.project.run(name).last_restart.get("path", "")))
+        shown = [
+            {
+                "path": r["path"],
+                "step": r.get("step"),
+                "t": _fmt(r["t"]) if r.get("t") is not None else "–",
+                "bytes": _bytes(r.get("bytes")),
+            }
+            for r in rows
+        ]
+        with self.state:
+            self.state.restart_pick = {"run": name, "rows": shown, "path": path, "checking": True}
+        try:
+            result = await asyncio.to_thread(self.session.restart_check, name, path)
+        except (RestartError, MallardError, KeyError, OSError) as e:
+            result = {"path": path, "error": str(e), "known": False, "changes": []}
+        if self.state.restart_pick.get("path") != path or self.state.run_sel != name:
+            return
+        changes = result["changes"]
+        blocked = [c["key"] for c in changes if c.get("effect") == "incompatible"]
+        with self.state:
+            self.state.restart_pick = {
+                "run": name,
+                "rows": shown,
+                "path": path,
+                "checking": False,
+                "error": result["error"],
+                "known": result["known"],
+                "changes": [
+                    {k: ("–" if c.get(k) is None else str(c.get(k))) for k in ("key", "restart", "case", "effect")}
+                    | {"detail": str(c.get("detail") or "")}
+                    for c in changes
+                ],
+                "blocked": blocked,
+                "can_launch": not result["error"] and not blocked,
+            }
+
+    def launch_restart(self) -> None:
+        pick = self.state.restart_pick
+        if not pick.get("can_launch"):
+            return
+        name, path = pick["run"], pick["path"]
+        if self.session.run_blocked or not self.document.guard_run(self.launch_restart):
+            return
+        try:
+            run = self.session.start_run(name, restart_path=path)
+        except (RestartError, KeyError, OSError) as e:
+            self.state.run = {**self.state.run, "requested": str(e)}
+            return
+        self.state.restart_pick = {}
+        self._follow(run)
+
     def continue_run(self) -> None:
         try:
             run = self.session.continue_run(self.state.run_sel)
@@ -1079,9 +1142,21 @@ class App:
             for e in reversed(st.events[-40:])
         ]
         s.outputs = [
-            {"step": o.get("step"), "path": o.get("path"), "bytes": _bytes(o.get("bytes"))}
+            {
+                "step": o.get("step"),
+                "t": _fmt(o["t"]) if isinstance(o.get("t"), (int, float)) else "",
+                "path": o.get("path"),
+                "bytes": _bytes(o.get("bytes")),
+                "restart": o.get("kind") == "restart",
+            }
             for o in reversed(st.outputs[-40:])
         ]
+        try:
+            s.lineage = self.session.lineage(name)
+        except (KeyError, OSError):
+            s.lineage = []
+        if s.restart_pick.get("run") not in (None, name):
+            s.restart_pick = {}
         directory = self.session.project.root / record.home.get("directory", "")
         s.run_log = _tail(directory / "stdout.txt")
         self.setup.refresh_live(name)
@@ -1829,9 +1904,12 @@ class App:
                     html.Span("Continue")
                 with html.Button(
                     classes="btn",
-                    click=(self.start_run, "[run.name]"),
+                    click=self.pick_restart,
                     disabled=("!run.can_restart || !!run_blocked",),
-                    title=("'A new run of the case input, initialized from ' + (run.restart || 'the last restart')",),
+                    title=(
+                        "'A new run of the case input, initialized from one of this run\\'s restarts, checked "
+                        "against the case first'",
+                    ),
                 ):
                     html.Span(v_html="icons.restart")
                     html.Span("Restart from")
@@ -1860,6 +1938,7 @@ class App:
                 classes="notice continue-why",
                 v_if="run_sel && (run.continue_refused || []).length",
             )
+            self._restart_pick_layout()
             self.health.layout_monitor()
             with html.Div(classes="stats", v_if="run_sel"):
                 with html.Div(v_for="t in stats", key="t.k", classes="stat"):
@@ -1936,16 +2015,104 @@ class App:
                 "run_sel && run_tab === 'outputs' && !outputs.length",
                 compact=True,
             )
+            with html.Div(classes="lineage", v_if="run_sel && run_tab === 'outputs' && lineage.length"):
+                html.Span("Restart of", classes="muted")
+                with html.Span(v_for="(l, i) in lineage", key="i", classes="lineage-link"):
+                    html.Span("{{ l.file.split('/').pop() }} · step {{ l.step }}")
+                    html.Span("{{ l.run ? ' of ' + l.run : ' of a run not in this project' }}", classes="muted")
+                    html.Span(" ← ", v_if="i < lineage.length - 1", classes="muted")
             with html.Div(classes="scroll", v_if="run_sel && run_tab === 'outputs' && outputs.length"):
                 with html.Div(
                     v_for="(o, i) in outputs",
                     key="i",
                     classes="events-row",
-                    style="grid-template-columns: 50px 1fr 60px",
+                    style="grid-template-columns: 44px 56px 1fr 52px 24px",
                 ):
                     html.Span("{{ o.step }}", classes="muted")
-                    html.Span("{{ o.path }}", classes="etext")
+                    html.Span("{{ o.t }}", classes="muted", title="t")
+                    html.Span("{{ (o.path || '').split('/').pop() }}", classes="etext", title=("o.path",))
                     html.Span("{{ o.bytes }}", classes="muted", style="text-align: right")
+                    html.Button(
+                        v_if="o.restart",
+                        v_html="icons.restart",
+                        classes="icon-btn",
+                        disabled=("run.active || !!run_blocked",),
+                        click=(self.pick_restart, "[o.path]"),
+                        aria_label=("'Restart from ' + o.path",),
+                        title=("'Restart from ' + o.path + ': a new run of the case input, checked against it first'",),
+                    )
+                    html.Span(v_if="!o.restart")
+
+    def _restart_pick_layout(self) -> None:
+        """The restart to start from and Mallard's answer for each key the case changed since it was written;
+        launch stays off while any change is incompatible."""
+        with html.Div(classes="restart-pick", v_if="run_sel && restart_pick.run === run_sel"):
+            with html.Div(classes="restart-pick-head"):
+                html.Span("Restart from {{ restart_pick.run }}", classes="name")
+                html.Div(classes="grow")
+                html.Button("Cancel", classes="btn", click="restart_pick = {}")
+                html.Button(
+                    "Launch from {{ (restart_pick.path || '').split('/').pop() }}",
+                    classes="btn primary",
+                    disabled=("!restart_pick.can_launch || restart_pick.checking || !!run_blocked",),
+                    click=self.launch_restart,
+                    title=(
+                        "restart_pick.blocked && restart_pick.blocked.length ? 'The restart cannot start a run of "
+                        "the case as it is: ' + restart_pick.blocked.join(', ') : 'A new run of the case from it'",
+                    ),
+                )
+            with html.Div(classes="restart-rows", role="listbox", aria_label="Restarts"):
+                with html.Div(
+                    v_for="r in restart_pick.rows",
+                    key="r.path",
+                    role="option",
+                    aria_selected=("String(r.path === restart_pick.path)",),
+                    __properties=[("aria_selected", "aria-selected")],
+                    classes=("r.path === restart_pick.path ? 'events-row on' : 'events-row'",),
+                    style="grid-template-columns: 60px 80px 1fr 60px; cursor: pointer",
+                    click=(self.pick_restart, "[r.path]"),
+                ):
+                    html.Span("{{ r.step }}", classes="muted")
+                    html.Span("t {{ r.t }}", classes="muted")
+                    html.Span("{{ r.path }}", classes="etext")
+                    html.Span("{{ r.bytes }}", classes="muted", style="text-align: right")
+            html.Div("Checking the case against it…", classes="muted", v_if="restart_pick.checking")
+            html.Div("{{ restart_pick.error }}", classes="notice", v_if="!restart_pick.checking && restart_pick.error")
+            html.Div(
+                "This Mallard does not say what a restart does with keys the case changed; "
+                "check them against the run's input before launching.",
+                classes="notice",
+                v_if="!restart_pick.checking && !restart_pick.error && !restart_pick.known",
+            )
+            html.Div(
+                "Launch is off: the case changes {{ restart_pick.blocked.join(', ') }} in a way this restart "
+                "cannot continue (below).",
+                classes="notice",
+                v_if="!restart_pick.checking && (restart_pick.blocked || []).length",
+            )
+            html.Div(
+                "The case changes no key from the input this restart was written with.",
+                classes="muted",
+                v_if="!restart_pick.checking && restart_pick.known && !(restart_pick.changes || []).length",
+            )
+            with html.Div(
+                classes="restart-changes",
+                v_if="!restart_pick.checking && (restart_pick.changes || []).length",
+            ):
+                with html.Div(classes="events-row head", style="grid-template-columns: 1.4fr 1fr 1fr 112px 2fr"):
+                    for label in ("key", "in the restart", "in the case", "effect", ""):
+                        html.Span(label, classes="muted")
+                with html.Div(
+                    v_for="c in restart_pick.changes",
+                    key="c.key",
+                    classes=("'events-row change ' + c.effect",),
+                    style="grid-template-columns: 1.4fr 1fr 1fr 112px 2fr",
+                ):
+                    html.Code("{{ c.key }}")
+                    html.Code("{{ c.restart }}")
+                    html.Code("{{ c.case }}")
+                    html.Span("{{ c.effect }}", classes=("['pill', c.effect]",))
+                    html.Span("{{ c.detail }}", classes="etext")
 
     def _statusbar(self) -> None:
         """Where the case runs and with what, the case's size, the last check's verdict and the file's state, each

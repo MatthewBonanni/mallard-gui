@@ -91,6 +91,7 @@ class FakeMallard:
         self.view = view  # answer with the captured case view, as `--view` would write it
         self.threads = 2
         self.check_fixture = check
+        self.restart_check = ""  # the report of `check --restart`; empty: a build that classifies no key
         self.stderr = stderr
         self.checks = 0
         self.extra: list[str] = []
@@ -138,6 +139,8 @@ class FakeMallard:
         self.extra = list(extra)
         self.calls.append(self.extra)
         name = "cylinder_check_cost.json" if extra else self.check_fixture
+        if "--restart" in extra:
+            name = self.restart_check or self.check_fixture
         data = fixture_json(name)
         if "--ranks" in extra or "--memory" in extra:
             data = sized(data, extra)
