@@ -115,3 +115,9 @@ def test_size_targets_name_this_machine_as_detected_then_each_gpu_with_its_memor
     assert targets[3]["label"] == "future-1 per rank"
     cpu = size_targets([], {"host": {"cpu": "M3", "threads": 8}})
     assert cpu[0]["label"] == "this machine (detected: 8 CPU threads, no memory limit)"
+
+
+def test_a_wall_time_under_a_second_keeps_its_digits() -> None:
+    """0.0203 s per unit simulated read 0.0 s."""
+    cost = section(summarize(fixture_json("cylinder_check_cost.json")), "COST")
+    assert cost["wall per unit time"] == "0.02 s"

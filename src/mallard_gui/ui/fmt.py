@@ -32,6 +32,8 @@ def duration(seconds: Any) -> str:
         return f"{s // 3600} h {s % 3600 // 60} min"
     if s >= 60:
         return f"{s // 60} min {s % 60} s"
+    if 0 < seconds < 1:
+        return f"{seconds:.2g} s"
     if seconds < 10 and seconds != s:
         return f"{seconds:.1f} s"
     return f"{s} s"
