@@ -1510,7 +1510,7 @@ class Session:
                     collapsed=True,
                 )
             )
-        return [own, *nested] if rows or not nested else nested
+        return [own, *nested] if rows or unread or not nested else nested
 
     def _alternatives(self, path: str, rows: list[Row], depth: int) -> tuple[list[Row], list[Group]]:
         """Keys Mallard takes one of (`dt` or `cfl`): each choice a group of its own under a selector, the one in
