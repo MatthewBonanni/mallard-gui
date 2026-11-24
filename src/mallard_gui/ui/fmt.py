@@ -5,11 +5,12 @@ digit separators but `_`)."""
 
 from __future__ import annotations
 
+import datetime
 from typing import Any
 
 from ..grouping import grouped
 
-__all__ = ["bytes_text", "duration", "grouped", "number"]
+__all__ = ["bytes_text", "duration", "grouped", "local_time", "number"]
 
 
 def number(v: Any) -> str:
@@ -45,3 +46,12 @@ def bytes_text(n: Any) -> str:
             return f"{n:.3g} {unit}"
         n /= 1000
     return f"{n:.3g} PB"
+
+
+def local_time(iso: Any) -> str:
+    """A timestamp Mallard writes in UTC (`2026-11-24T00:25:15Z`) in this machine's time zone, to the minute."""
+    try:
+        t = datetime.datetime.fromisoformat(str(iso))
+    except ValueError:
+        return str(iso or "") or "–"
+    return t.astimezone().strftime("%Y-%m-%d %H:%M %Z").rstrip()
