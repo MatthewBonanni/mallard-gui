@@ -34,7 +34,17 @@ from .fields import FieldCatalog, toml_array
 from .grouping import grouped
 from .input_doc import InputDocument, display_value, format_path, parse_path, parse_value
 from .live import CONTROL_FILE_INTERVAL
-from .mallard import CheckReport, Diagnostic, KeyInfo, Mallard, MallardError, Species, bare_literal, read_catalog
+from .mallard import (
+    CheckReport,
+    Diagnostic,
+    KeyInfo,
+    Mallard,
+    MallardError,
+    Species,
+    bare_literal,
+    read_catalog,
+    site_url,
+)
 from .postjobs import Launcher, LocalLauncher, PostJobs, SlurmLauncher
 from .presets import PresetView, SetupError, line_signature, run_log_presets, switch_changes
 from .presets import compute as compute_presets
@@ -169,6 +179,7 @@ class Group:
     entry: str = ""  # an array entry the group shows (`initialize.regions[0]`), which it can duplicate and delete
     add: dict[str, Any] = field(default_factory=dict)  # the array or named table it adds entries to: path, types
     feature: dict[str, Any] = field(default_factory=dict)  # an optional feature's switch (features.py)
+    models: dict[str, Any] = field(default_factory=dict)  # the gas models to choose from (`mallard list models`)
     hidden: bool = False  # under a feature that is off
 
     def to_dict(self) -> dict[str, Any]:
@@ -181,6 +192,7 @@ class Group:
             "entry": self.entry,
             "add": self.add,
             "feature": self.feature,
+            "models": self.models,
             "hidden": self.hidden,
             "rows": [r.to_dict() for r in self.rows],
         }
@@ -293,6 +305,7 @@ class Session:
         self.comp_basis: dict[str, str] = {}  # a composition table's X or Y chosen while it sets neither
         self.oneof_pick: dict[tuple[str, int], int] = {}  # (table, set of alternatives): the branch chosen
         self._restarts: dict[tuple[str, int, int], RestartStatus] = {}
+        self.gas_models: dict[str, Any] | None = None  # `mallard list models` of the input as checked
         self.select_mallard()
         self.load_units()
 
@@ -453,6 +466,7 @@ class Session:
         else:
             report = self.mallard.check(self.checked_path, self.view_dir, self.launch.args())
         self.report = report
+        self.gas_models = self.mallard.gas_models(self.checked_path)
         self.report.diagnostics = self._named_as_input(self.report.diagnostics)
         read, shown = self.checked_path.name, self.input_path.name
         for d in self.report.data.get("diagnostics") or []:
@@ -1201,6 +1215,10 @@ class Session:
                 groups = [g for g in groups if g.id != "boundaries"]
             if sid == "regions":
                 self._other_regions(groups)
+            if sid == "physics" and self.gas_models:
+                for g in groups:
+                    g.rows = [r for r in g.rows if r.path != "physics.gas"]
+                groups.insert(0, self._gas_model_group())
             path = tables[0]
         elif kind == "zone":
             groups, path = self._zone_groups(ident)
@@ -1844,6 +1862,69 @@ class Session:
         self.doc.delete_entry(path)
         self.doc.commit()
 
+    def _gas_model_group(self) -> Group:
+        """The gas model as one choice, from Mallard's listing; its keys (`physics.gas`) leave the rows below."""
+        data = self.gas_models or {}
+        models = [m for m in data.get("models") or [] if isinstance(m, dict) and m.get("name")]
+        current = data.get("current")
+        title = next((str(m.get("title") or "") for m in models if m["name"] == current), "matches none")
+        return Group(
+            "GAS MODEL",
+            [],
+            note=title,
+            id="gas_model",
+            models={
+                "current": current,
+                "options": [
+                    {
+                        "name": m["name"],
+                        "title": str(m.get("title") or m["name"]),
+                        "description": str(m.get("description") or ""),
+                        "docs": site_url(str(m.get("docs") or "")) if m.get("docs") else "",
+                        "missing": [k for k in m.get("requires") or [] if not self.doc.has(k)],
+                        "changes": self._model_changes(m),
+                    }
+                    for m in models
+                ],
+            },
+        )
+
+    def _model_changes(self, model: dict[str, Any]) -> list[str]:
+        """What switching to a model does to the input, as Mallard lists its keys: sets, then removes."""
+        out = [f"{k} = {v}" for k, v in (model.get("sets") or {}).items() if self._literal(k) != v]
+        out += [f"remove {k}" for k in model.get("removes") or [] if self.doc.has(k)]
+        return out
+
+    def _literal(self, path: str) -> str | None:
+        value = self.doc.get(path)
+        return None if value is None else tomlkit.item(value).as_string()
+
+    def set_gas_model(self, name: str, files: dict[str, str] | None = None) -> None:
+        """Switch the case to a gas model of Mallard's listing: its keys set, the keys it requires given (`files`,
+        for those the input lacks), the keys and tables it does not read removed. One step to undo."""
+        files = files or {}
+        model = next((m for m in (self.gas_models or {}).get("models") or [] if m.get("name") == name), None)
+        if model is None:
+            raise KeyError(f"no gas model {name}")
+        missing = [k for k in model.get("requires") or [] if not self.doc.has(k) and not files.get(k)]
+        if missing:
+            raise ValueError(f"{model.get('title', name)} needs {', '.join(missing)}")
+        for key in model.get("removes") or []:
+            if not self.doc.has(key):
+                continue
+            if isinstance(self.doc.get(key), dict):
+                self.doc.delete_table(key)
+            else:
+                self.doc.delete(key)
+        for key, literal in (model.get("sets") or {}).items():
+            self.doc.set(key, tomllib.loads(f"v = {literal}")["v"])
+        for key, value in files.items():
+            if key in (model.get("requires") or []):
+                self.doc.set(key, value)
+        self.doc.commit()
+        if self.gas_models is not None:
+            self.gas_models = {**self.gas_models, "current": name}
+
     def _feature_switches(self, groups: list[Group]) -> None:
         """A switch on each optional feature's group, on only while the input has its table; the groups under
         one that is off are hidden, and its own `enabled` key is the switch's."""
@@ -2022,17 +2103,20 @@ class Session:
 
     # Runs
 
-    def start_run(self, restart_from: str = "", ranks: int = 1, restart_path: str = "") -> ActiveRun:
+    def start_run(
+        self, restart_from: str = "", ranks: int = 1, restart_path: str = "", converted: str = ""
+    ) -> ActiveRun:
         """A new run of the case's input; `restart_from` names a run whose restart initializes it: `restart_path`,
-        one of its `restarts`, else its last. A build that polls control files gets them turned on, so the run
-        can be changed from wherever its files are."""
+        one of its `restarts`, else its last, or that restart `converted` to the case's gas (`convert_restart`). A
+        build that polls control files gets them turned on, so the run can be changed from wherever its files
+        are."""
         self.require_saved()
         if self.run_blocked:
             raise RuntimeError(f"cannot run: {self.run_blocked}")
         restart = ""
         if restart_from:
             record = self.project.run(restart_from)
-            restart = self.verified_restart(record, self._restart_entry(record, restart_path))
+            restart = converted or self.verified_restart(record, self._restart_entry(record, restart_path))
         name = self.project.new_run_name(self.input_path.stem)
         run_dir = self.project.root / "runs" / name
         settings = [f"control_file_interval={CONTROL_FILE_INTERVAL}"] if self.mallard.capabilities().set_file else []
@@ -2148,27 +2232,52 @@ class Session:
                 return entry
         raise RestartError(f"run {record.name}: no restart {path} in its run log")
 
-    def restart_check(self, name: str, path: str = "") -> dict[str, Any]:
-        """What a new run of the case from run `name`'s restart `path` (else its last) does with each key the case
-        changes from the input the file was written with (`mallard check --restart`'s `restart`): `changes`, and
-        `known` false from builds that do not classify them."""
-        record = self.project.run(name)
-        entry = self._restart_entry(record, path)
-        try:
-            file = self.verified_restart(record, entry)
-        except RestartError as e:
-            return {"path": entry.get("path", path), "error": str(e), "known": False, "changes": []}
-        # The input as the run directory gets it, so its file paths and settings are the run's
+    def _staged_input(self) -> Path:
+        """The input as the run directory gets it, so its file paths and settings are the run's."""
         staged = self.view_dir / "restart-check" / "input.toml"
         staged.parent.mkdir(exist_ok=True)
         staged.write_text(run_input(self.checked_path, absolute_paths=True), encoding="utf-8")
-        report = self.mallard.check(staged, None, [*self.launch.args(), "--restart", file])
+        return staged
+
+    def restart_check(self, name: str, path: str = "", converted: str = "") -> dict[str, Any]:
+        """What a new run of the case from run `name`'s restart `path` (else its last), or from its `converted`
+        file, does with each key the case changes from the input the file was written with (`mallard check
+        --restart`'s `restart`): `changes`, and `known` false from builds that do not classify them."""
+        record = self.project.run(name)
+        entry = self._restart_entry(record, path)
+        try:
+            file = converted or self.verified_restart(record, entry)
+        except RestartError as e:
+            return {"path": entry.get("path", path), "error": str(e), "known": False, "changes": []}
+        report = self.mallard.check(self._staged_input(), None, [*self.launch.args(), "--restart", file])
         restart = report.data.get("restart")
         out: dict[str, Any] = {"path": entry.get("path", path), "error": "", "known": isinstance(restart, dict)}
         out["changes"] = list(restart.get("changes") or []) if isinstance(restart, dict) else []
-        if not out["known"] and report.errors and not report.data.get("setup_done"):
+        blocked = any(c.get("effect") == "incompatible" for c in out["changes"])
+        if report.errors and not report.data.get("setup_done") and not blocked:
             out["error"] = "; ".join(d.message for d in report.diagnostics if d.severity == "error")
         return out
+
+    def convert_preview(self, name: str, path: str = "") -> dict[str, Any] | None:
+        """What converting run `name`'s restart `path` (else its last) to the case's gas would do, from Mallard's
+        dry run (`mallard-restart-convert`): None when the file already holds the case's gas or the build cannot
+        convert."""
+        record = self.project.run(name)
+        file = self.verified_restart(record, self._restart_entry(record, path))
+        summary = self.mallard.restart_convert(Path(file), self._staged_input())
+        return summary if summary and summary.get("rule") else None
+
+    def convert_restart(self, name: str, path: str, accept: str) -> Path:
+        """Run `name`'s restart `path` converted to the case's gas, written under `converted/` of the project;
+        `accept` is the mapping rule the user accepted (Mallard refuses an inexact conversion without it)."""
+        record = self.project.run(name)
+        file = Path(self.verified_restart(record, self._restart_entry(record, path)))
+        out = self.project.root / "converted" / f"{name}-{file.stem}.restart"
+        out.parent.mkdir(exist_ok=True)
+        summary = self.mallard.restart_convert(file, self._staged_input(), out, accept)
+        if summary is None:
+            raise RestartError("this Mallard cannot convert restart files")
+        return Path(str(summary.get("written") or out))
 
     def lineage(self, name: str) -> list[dict[str, Any]]:
         """The restarts run `name` descends from, nearest first: each file, its step and the project's run that

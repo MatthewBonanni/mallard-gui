@@ -1261,3 +1261,28 @@ html.pane-drag :is(canvas, iframe, .viewport) { pointer-events: none; }
 .pill.incompatible { background: color-mix(in srgb, var(--m-danger) 14%, transparent); color: var(--m-danger); }
 .lineage { display: flex; flex-wrap: wrap; gap: var(--m-space-3); padding: var(--m-space-3) var(--m-space-5);
   font-family: var(--m-font-mono); font-size: var(--m-small); border-bottom: 1px solid var(--m-divider); flex: none; }
+
+/* The gas model: one choice of Mallard's models, each with what switching to it changes */
+.gas-models { display: flex; flex-direction: column; gap: var(--m-space-2); padding: var(--m-space-3) var(--m-pad); }
+.gas-model { border: 1px solid var(--m-border); border-radius: var(--m-radius); padding: var(--m-space-3) var(--m-space-4);
+  cursor: pointer; background: var(--m-bg); }
+.gas-model:hover { background: var(--m-hover); }
+.gas-model:focus-visible { outline: 2px solid var(--m-accent); outline-offset: 1px; }
+.gas-model.on { border-color: var(--m-accent); background: var(--m-selected); cursor: default; }
+.gm-head { display: flex; align-items: center; gap: var(--m-space-3); font-weight: 600; }
+.gm-title { flex: 1; }
+.gm-dot { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid var(--m-border-strong); flex: none; }
+.gas-model.on .gm-dot { border-color: var(--m-accent); background: var(--m-accent); box-shadow: inset 0 0 0 2px var(--m-bg); }
+.gm-docs { display: inline-flex; color: var(--m-text-muted); }
+.gm-docs:hover { color: var(--m-accent); }
+.gm-text { font-size: var(--m-small); color: var(--m-text-muted); margin: 2px 0 0 18px; }
+.gm-changes { font-family: var(--m-font-mono); font-size: var(--m-micro); color: var(--m-text-muted); margin: 3px 0 0 18px;
+  overflow-wrap: anywhere; }
+.conversion { margin: var(--m-space-3) var(--m-space-5); border: 1px solid var(--m-border); border-radius: var(--m-radius);
+  padding: var(--m-space-3) var(--m-space-4); }
+.conversion-head { display: flex; align-items: center; gap: var(--m-space-4); font-weight: 600; }
+.conversion-reasons { margin: var(--m-space-2) 0 0; padding-left: 18px; font-size: var(--m-small); }
+.conversion-rows { display: grid; grid-template-columns: max-content 1fr; gap: 2px var(--m-space-5);
+  margin-top: var(--m-space-3); font-family: var(--m-font-mono); font-size: var(--m-small); overflow-wrap: anywhere; }
+.conversion-accept { display: flex; align-items: center; gap: var(--m-space-4); margin-top: var(--m-space-3); }
+.conversion-accept label { display: flex; align-items: center; gap: var(--m-space-3); flex: 1; font-size: var(--m-small); }

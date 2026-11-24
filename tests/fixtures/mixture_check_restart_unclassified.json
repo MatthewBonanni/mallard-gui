@@ -1,0 +1,107 @@
+{
+ "schema": "mallard-check",
+ "version": 1,
+ "status": "error",
+ "errors": 1,
+ "warnings": 0,
+ "input_file": "b.toml",
+ "setup_done": false,
+ "dim": 2,
+ "environment": {
+  "build": {
+   "dim": 2,
+   "precision": "double",
+   "build_type": "Release",
+   "compiler": "AppleClang 21.0.0.21000334",
+   "cxx_flags": "-O3 -DNDEBUG",
+   "kokkos": "5.2.2",
+   "backend": "Threads",
+   "host_backend": "Threads",
+   "mpi": false,
+   "gpu_aware_mpi": false,
+   "nccl": false,
+   "hdf5": false,
+   "hdf5_parallel": false,
+   "kaminpar": false,
+   "cgns": false,
+   "zlib": false,
+   "species_layout": "right"
+  },
+  "dependencies": {
+   "compiler": "AppleClang 21.0.0.21000334",
+   "kokkos": "5.2.2",
+   "mpi": null,
+   "hdf5": null,
+   "cgns": null,
+   "zlib": null,
+   "nccl": null,
+   "gpu_runtime": null,
+   "gpu_driver": null
+  },
+  "solvers": [
+   2
+  ],
+  "ranks": 1,
+  "hosts": 1,
+  "ranks_per_host": 1,
+  "gpu_aware_mpi": {
+   "library": null,
+   "used": false
+  },
+  "nccl": {
+   "used": false
+  },
+  "placement": [
+   {
+    "rank": 0,
+    "host": "fixture-host",
+    "device": "Apple M4 Pro",
+    "threads": 2,
+    "cpus": null,
+    "omp_bind": false,
+    "gpu": null,
+    "gpu_index": null,
+    "gpu_numa": null,
+    "gpus_visible": 0
+   }
+  ]
+ },
+ "restart": {
+  "file": "start_000002.restart",
+  "step": 2,
+  "t": 2e-09,
+  "run_id": "cbfbb262-5072-4b1a-bfc3-2ac53ea4f80c",
+  "input_recorded": true,
+  "changes": [
+   {
+    "key": "physics.mechanism",
+    "restart": "\"mechanisms/gri30.yaml\"",
+    "case": "\"mechanisms/ch4_bfer.yaml\"",
+    "effect": "accepted",
+    "detail": null
+   }
+  ]
+ },
+ "diagnostics": [
+  {
+   "severity": "error",
+   "code": "E-SETUP",
+   "message": "Restart file start_000002.restart has variable RHOY_H2, which this run does not transport.",
+   "docs": "docs/guide/input_files.md#e-setup"
+  }
+ ],
+ "unused_keys": [],
+ "boundaries": [],
+ "unassigned": [],
+ "periodic": [],
+ "regions": [],
+ "case_view": null,
+ "case_view_images": [],
+ "initial_file": null,
+ "mesh_quality": null,
+ "time_step": null,
+ "resolution": {},
+ "memory": null,
+ "sizing": null,
+ "cost": null
+}

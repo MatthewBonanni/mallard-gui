@@ -92,6 +92,10 @@ class FakeMallard:
         self.threads = 2
         self.check_fixture = check
         self.restart_check = ""  # the report of `check --restart`; empty: a build that classifies no key
+        self.converted_check = ""  # the report of `check --restart` on a file under converted/, if other
+        self.models_fixture = ""  # `list models`; empty: a build without it
+        self.convert_fixture = ""  # `restart convert`'s summary; empty: a build without it
+        self.converts: list[dict[str, str]] = []
         self.stderr = stderr
         self.checks = 0
         self.extra: list[str] = []
@@ -141,6 +145,8 @@ class FakeMallard:
         name = "cylinder_check_cost.json" if extra else self.check_fixture
         if "--restart" in extra:
             name = self.restart_check or self.check_fixture
+            if self.converted_check and Path(extra[list(extra).index("--restart") + 1]).parent.name == "converted":
+                name = self.converted_check
         data = fixture_json(name)
         if "--ranks" in extra or "--memory" in extra:
             data = sized(data, extra)
@@ -162,6 +168,28 @@ class FakeMallard:
 
     def case_files(self, input_file: Path, text: str | None = None) -> dict[str, Any] | None:
         return None
+
+    def gas_models(self, input_file: Path) -> dict[str, Any] | None:
+        """`list models` as the build gives it, with the input's model; None (a build without it) unless set."""
+        if not self.models_fixture:
+            return None
+        data = fixture_json(self.models_fixture)
+        physics = tomllib.loads(input_file.read_text(encoding="utf-8")).get("physics", {})
+        chemistry = tomllib.loads(input_file.read_text(encoding="utf-8")).get("chemistry")
+        gas = physics.get("gas", "perfect")
+        reacting = isinstance(chemistry, dict) and chemistry.get("enabled", True)
+        data["current"] = {"mixture": "finite_rate" if reacting else "frozen"}.get(gas, gas)
+        return data
+
+    def restart_convert(
+        self, restart: Path, input_file: Path, out: Path | None = None, accept: str = ""
+    ) -> dict[str, Any] | None:
+        self.converts.append({"restart": str(restart), "out": str(out) if out else "", "accept": accept})
+        if not self.convert_fixture:
+            return None
+        if out is not None:
+            out.write_bytes(restart.read_bytes() + b"converted\n")
+        return fixture_json(self.convert_fixture)
 
     def file_info(self, path: Path) -> dict[str, Any]:
         return {"schema": "mallard-file-info", "kind": "restart"}
