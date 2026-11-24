@@ -152,6 +152,8 @@ class Row:
     unit_unknown: str = ""  # why the key's unit is not known from the key alone (`unit_keys.UNKNOWN`)
     points: dict[str, Any] = field(default_factory=dict)  # a list of points: labels, and rows of components
     models: dict[str, dict[str, str]] = field(default_factory=dict)  # value -> its theory page: url, tip, cite
+    notes: dict[str, dict[str, str]] = field(default_factory=dict)  # value -> what it does: summary, cost, why
+    checks: list[dict[str, Any]] = field(default_factory=list)  # a set of choices' boxes: value, on, unknown
 
     def to_dict(self) -> dict[str, Any]:
         return dict(vars(self))
@@ -1237,6 +1239,7 @@ class Session:
         if info:
             row.type, row.widget, row.unit, row.options = info.type, info.widget, info.unit, info.values
             row.models = {v: {"url": m.url, "tip": m.tip(v), "cite": m.cite} for v, m in info.models.items()}
+            row.notes = {v: {"summary": n.summary, "cost": n.cost, "why": n.why} for v, n in info.value_notes.items()}
             row.required = self.required(path)
             default = bare_literal(info.default_for(dim))
             if not set_ and not row.required:
@@ -1354,10 +1357,30 @@ class Session:
             }
             if shown:
                 row.unit = ""
+        if row.widget == "checks":
+            self._checks(row, value if set_ else [])
         d = self.diagnostic_for(path)
         if d:
             row.error, row.severity = f"{d.code}: {d.message}", d.severity
         return row
+
+    @staticmethod
+    def _checks(row: Row, value: Any) -> None:
+        """A set of choices (an array of accepted values): a box per value, on for those the input lists, and the
+        entries it lists that the catalog does not, so they can be taken out; any other value stays TOML."""
+        if not isinstance(value, list) or not all(isinstance(v, str) for v in value):
+            row.widget = "toml"
+            return
+        listed = set(value)
+        row.checks = [{"value": v, "on": v in listed, "unknown": False} for v in row.options]
+        row.checks += [{"value": v, "on": True, "unknown": True} for v in dict.fromkeys(value) if v not in row.options]
+
+    def set_choice(self, path: str, choice: str, on: bool) -> None:
+        """Turn one value of a set of choices on (after those listed) or off; none left removes the key."""
+        value = self.doc.get(path)
+        entries = [str(v) for v in value] if isinstance(value, list) else []
+        entries = [e for e in entries if e != choice] + ([choice] if on else [])
+        self.set_value(path, toml_array(entries) if entries else "")
 
     def _choices(self, row: Row, info: KeyInfo | None, leaf: str, value: Any) -> None:
         """A dropdown of the names a key refers to (zones, regions, species), true and false for a boolean, the

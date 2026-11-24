@@ -13,7 +13,7 @@ from typing import Any
 import pytest
 
 from .test_choices import mixture
-from .test_inspector import RIEMANN_MODELS, UNSET_KEYS
+from .test_inspector import PARTICLE_FORCES, RIEMANN_MODELS, UNSET_KEYS
 from .test_ui import PAGES, open_app, pw  # noqa: F401  (fixtures)
 from .test_vectors import PARTICLE_KEYS
 from .ui.world import eventually, make_world, serve
@@ -566,7 +566,8 @@ def test_an_empty_list_offers_add_and_no_switch(page: Any) -> None:
 def particles_page(pw: Any, tmp_path_factory: pytest.TempPathFactory) -> Iterator[Any]:  # noqa: F811
     project, env = make_world(tmp_path_factory.mktemp("particles"), runs=False)
     (project / "input.toml").write_text((project / "input.toml").read_text() + '\n[particles]\ntype = "solid"\n')
-    with serve(project, {**env, "MALLARD_GUI_TEST_KEYS": json.dumps(PARTICLE_KEYS)}) as url:
+    keys = {**PARTICLE_KEYS, **PARTICLE_FORCES}
+    with serve(project, {**env, "MALLARD_GUI_TEST_KEYS": json.dumps(keys)}) as url:
         browser, pg = open_app(pw, "chromium", url)
         yield pg
         browser.close()
@@ -590,6 +591,31 @@ def test_a_list_of_points_adds_a_row_per_point_and_removes_one(particles_page: A
     eventually(lambda: toml(pg), lambda t: "points = [[0.1, 0.2], [0.3, 0.4]]" in t)
     pg.click("button[aria-label='remove point 1']")
     eventually(lambda: toml(pg), lambda t: "points = [[0.3, 0.4]]" in t)
+
+
+def test_a_set_of_choices_is_a_checkbox_per_value_with_its_cost_inline(particles_page: Any) -> None:
+    pg = particles_page
+    select(pg, "Particles")
+    group = pg.locator(".checks[aria-label='particles.forces']")
+    assert group.locator(".check").count() == 4
+    history = group.locator(".check", has=pg.locator(".check-name:text-is('basset_history')"))
+    assert history.locator(".cost").inner_text() == "expensive"
+    assert history.locator(".check-why").inner_text() == "29 vectors per particle"
+    assert history.locator(".check-summary").inner_text() == "History force"
+    assert group.locator(".check", has_text="added_mass").locator(".cost").count() == 0  # not rated
+    summary = pg.locator(".prow", has=pg.locator(".plabel", has_text="forces")).locator(".checks-summary")
+    assert summary.inner_text() == "none (default)"
+    pg.check("input[aria-label='particles.forces pressure_gradient']")
+    eventually(lambda: toml(pg), lambda t: 'forces = ["pressure_gradient"]' in t)
+    pg.check("input[aria-label='particles.forces basset_history']")
+    eventually(lambda: toml(pg), lambda t: 'forces = ["pressure_gradient", "basset_history"]' in t)
+    eventually(lambda: summary.inner_text(), lambda v: v == "basset_history, pressure_gradient")
+    pg.uncheck("input[aria-label='particles.forces pressure_gradient']")
+    pg.uncheck("input[aria-label='particles.forces basset_history']")
+    eventually(lambda: toml(pg), lambda t: "\nforces = " not in t)
+    pg.locator(".dd[aria-label='particles.type']").click()  # a single choice gives its cost in its dropdown
+    assert pg.locator(".dd-pop .dd-item", has_text="solid").locator(".dd-note").inner_text() == "moderate"
+    pg.keyboard.press("Escape")
 
 
 @pytest.fixture(scope="module")

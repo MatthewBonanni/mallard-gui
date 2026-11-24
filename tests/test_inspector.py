@@ -523,3 +523,81 @@ def test_a_choice_of_models_links_each_to_its_theory_section_on_the_website(cyli
 def test_site_urls_follow_mkdocs_directory_urls() -> None:
     assert site_url("docs/theory/index.md#notation") == "https://matthewbonanni.github.io/mallard/docs/theory/#notation"
     assert site_url("docs/guide/les.md") == "https://matthewbonanni.github.io/mallard/docs/guide/les/"
+
+
+# An array of accepted values that says what each does and costs (Mallard's catalog `value_notes`)
+PARTICLE_FORCES = {
+    "particles": {"case": True, "dims": [2, 3]},
+    "particles.type": {
+        "case": True,
+        "type": "string",
+        "values": ["tracer", "solid"],
+        "value_notes": {"solid": {"summary": "Spheres", "cost": "moderate", "cost_why": "drag per particle"}},
+    },
+    "particles.forces": {
+        "case": True,
+        "type": "array",
+        "default": "[]",
+        "values": ["added_mass", "basset_history", "pressure_gradient", "saffman_lift"],
+        "value_notes": {
+            "basset_history": {"summary": "History force", "cost": "expensive", "cost_why": "29 vectors per particle"},
+            "pressure_gradient": {"summary": "Pressure gradient", "cost": "cheap", "cost_why": "reads the gradient"},
+            "saffman_lift": {"summary": "Shear lift", "cost": "lavish", "cost_why": "not a tier"},
+        },
+    },
+}
+
+
+def forces_session(project: Path, forces: list[Any] | None) -> Session:
+    fake = FakeMallard()
+    fake.key_entries = PARTICLE_FORCES
+    s = Session(project, fake)  # type: ignore[arg-type]
+    s.doc.set("particles.type", "solid")
+    if forces is not None:
+        s.doc.set("particles.forces", forces)
+    s.doc.commit()
+    s.refresh_catalog()
+    s.check()
+    return s
+
+
+def test_an_array_of_accepted_values_is_a_box_per_value_with_what_it_does_and_costs(cylinder_project: Path) -> None:
+    s = forces_session(cylinder_project, None)
+    row = every_row(s, "section:particles")["forces"]
+    assert row["widget"] == "checks"
+    assert [(c["value"], c["on"]) for c in row["checks"]] == [
+        ("added_mass", False),
+        ("basset_history", False),
+        ("pressure_gradient", False),
+        ("saffman_lift", False),
+    ]
+    assert row["notes"]["basset_history"] == {
+        "summary": "History force",
+        "cost": "expensive",
+        "why": "29 vectors per particle",
+    }
+    assert row["notes"]["saffman_lift"] == {"summary": "Shear lift", "cost": "", "why": ""}  # no tier it knows
+    assert "added_mass" not in row["notes"]
+    s.set_choice("particles.forces", "pressure_gradient", True)
+    s.set_choice("particles.forces", "basset_history", True)
+    assert s.doc.get("particles.forces") == ["pressure_gradient", "basset_history"]
+    s.set_choice("particles.forces", "pressure_gradient", False)
+    assert s.doc.get("particles.forces") == ["basset_history"]
+    s.set_choice("particles.forces", "basset_history", False)
+    assert not s.doc.has("particles.forces")  # none left: back to the default
+
+
+def test_a_value_the_catalog_does_not_list_stays_on_so_it_can_be_taken_out(cylinder_project: Path) -> None:
+    s = forces_session(cylinder_project, ["lift", "added_mass"])
+    row = every_row(s, "section:particles")["forces"]
+    assert row["checks"][0] == {"value": "added_mass", "on": True, "unknown": False}
+    assert row["checks"][-1] == {"value": "lift", "on": True, "unknown": True}
+    s.set_choice("particles.forces", "lift", False)
+    assert s.doc.get("particles.forces") == ["added_mass"]
+
+
+def test_an_array_without_accepted_values_or_of_other_values_stays_toml(cylinder_project: Path) -> None:
+    s = forces_session(cylinder_project, [["added_mass"]])
+    assert every_row(s, "section:particles")["forces"]["widget"] == "toml"
+    assert KeyInfo("x", type="array").widget == "toml"
+    assert KeyInfo("x", type="string", values=["a", "b"]).widget == "select"

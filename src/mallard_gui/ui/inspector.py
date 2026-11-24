@@ -785,6 +785,47 @@ class Inspector:
             v_if="r.widget === 'vector' && (vec_err[r.path] || []).some(Boolean)",
         )
 
+    def set_choice(self, path: str, choice: str, on: bool) -> None:
+        self._comp(self.session.set_choice, path, choice, bool(on))
+
+    def checks_cell(self) -> None:
+        """A set of choices' summary, in its row's value cell: the values on, else what leaving it out means."""
+        html.Div(
+            "{{ r.checks.filter(c => c.on).map(c => c.value).join(', ') || 'none' + (r.set ? '' : ' (default)') }}",
+            v_if="r.widget === 'checks'",
+            classes=("['ro checks-summary', {dim: !r.checks.some(c => c.on)}]",),
+        )
+
+    def checks_body(self) -> None:
+        """A set of choices, full width under its row: a box per accepted value with what it does and, quietly
+        after its name, how much it costs (the catalog's `value_notes`)."""
+        note = "r.notes[c.value]"
+        with html.Div(
+            v_if="!r.readonly && r.widget === 'checks'", classes="checks", role="group", aria_label=("r.path",)
+        ):
+            with html.Label(
+                v_for="c in r.checks",
+                key="c.value",
+                classes=("['check', {on: c.on, unknown: c.unknown}]",),
+            ):
+                html.Input(
+                    type="checkbox",
+                    checked=("c.on",),
+                    aria_label=("r.path + ' ' + c.value",),
+                    change=(self.set_choice, "[r.path, c.value, $event.target.checked]"),
+                )
+                with html.Span(classes="check-text"):
+                    with html.Span(classes="check-head"):
+                        html.Span("{{ c.value }}", classes="check-name")
+                        html.Span(
+                            "{{ " + note + ".cost }}",
+                            v_if=f"{note} && {note}.cost",
+                            classes=(f"['cost', {note}.cost]",),
+                        )
+                        html.Span("not accepted by this build", v_if="c.unknown", classes="check-why")
+                    html.Span("{{ " + note + ".summary }}", v_if=f"{note} && {note}.summary", classes="check-summary")
+                    html.Span("{{ " + note + ".why }}", v_if=f"{note} && {note}.why", classes="check-why")
+
     def model_button(self) -> None:
         """A choice of models from the literature: (i) opens the theory section of the one chosen (else the default)
         on the website."""

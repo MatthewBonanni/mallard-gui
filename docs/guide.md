@@ -43,6 +43,9 @@ and layout kept.
 - **Properties** (right): the selected node's keys. Unset keys show their default (or the preset's value) as a
   placeholder; set keys have a reset button; entries have Duplicate and Delete. Hovering a key shows its help.
   A choice of literature models has an (i) button that opens the chosen model's theory section.
+  A key that takes several of a list of values (`[particles] forces`) is a checkbox per value, with what each
+  does and, where Mallard rates it, its cost (cheap, moderate, expensive) and why; a dropdown shows a value's
+  cost beside it.
 - **Units**: a dimensional key takes a number in the selected unit, or a quantity such as `1 cm`, which also
   sets the selector. The input stores the SI number; the selector changes only how it is shown. A unit of the
   wrong dimension is an error. Nondimensional cases take plain numbers.
