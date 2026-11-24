@@ -140,6 +140,7 @@ def main() -> None:
         fake.key_entries = json.loads(os.environ["MALLARD_GUI_TEST_KEYS"])
     if os.environ.get("FAKE_MALLARD_EXE"):  # post jobs run this executable
         fake.executable = Path(os.environ["FAKE_MALLARD_EXE"])
+    fake.restart_check = os.environ.get("MALLARD_GUI_TEST_RESTART_CHECK", "")
     session = Session(project, fake)  # type: ignore[arg-type]
     app = App(session, server)
     server.controller.trigger("test_reuse_address")(lambda: reuse_address(app))

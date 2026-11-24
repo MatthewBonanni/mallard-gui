@@ -1242,3 +1242,22 @@ html.pane-drag :is(canvas, iframe, .viewport) { pointer-events: none; }
 .vcomp .vlab { padding: 0 4px 0 6px; color: var(--m-text-muted); font-size: var(--m-small); font-family: var(--m-font-mono); }
 .vcomp input, .vcomp input:focus { flex: 1; min-width: 0; border: none; box-shadow: none; background: transparent; height: 100%;
   padding: 0 6px 0 0; outline: none; }
+
+/* Restart from: the run's restarts, and what a new run from the picked one does with each key the case changed */
+.restart-pick { flex: none; border-top: 1px solid var(--m-border); border-bottom: 1px solid var(--m-border);
+  background: var(--m-bg); padding-bottom: var(--m-space-3); max-height: 50vh; overflow: auto; }
+.restart-pick-head { display: flex; align-items: center; gap: var(--m-space-4); height: 40px; padding: 0 var(--m-space-5); }
+.restart-pick-head .name { font-family: var(--m-font-mono); font-weight: 600; }
+.restart-pick > .muted, .restart-pick > .notice { padding: var(--m-space-3) var(--m-space-5); }
+.restart-rows .events-row:hover { background: var(--m-hover); }
+.restart-rows .events-row.on { background: var(--m-selected); }
+.restart-changes { margin-top: var(--m-space-3); }
+.restart-changes .events-row { height: auto; min-height: var(--m-row); white-space: normal; align-items: start;
+  padding-top: 3px; padding-bottom: 3px; }
+.restart-changes .events-row code { overflow-wrap: anywhere; }
+.restart-changes .events-row .etext { font-family: var(--m-font-sans); overflow: visible; }
+.pill.accepted { background: var(--m-surface-2); color: var(--m-text-muted); }
+.pill.resets { background: color-mix(in srgb, var(--m-warning) 16%, transparent); color: var(--m-warning); }
+.pill.incompatible { background: color-mix(in srgb, var(--m-danger) 14%, transparent); color: var(--m-danger); }
+.lineage { display: flex; flex-wrap: wrap; gap: var(--m-space-3); padding: var(--m-space-3) var(--m-space-5);
+  font-family: var(--m-font-mono); font-size: var(--m-small); border-bottom: 1px solid var(--m-divider); flex: none; }

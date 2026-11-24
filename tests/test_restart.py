@@ -107,6 +107,44 @@ def test_restart_from_starts_a_new_run_of_the_case_input(session: Session) -> No
     assert (Path(run.job.run_dir) / "args-0.txt").read_text().strip() == str(restart.resolve())
 
 
+def test_restart_from_takes_any_restart_the_run_wrote(session: Session) -> None:
+    source = session.start_run().record.name
+    finish(session, source)
+    session.continue_run(source)
+    finish(session, source)
+    assert [r["path"] for r in session.restarts(source)] == ["./restart_20.restart", "./restart_10.restart"]
+    run = session.start_run(restart_from=source, restart_path="./restart_10.restart")
+    finish(session, run.record.name)
+    restart = session.project.root / "runs" / source / "restart_10.restart"
+    assert (Path(run.job.run_dir) / "args-0.txt").read_text().strip() == str(restart.resolve())
+    assert session.lineage(run.record.name) == [{"file": str(restart.resolve()), "step": 0, "run": ""}]
+
+
+def test_restart_check_gives_mallards_answer_for_each_changed_key(session: Session) -> None:
+    source = session.start_run().record.name
+    finish(session, source)
+    session.mallard.restart_check = "cylinder_check_restart.json"  # type: ignore[attr-defined]
+    result = session.restart_check(source)
+    assert session.mallard.extra[-2:] == ["--restart", str(session.verified_restart(session.project.run(source)))]  # type: ignore[attr-defined]
+    assert result["known"] and not result["error"]
+    effects = {c["key"]: c["effect"] for c in result["changes"]}
+    assert effects["run.t_stop"] == "accepted" and "incompatible" in effects.values()
+
+
+def test_a_build_that_classifies_no_key_says_so(session: Session) -> None:
+    source = session.start_run().record.name
+    finish(session, source)
+    result = session.restart_check(source)
+    assert not result["known"] and result["changes"] == []
+
+
+def test_restart_check_refuses_a_changed_file(session: Session) -> None:
+    source = session.start_run().record.name
+    finish(session, source)
+    (Path(session.active[source].job.run_dir) / "restart_10.restart").write_text("other\n")
+    assert "SHA-256" in session.restart_check(source)["error"]
+
+
 @pytest.mark.mallard
 def test_a_real_run_stopped_and_continued(real_mallard, cylinder_project: Path) -> None:  # type: ignore[no-untyped-def]
     path = cylinder_project / "input.toml"
